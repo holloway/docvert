@@ -1,0 +1,369 @@
+body
+    {
+    font-family:Verdana,Arial,Tahoma,sans-serif;
+    padding: 0em 5em;
+    background: #cccccc;
+    margin: 0px auto;
+    height:100%;
+    }
+
+#page
+    {
+    background: #ffffff;
+    padding:0.8em 1.5em;
+    -moz-border-radius: 1em;
+    border-radius: 1em;
+    }
+
+h1
+    {
+    color:#888888;
+    text-shadow: #333333 1px 1px 2px;
+    margin-bottom:.4em;
+    padding: 0px 40px;
+    font-size:xx-large;
+    letter-spacing: -0.1em;
+    }
+
+    h1 span.syllable
+        {
+        margin-left:2px;
+        color:#777777;
+        letter-spacing: -0.07em;
+        }
+
+    h1 span.version
+        {
+        font-size:x-large;
+        color:#999999;
+        text-shadow: #666666 1px 1px 1px;
+        letter-spacing: 0em;
+        }
+
+    h1 span.slogan
+        {
+        font-weight:normal;
+        font-size:x-small;
+        font-style:italic;
+        margin-left:235px;
+        color:#666666;
+        text-shadow: #ffffff 1px 1px 1px;
+        letter-spacing: 0em;
+        }
+
+
+fieldset
+    {
+    border: solid 1px #eeeeee;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    margin: 0px 0px 1em 0px;
+    }
+
+    #advanced_off,
+    fieldset legend
+        {
+        padding: 0px 1em 0px 2px;
+        font-weight:bold;
+        color:#999999;
+        }
+
+abbr
+    {
+    border-bottom:none;
+    }    
+
+.upload_button
+    {
+    float:left;
+    margin-right:1.5em;
+    }
+
+    label,
+    .upload_button input
+        {
+        cursor:pointer;
+        }
+
+    .upload_button label
+        {
+        border: solid 1px #aaaaaa;
+        float:left;
+        background: #eeeeee;
+        color:#666666;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        background: -webkit-gradient(linear, left bottom, left top, from(#bbb), to(#eee));
+        background: -moz-linear-gradient(bottom, #bbb, #eee);
+        -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, .2);
+	    -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+        }
+
+        .upload_button label span
+            {
+            display:block;
+            padding: 1px 7px 7px 1px;
+            text-align:center;
+            font-size:large;
+            font-weight:bold;
+            text-shadow: 1px 1px 1px #ffffff;
+            }
+
+    .upload_button_hover label,
+    .upload_button label:hover
+        {
+        background: -webkit-gradient(linear, left bottom, left top, from(#ccc), to(#fff));
+        background: -moz-linear-gradient(bottom, #ccc, #fff);
+        }
+
+    .upload_button input
+        {
+        opacity:0;
+        }
+
+#upload_from_web_dialog
+    {
+    -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, .7);
+    -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, .7);
+    }
+
+    #upload_from_web_dialog input
+        {
+        border:none;
+        padding:0.2em 0.4em;
+        }
+
+#button_tray
+    {
+    margin-top:2em;
+    width:100%;
+    clear:both;
+    padding: 5px 11px;
+    }
+
+    #button_tray #upload_submit.enabled
+        {
+        cursor:pointer;
+        border: solid 1px #aaaaaa;
+        background: #eeeeee;
+        color:#666666;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        background: -webkit-gradient(linear, left bottom, left top, from(#bbb), to(#eee));
+        background: -moz-linear-gradient(bottom, #bbb, #eee);
+        -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, .2);
+	    -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+        width:100%;
+        font-size:large;
+        font-weight:bold;
+        text-shadow: 1px 1px 1px #ffffff;
+        padding:0.2em;
+        }
+
+        #button_tray #upload_submit.enabled:hover
+            {
+            background: -webkit-gradient(linear, left bottom, left top, from(#ccc), to(#fff));
+            background: -moz-linear-gradient(bottom, #ccc, #fff);
+            }
+
+    #button_tray #upload_submit.disabled
+        {
+        border: solid 1px #cccccc;
+        background: #eeeeee;
+        color:#bbbbbb;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        background: -webkit-gradient(linear, left bottom, left top, from(#eee), to(#fff));
+        background: -moz-linear-gradient(bottom, #eee, #fff);
+        -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, .2);
+	    -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+        width:100%;
+        font-size:large;
+        font-weight:bold;
+        text-shadow: 1px 1px 1px #ffffff;
+        padding:0.2em;
+        }
+
+h2.upload_list
+    {
+    margin:0px;
+    padding:1em 0px 0px 0px;
+    font-size:medium;
+    color:#555555;
+    clear:both;
+    width:100%;
+    }
+
+#upload_list
+    {
+    list-style:none;
+    margin:0px;
+    padding:0px;
+    font-size:small;
+    }
+
+    #upload_list li
+        {
+        background:#eeeeee;
+        border-radius:5px;
+        -moz-border-radius:5px;
+        padding:1px 1px 1px 0.6em;
+        color:#666666;
+        margin:0px 0.6em 5px 0px;
+        float:left;
+        border: solid 1px #cccccc;
+        }
+
+        #upload_list li .delete
+            {
+            background:#bbbbbb;
+            color:#333333;
+            text-shadow: #ffffff 1px 1px 1px;
+            border-radius:4px;
+            -moz-border-radius:4px;
+            padding:0px 5px;
+            margin-left:0.4em;
+            text-decoration:none;
+            }
+
+    #upload_list li:hover
+        {
+        background:#dddddd;
+        }
+
+        #upload_list li:hover .delete
+            {
+            background:#aaaaaa;
+            }
+
+
+#pipelines,
+#autopipelines
+    {
+
+    }
+
+    ul.dropdown_list,
+    ul.dropdown_list li
+        {
+        margin: 0; 
+        padding: 0;
+        list-style: none;
+        }
+
+    a.dropdown,
+    ul.dropdown_list li a
+        {
+        font-weight: normal;
+        color: #000;
+        text-align: left;
+        display: block;
+        }
+
+    ul.dropdown_list li a.selected
+        {
+        background:#ccc;
+        }
+ 
+    a.dropdown
+        {
+        padding: 0px;
+        border: solid 1px #aaaaaa;
+        background: #eeeeee;
+        color:#666666;
+        text-align:center;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        background: -webkit-gradient(linear, left bottom, left top, from(#bbb), to(#eee));
+        background: -moz-linear-gradient(bottom, #bbb, #eee);
+        -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, .2);
+	    -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+        cursor: pointer;
+        outline:0;
+        text-decoration:none;
+        font-size:large;
+        font-weight:bold;
+        text-shadow: 1px 1px 1px #ffffff;
+        }
+
+        a.dropdown:hover
+            {
+            background: -webkit-gradient(linear, left bottom, left top, from(#ccc), to(#fff));
+            background: -moz-linear-gradient(bottom, #ccc, #fff);
+            }
+
+        a.dropdown .ddl_icon
+            {
+            color:#666666;
+            float:right;
+            padding-right:2px;
+            }
+
+    ul.dropdown_list
+        {
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        background: -webkit-gradient(linear, left bottom, left top, from(#bbb), to(#eee));
+        background: -moz-linear-gradient(bottom, #bbb, #eee);
+        -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, .2);
+	    -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+        margin-top:-2px;
+        border: solid 2px #aaaaaa;
+        }
+
+        ul.dropdown_list li a
+            {
+            text-decoration: none;
+            background: #fff;
+            color: black;
+            padding: 3px;
+            font-size:small;
+            }
+
+            ul.dropdown_list li a:hover
+                {
+                background: #e2e2e2;
+                }
+
+#afterconversion
+    {
+    color:#555555;
+    margin:0px;
+    padding: 0.3em 0.4em;
+    }
+
+#submit_error
+    {
+    text-align:center;
+    margin:0px;
+    padding:0px;
+    display:none;
+    }
+
+    #submit_error span
+        {
+        background: #ffffcc;
+        border: solid 1px #cccc99;
+        padding: 0.3em 1em;
+        color: #666633;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        font-size:small;
+        }
+
+
+#advanced
+    {
+    }
+
+    #advanced legend a
+        {
+        color:#888888;
+        text-decoration:none;
+        }
+
+    #advanced .showHide
+        {
+        font-size:small;
+        color:#aaaaaa;
+        }
