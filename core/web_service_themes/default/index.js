@@ -1,43 +1,9 @@
+if(history) history.navigationMode = 'compatible';
 
-
-$(document).ready(function(){
-    $("#upload_submit").addClass("disabled").removeClass("enabled")
-    $(".upload_list").hide()
-    $(".delete").live("click", docvert.upload_file_delete)
-    var upload_file = $("#upload_file")
-    upload_file.change(docvert.upload_file_change)
-    upload_file.mouseover(docvert.upload_file_mouseover)
-    upload_file.mouseout(docvert.upload_file_mouseout)
-    $("#upload_documents label").css({
-        "width":upload_file.width() + "px",
-        "height": upload_file.height() + "px",
-        "margin-right": - upload_file.width() + "px"})
-    $("#upload_from_web label").click(docvert.reveal_upload_web_dialog)
-    $("#upload_from_web_dialog").hide()
-    $("#upload_from_web_dialog input").blur(docvert.hide_upload_web_dialog)
-    $("fieldset, #button_tray").width((upload_file.width() * 2) + 30)
-    $("#page,form").width((upload_file.width() * 2) + 53)
-    $("#upload_submit").click(docvert.check_submit)
-    $("select").dropp()
-    $("#advanced .inner").addClass("closed").hide()
-    $("#advanced legend a").click(function(){
-        var inner = $(this).parents("fieldset").find(".inner")
-        if(inner.hasClass("closed")) {
-            $("span", this).html("&#9660;")
-            inner.removeClass("closed").slideDown()
-        } else {
-            $("span", this).html("&#9654;")
-            inner.addClass("closed").slideUp()
-        }
-        return false
-        })
-
-}).keydown(function(event) {
-    var escape_key = 27
-    if (event.keyCode == escape_key) {
-        $("#upload_from_web_dialog").hide()
-    }
-});
+if(location && location.hash.toString().indexOf("back-reload") != -1){ //see http://stackoverflow.com/questions/158319/cross-browser-onload-event-and-the-back-button
+    location.hash = ""
+    window.location.href = (window.location.href.toString().indexOf("#") != -1) ? window.location.href.toString().substring(0, window.location.href.toString().indexOf("#")) : window.location.href.toString()
+}
 
 var docvert = {
     upload_file_change: function(event){
@@ -114,11 +80,54 @@ var docvert = {
                 })
             })
             return false
-
         }
+        if($("#after_conversion_preview").is(":checked")){
+            var form_element = $("form")
+            form_element.css({"position":"relative"}).animate({"top": -(form_element.offset().top + form_element.height())},"slow")
+            location.hash = "back-reload" //see http://stackoverflow.com/questions/158319/cross-browser-onload-event-and-the-back-button
+            }
     },
 
-    please_wait: function(event){
-        
+    click_advanced: function(){
+        var inner = $(this).parents("fieldset").find(".inner")
+        if(inner.hasClass("closed")) {
+            $("span", this).html("&#9660;")
+            inner.removeClass("closed").slideDown()
+        } else {
+            $("span", this).html("&#9654;")
+            inner.addClass("closed").slideUp()
+        }
+        return false
+    },
+
+    keydown: function(event){
+        var escape_key = 27
+        if (event.keyCode == escape_key) {
+            $("#upload_from_web_dialog").hide()
+        }
     }
 }
+
+$(document).ready(function(){
+    $("#upload_submit").addClass("disabled").removeClass("enabled")
+    $(".upload_list").hide()
+    $(".delete").live("click", docvert.upload_file_delete)
+    var upload_file = $("#upload_file")
+    upload_file.change(docvert.upload_file_change)
+    upload_file.mouseover(docvert.upload_file_mouseover)
+    upload_file.mouseout(docvert.upload_file_mouseout)
+    $("#upload_documents label").css({
+        "width":upload_file.width() + "px",
+        "height": upload_file.height() + "px",
+        "margin-right": - upload_file.width() + "px"})
+    $("#upload_from_web label").click(docvert.reveal_upload_web_dialog)
+    $("#upload_from_web_dialog").hide()
+    $("#upload_from_web_dialog input").blur(docvert.hide_upload_web_dialog)
+    $("fieldset, #button_tray").width((upload_file.width() * 2) + 30)
+    $("#page,form").width((upload_file.width() * 2) + 53)
+    $("#upload_submit").click(docvert.check_submit)
+    $("select").dropp()
+    $("#advanced .inner").addClass("closed").hide()
+    $("#advanced legend a").click(docvert.click_advanced)
+}).keydown(docvert.keydown)
+

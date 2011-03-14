@@ -28,5 +28,5 @@
         <!-- <stage process="ValidateAgainstSchema" withFile="xhtml.rng"/> -->
         <stage process="Transform" withFile="mytheme2.xsl"/>
         <!-- <stage process="ValidateAgainstSchema" withFile="xhtml.rng"/> -->
-        <stage process="Serialize" toFile="{customIndex}"/>
+        <stage process="Serialize" toFile="index.html"/>
 </pipeline>

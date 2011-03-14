@@ -1,27 +1,35 @@
 # -*- coding: utf-8 -*-
 import sys
 import StringIO
+import uuid
+import os.path
 try:
     import bottle
 except ImportError:
     sys.path.append('./lib/bottle') 
-    import bottle
-
+    try:
+        import bottle
+    except ImportError:
+        sys.stderr.write("Error: Unable to find Bottle libraries in %s. Exiting..." % sys.path)
+        sys.exit(0)
+import lib.bottlesession.bottlesession
 bottle.debug(True)
 
 import core.docvert
 
 # START CONFIG
 theme='default'
+port=8080
 # END CONFIG
 
 theme_directory='./core/web_service_themes'
 bottle.TEMPLATE_PATH.append('%s/%s' % (theme_directory, theme))
 
+@bottle.route('/index', method='GET')
 @bottle.route('/', method='GET')
 @bottle.view('index')
 def index():
-    pipelines = [{'id':'web standards','name':'Web Standards'},{'id':'blah','name':'Frank Enstein'}]
+    pipelines = [{'id':'web standards','name':'Web Standards'},{'id':'basic','name':'Basic'}]
     auto_pipelines = [{'id':'blah','name':'Break up over Heading 1'},{'id':'blah','name':'Nothing (one long page)'}]
     return dict(pipelines=pipelines,auto_pipelines=auto_pipelines)
 
@@ -33,24 +41,74 @@ def static(path=''):
 def libstatic(path=None):
     return bottle.static_file(path, root='./lib')
 
+@bottle.route('/web-service.php', method='POST') #for legacy support
 @bottle.route('/web-service', method='POST')
+@bottle.view('web-service')
 def webservice():
     files = dict()
+    first_document_id = None
     for key, item in bottle.request.files.iteritems():
         filename = item.filename
         unique = 1
+        #print filename
         while files.has_key(filename):
             filename = item.filename + unique
             unique += 1
+        if first_document_id is None:
+            first_document_id = filename
         files[filename] = StringIO.StringIO(item.value)
     pipeline = bottle.request.POST.get('pipeline')
     auto_pipeline = bottle.request.POST.get('auto_pipeline')
-    response = core.docvert.process_conversion(files, pipeline, auto_pipeline)
-    bottle.response.content_type = "text/xml"
-    return response
+    after_conversion = bottle.request.POST.get('after_conversion')
+    urls = bottle.request.POST.get('upload_web[]')
+    response = core.docvert.process_conversion(files, urls, pipeline, auto_pipeline)
+    if after_conversion == "zip":
+        bottle.response.content_type = 'application/zip'
+        return response.to_zip().getvalue()
+    pipeline_summary = "%s (%s)" % (pipeline, auto_pipeline)
+    session_manager = lib.bottlesession.bottlesession.PickleSession()
+    session = session_manager.get_session()
+    conversion_id = "%s" % uuid.uuid4()
+    session[conversion_id] = response
+    session_manager.save(session)
+    conversions_tabs = dict()
+    for filename in files.keys():
+        thumbnail_path = "%s/thumbnail.png" % filename
+        if response.has_key(thumbnail_path):
+            thumbnail_path = None
+        conversions_tabs[filename] = dict(pipeline=pipeline, auto_pipeline=auto_pipeline, thumbnail_path=thumbnail_path)
+    return dict(conversions=conversions_tabs, conversion_id=conversion_id, first_document_id=first_document_id)
 
 @bottle.route('/favicon.ico', method='GET')
 def favicon():
     return bottle.static_file('favicon.ico', root='%s/%s' % (theme_directory, theme))
 
-bottle.run(host='localhost', port=8080, quiet=False)
+@bottle.route('/conversions/:conversion_id/:path#.*#')
+def conversion_static_file(conversion_id, path):
+    session_manager = lib.bottlesession.bottlesession.PickleSession()
+    session = session_manager.get_session()
+    if not session.has_key(conversion_id): # They don't have authorisation
+        raise bottle.HTTPError(code=404)
+    if not session[conversion_id].has_key(path): # They have authorisation but that exact path doesn't exist, try fallbacks
+        fallbacks = ["index.html", "index.htm", "index.xml", "index.php", "default.htm", "default.html", "index.asp", "default.aspx", "index.aspx", "default.aspx"]
+        valid_fallback_path = None
+        separator = "/"
+        if path.endswith("/"):
+            separator = ""
+        for fallback in fallbacks:
+            fallback_path = path+separator+fallback
+            if session[conversion_id].has_key(fallback_path):
+                valid_fallback_path = fallback_path
+                break
+        if valid_fallback_path is None:
+            raise bottle.HTTPError(code=404)
+        path = valid_fallback_path
+    filetypes = {".xml":"text/xml", ".html":"text/html", ".xhtml":"text/html", ".svg":"image/svg+xml", ".png":"image/png", ".gif":"image/gif", ".bmp":"image/x-ms-bmp", ".jpg":"image/jpeg", ".jpe":"image/jpeg", ".jpeg":"image/jpeg", ".css":"text/css", ".js":"text/javascript", ".txt":"text/plain"}
+    extension = os.path.splitext(path)[1]
+    if filetypes.has_key(extension):
+        bottle.response.content_type = filetypes[extension]
+    else:
+        bottle.response.content_type = "plain/text"
+    return session[conversion_id][path]
+
+bottle.run(host='localhost', port=port, quiet=False)

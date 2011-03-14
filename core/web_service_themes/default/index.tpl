@@ -8,7 +8,7 @@
         <script type="text/javascript" src="static/default/jquery.dropp.js"></script>
         <script type="text/javascript" src="static/default/index.js"></script>
     </head>
-    <body>
+    <body onunload="" class="index-page">
         <h1>Doc<span class="syllable">vert</span> <span class="version">5</span> <span class="slogan"><abbr title="Microsoft">MS</abbr>Word to Open Standards</span></h1>
         <form method="post" action="web-service" enctype="multipart/form-data">
             <div id="page">
@@ -50,8 +50,8 @@
                     <legend><a href="#advanced">Advanced <span class="showHide">&#9654;</span></a></legend>
                     <div class="inner">
                          <p id="afterconversion">
-                            <label for="afterconversion_preview"><input type="radio" id="afterconversion_preview" name="afterconversion" checked="checked">Preview conversion</label> &nbsp;
-                            <label for="afterconversion_download"><input type="radio" id="afterconversion_download" name="afterconversion">Download .ZIP</label>
+                            <label for="after_conversion_preview"><input type="radio" id="after_conversion_preview" name="after_conversion" value="preview" checked="checked">Preview conversion</label> &nbsp;
+                            <label for="after_conversion_zip"><input type="radio" id="after_conversion_zip" name="after_conversion" value="zip">Download .ZIP</label>
                         </p>
                     </div>
                 </fieldset>

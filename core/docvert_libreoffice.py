@@ -4,12 +4,16 @@ from os.path import isfile
 from os.path import splitext
 import sys
 from StringIO import StringIO
+import document_type
+import docvert_exception
 
 DEFAULT_LIBREOFFICE_PORT = 2002
-
+LIBREOFFICE_OPEN_DOCUMENT = 'writer8'
+LIBREOFFICE_PDF = 'writer_pdf_Export'
 try:
     import uno
 except ImportError:
+    sys.path.append('/opt/libreoffice/program/')
     sys.path.append('/usr/lib/libreoffice/program/')
     sys.path.append('/usr/lib/openoffice.org/program/')
     sys.path.append('/usr/lib/openoffice.org2.0/program/')
@@ -45,17 +49,17 @@ class output_stream_wrapper(unohelper.Base, XOutputStream):
 class libreoffice_client(object):
     def __init__(self, port=DEFAULT_LIBREOFFICE_PORT):
         self._local_context = uno.getComponentContext()
-        self._service_manager = self._local_context.serviceManager
+        self._service_manager = self._local_context.ServiceManager
         resolver = self._service_manager.createInstanceWithContext("com.sun.star.bridge.UnoUrlResolver", self._local_context)
         try:
             context = resolver.resolve("uno:socket,host=localhost,port=%s;urp;StarOffice.ComponentContext" % port)
         except NoConnectException, exception:
             raise Exception, "Failed to connect to LibreOffice.org on port %s. %s" % (port, exception)
-        self._desktop = context.service_manager.createInstanceWithContext("com.sun.star.frame.Desktop", context)
+        self._desktop = context.ServiceManager.createInstanceWithContext("com.sun.star.frame.Desktop", context)
 
-    def convert_by_stream(self, data):
+    def convert_by_stream(self, data, format=LIBREOFFICE_OPEN_DOCUMENT):
         input_stream = self._service_manager.createInstanceWithContext("com.sun.star.io.SequenceInputStream", self._local_context)
-        input_stream.initialize((uno.ByteSequence(data),)) 
+        input_stream.initialize((uno.ByteSequence(data.getvalue()),)) 
         document = self._desktop.loadComponentFromURL('private:stream', "_blank", 0, self._to_properties(InputStream=input_stream,ReadOnly=True))
         if not document:
             raise Exception, "Error making document"
@@ -63,16 +67,18 @@ class libreoffice_client(object):
             document.refresh()
         except AttributeError:
             pass
-        output_stream = output_stream_wrapper(False)
+        output_stream = output_stream_wrapper()
         try:
             document.storeToURL('private:stream', self._to_properties(
                 OutputStream=output_stream,
-                FilterName='writer8'))
+                FilterName=format))
         finally:
             document.close(True)
-        open_document_bytes = output_stream.data.getvalue()
-        output_stream.close()
-        return open_document_bytes
+        if format == LIBREOFFICE_OPEN_DOCUMENT:
+            doc_type = document_type.detect_document_type(output_stream.data)
+            if doc_type != document_type.types.oasis_open_document:
+                raise docvert_exception.converter_unable_to_generate_open_document()
+        return output_stream.data
 
     def _to_properties(self, **args):
         props = []
