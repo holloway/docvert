@@ -29,9 +29,7 @@ bottle.TEMPLATE_PATH.append('%s/%s' % (theme_directory, theme))
 @bottle.route('/', method='GET')
 @bottle.view('index')
 def index():
-    pipelines = [{'id':'web standards','name':'Web Standards'},{'id':'basic','name':'Basic'}]
-    auto_pipelines = [{'id':'blah','name':'Break up over Heading 1'},{'id':'blah','name':'Nothing (one long page)'}]
-    return dict(pipelines=pipelines,auto_pipelines=auto_pipelines)
+    return core.docvert.get_all_pipelines()
 
 @bottle.route('/static/:path#.*#', method='GET')
 def static(path=''):
@@ -57,15 +55,15 @@ def webservice():
         if first_document_id is None:
             first_document_id = filename
         files[filename] = StringIO.StringIO(item.value)
-    pipeline = bottle.request.POST.get('pipeline')
-    auto_pipeline = bottle.request.POST.get('auto_pipeline')
+    pipeline_id = bottle.request.POST.get('pipeline')
+    auto_pipeline_id = bottle.request.POST.get('auto_pipeline')
     after_conversion = bottle.request.POST.get('after_conversion')
     urls = bottle.request.POST.get('upload_web[]')
-    response = core.docvert.process_conversion(files, urls, pipeline, auto_pipeline)
+    response = core.docvert.process_conversion(files, urls, pipeline_id, auto_pipeline_id)
     if after_conversion == "zip":
         bottle.response.content_type = 'application/zip'
         return response.to_zip().getvalue()
-    pipeline_summary = "%s (%s)" % (pipeline, auto_pipeline)
+    pipeline_summary = "%s (%s)" % (pipeline_id, auto_pipeline_id)
     session_manager = lib.bottlesession.bottlesession.PickleSession()
     session = session_manager.get_session()
     conversion_id = "%s" % uuid.uuid4()
@@ -76,7 +74,7 @@ def webservice():
         thumbnail_path = "%s/thumbnail.png" % filename
         if response.has_key(thumbnail_path):
             thumbnail_path = None
-        conversions_tabs[filename] = dict(pipeline=pipeline, auto_pipeline=auto_pipeline, thumbnail_path=thumbnail_path)
+        conversions_tabs[filename] = dict(pipeline=pipeline_id, auto_pipeline=auto_pipeline_id, thumbnail_path=thumbnail_path)
     return dict(conversions=conversions_tabs, conversion_id=conversion_id, first_document_id=first_document_id)
 
 @bottle.route('/favicon.ico', method='GET')
@@ -110,5 +108,14 @@ def conversion_static_file(conversion_id, path):
     else:
         bottle.response.content_type = "plain/text"
     return session[conversion_id][path]
+
+@bottle.route('/tests', method='GET')
+def tests():
+    pass
+
+@bottle.route('/web-service/tests/:test_id', method='GET')
+def web_service_tests(test_id):
+    
+    pass
 
 bottle.run(host='localhost', port=port, quiet=False)

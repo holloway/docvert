@@ -10,7 +10,7 @@ var docvert = {
     },
     click_back: function(event){
         var iframe_element = $("iframe")
-        iframe_element.animate({top:-iframe_element.height() - docvert.buffer.height}, "slow", function(){
+        iframe_element.animate({top: -(iframe_element.height() + (docvert.buffer.height * 3))}, "slow", function(){
             window.location.href = "index"
         })
         return false

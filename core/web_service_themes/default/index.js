@@ -1,11 +1,18 @@
 if(history) history.navigationMode = 'compatible';
 
 if(location && location.hash.toString().indexOf("back-reload") != -1){ //see http://stackoverflow.com/questions/158319/cross-browser-onload-event-and-the-back-button
-    location.hash = ""
     window.location.href = (window.location.href.toString().indexOf("#") != -1) ? window.location.href.toString().substring(0, window.location.href.toString().indexOf("#")) : window.location.href.toString()
 }
 
 var docvert = {
+    slide_in: function(){
+        if(location && location.hash.toString().indexOf("slide-in") != -1){
+            location.hash = ""
+            var form_element = $("form")
+            form_element.css({"top":-form_element.height(), position:"relative"})
+            form_element.animate({top:0}, "slow")
+        }
+    },
     upload_file_change: function(event){
         $(event.target).parent().append($(event.target).clone())
         var text = $(event.target).val()
@@ -82,10 +89,13 @@ var docvert = {
             return false
         }
         if($("#after_conversion_preview").is(":checked")){
-            var form_element = $("form")
-            form_element.css({"position":"relative"}).animate({"top": -(form_element.offset().top + form_element.height())},"slow")
             location.hash = "back-reload" //see http://stackoverflow.com/questions/158319/cross-browser-onload-event-and-the-back-button
-            }
+            var form_element = $("form")
+            form_element.css({"position":"relative"}).animate({"top": -(form_element.offset().top + form_element.height() + 50)},"slow", function(){
+                $("form").submit()
+            })
+            return false
+        }
     },
 
     click_advanced: function(){
@@ -109,6 +119,7 @@ var docvert = {
 }
 
 $(document).ready(function(){
+    docvert.slide_in()
     $("#upload_submit").addClass("disabled").removeClass("enabled")
     $(".upload_list").hide()
     $(".delete").live("click", docvert.upload_file_delete)

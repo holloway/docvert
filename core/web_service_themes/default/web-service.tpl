@@ -10,7 +10,7 @@
     </head>
     <body class="web-service-page">
         <h1>Doc<span class="syllable">vert</span> <span class="version">5</span> <span class="slogan"><abbr title="Microsoft">MS</abbr>Word to Open Standards</span></h1>
-        <p class="back-link"><a href="/index">&larr;back</a></p>
+        <p class="back-link"><a href="/index#slide-in">&larr;back</a></p>
         <ul id="conversion-tabs">
 % for filename, conversion in conversions.iteritems():
          <li><a href="conversions/{{conversion_id}}/{{filename}}" title="{{filename}} via {{conversion['pipeline']}}/{{conversion['auto_pipeline']}}">{{filename}}</a></li>
