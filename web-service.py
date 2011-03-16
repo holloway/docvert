@@ -16,6 +16,8 @@ import lib.bottlesession.bottlesession
 bottle.debug(True)
 
 import core.docvert
+import core.docvert_storage
+import core.docvert_exception
 
 # START CONFIG
 theme='default'
@@ -109,13 +111,18 @@ def conversion_static_file(conversion_id, path):
         bottle.response.content_type = "plain/text"
     return session[conversion_id][path]
 
+@bottle.view('tests')
 @bottle.route('/tests', method='GET')
 def tests():
-    pass
+    if bottle.debug() is False:
+        raise core.docvert_exception.tests_disabled("Sorry, but tests are only viewable in DEBUG mode.")
+    return core.docvert.get_all_pipelines()['tests']
 
 @bottle.route('/web-service/tests/:test_id', method='GET')
 def web_service_tests(test_id):
-    
-    pass
+    if bottle.debug() is False:
+        raise core.docvert_exception.tests_disabled("Sorry, but tests are only viewable in DEBUG mode.")
+    storage = core.docvert_storage.storage_memory_based()
+    return process_pipeline(None, test_id, None, storage)
 
 bottle.run(host='localhost', port=port, quiet=False)

@@ -66,7 +66,7 @@ class storage_memory_based(storage):
         zipdata = StringIO.StringIO()
         archive = zipfile.ZipFile(zipdata, 'w')
         for key, value in self.storage.iteritems():
-            archive.writestr(key.replace("/", "\\").encode("utf-8"),value)
+            archive.writestr(key.replace("\\", "/").encode("utf-8"),value)
         archive.close()
         return zipdata
 

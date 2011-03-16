@@ -32,3 +32,6 @@ class unknown_pipeline_node(docvert_exception):
 
 class unknown_docvert_process(docvert_exception):
     pass
+
+class tests_disabled(docvert_exception):
+    pass
