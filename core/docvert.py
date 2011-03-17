@@ -8,10 +8,12 @@ import docvert_storage
 import docvert_libreoffice
 import opendocument
 
+docvert_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 class converter_type(object):
     python_streaming_to_libreoffice = "python streaming to libreoffice"
 
-def process_conversion(files=None, urls=None, pipeline_id=None, auto_pipeline_id=None, storage_type_name=docvert_storage.storage_type.memory_based, converter=converter_type.python_streaming_to_libreoffice):
+def process_conversion(files=None, urls=None, pipeline_id=None, pipeline_id_namespace="pipelines", auto_pipeline_id=None, storage_type_name=docvert_storage.storage_type.memory_based, converter=converter_type.python_streaming_to_libreoffice):
     if files is None and urls is None:
         raise docvert_exception.needs_files_or_urls()
     if pipeline_id is None:
@@ -22,15 +24,15 @@ def process_conversion(files=None, urls=None, pipeline_id=None, auto_pipeline_id
         if doc_type != document_type.types.oasis_open_document:
             data = generate_open_document(data, converter)
         document_xml = opendocument.extract_useful_open_document_files(data, storage, filename)
-        process_pipeline(document_xml, pipeline_id, auto_pipeline_id, storage, filename)
+        process_pipeline(document_xml, pipeline_id, pipeline_id_namespace, auto_pipeline_id, storage, filename)
     return storage
 
-def process_pipeline(initial_pipeline_value, pipeline_id, auto_pipeline_id, storage, storage_prefix=None):
-    pipeline_definition = docvert_pipeline.get_pipeline_definition(pipeline_id, auto_pipeline_id)
+def process_pipeline(initial_pipeline_value, pipeline_id, pipeline_id_namespace, auto_pipeline_id, storage, storage_prefix=None):
+    pipeline_definition = docvert_pipeline.get_pipeline_definition("%s/%s" % (pipeline_id_namespace, pipeline_id), auto_pipeline_id)
     pipeline = docvert_pipeline.pipeline_processor(storage, pipeline_definition['stages'], pipeline_definition['pipeline_directory'], storage_prefix)
-    pipeline.start(initial_pipeline_value)
+    return pipeline.start(initial_pipeline_value)
 
-def generate_open_document(data, converter):
+def generate_open_document(data, converter=converter_type.python_streaming_to_libreoffice):
     if converter == converter_type.python_streaming_to_libreoffice:
         client = docvert_libreoffice.libreoffice_client()
         return client.convert_by_stream(data, docvert_libreoffice.LIBREOFFICE_OPEN_DOCUMENT)
@@ -39,7 +41,6 @@ def generate_open_document(data, converter):
 def get_all_pipelines():
     def _title(name):
         return name.replace('_',' ').replace('-',' ').title()
-    docvert_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     pipeline_types_path = os.path.join(docvert_root, "pipelines")
     pipeline_types = dict()
     for pipeline_type in os.listdir(pipeline_types_path):
@@ -48,5 +49,4 @@ def get_all_pipelines():
             pipeline_types[pipeline_type].append(dict(id=pipeline_directory, name=_title(pipeline_directory)))
     return pipeline_types
     
-
 

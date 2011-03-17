@@ -59,7 +59,8 @@ class libreoffice_client(object):
 
     def convert_by_stream(self, data, format=LIBREOFFICE_OPEN_DOCUMENT):
         input_stream = self._service_manager.createInstanceWithContext("com.sun.star.io.SequenceInputStream", self._local_context)
-        input_stream.initialize((uno.ByteSequence(data.getvalue()),)) 
+        #NOTE: Getting garbled characters ("###########") in your XML out of LibreOffice? Check that the data's file pointer is set to the start E.g. data.seek(0) 
+        input_stream.initialize((uno.ByteSequence(data.read()),)) 
         document = self._desktop.loadComponentFromURL('private:stream', "_blank", 0, self._to_properties(InputStream=input_stream,ReadOnly=True))
         if not document:
             raise Exception, "Error making document"

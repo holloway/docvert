@@ -61,7 +61,12 @@ def webservice():
     auto_pipeline_id = bottle.request.POST.get('auto_pipeline')
     after_conversion = bottle.request.POST.get('after_conversion')
     urls = bottle.request.POST.get('upload_web[]')
-    response = core.docvert.process_conversion(files, urls, pipeline_id, auto_pipeline_id)
+    response = None
+    try:
+        response = core.docvert.process_conversion(files, urls, pipeline_id, "pipelines", auto_pipeline_id)
+    except core.docvert_exception.debug_exception, exception:
+        bottle.response.content_type = exception.content_type
+        return exception.data
     if after_conversion == "zip":
         bottle.response.content_type = 'application/zip'
         return response.to_zip().getvalue()
@@ -103,7 +108,7 @@ def conversion_static_file(conversion_id, path):
         if valid_fallback_path is None:
             raise bottle.HTTPError(code=404)
         path = valid_fallback_path
-    filetypes = {".xml":"text/xml", ".html":"text/html", ".xhtml":"text/html", ".svg":"image/svg+xml", ".png":"image/png", ".gif":"image/gif", ".bmp":"image/x-ms-bmp", ".jpg":"image/jpeg", ".jpe":"image/jpeg", ".jpeg":"image/jpeg", ".css":"text/css", ".js":"text/javascript", ".txt":"text/plain"}
+    filetypes = {".xml":"text/xml", ".html":"text/html", ".xhtml":"text/html", ".htm":"text/html", ".svg":"image/svg+xml", ".png":"image/png", ".gif":"image/gif", ".bmp":"image/x-ms-bmp", ".jpg":"image/jpeg", ".jpe":"image/jpeg", ".jpeg":"image/jpeg", ".css":"text/css", ".js":"text/javascript"}
     extension = os.path.splitext(path)[1]
     if filetypes.has_key(extension):
         bottle.response.content_type = filetypes[extension]
@@ -111,18 +116,27 @@ def conversion_static_file(conversion_id, path):
         bottle.response.content_type = "plain/text"
     return session[conversion_id][path]
 
-@bottle.view('tests')
 @bottle.route('/tests', method='GET')
+@bottle.view('tests')
 def tests():
-    if bottle.debug() is False:
-        raise core.docvert_exception.tests_disabled("Sorry, but tests are only viewable in DEBUG mode.")
-    return core.docvert.get_all_pipelines()['tests']
+    if bottle.DEBUG is False:
+        raise core.docvert_exception.tests_disabled("Sorry, but tests are only viewable in DEBUG mode.") #not that they'll be able to see the exception in debug mode. Natch.
+    return core.docvert.get_all_pipelines()
 
 @bottle.route('/web-service/tests/:test_id', method='GET')
 def web_service_tests(test_id):
-    if bottle.debug() is False:
-        raise core.docvert_exception.tests_disabled("Sorry, but tests are only viewable in DEBUG mode.")
+    if bottle.DEBUG is False:
+        raise core.docvert_exception.tests_disabled("Sorry, but tests are only viewable in DEBUG mode.") #not that they'll be able to see the exception in debug mode. Natch.
     storage = core.docvert_storage.storage_memory_based()
-    return process_pipeline(None, test_id, None, storage)
+    try:
+        core.docvert.process_pipeline(None, test_id, "tests", None, storage)
+    except core.docvert_exception.debug_exception, exception:
+        bottle.response.content_type = exception.content_type
+        return exception.data
+    return  bottle.json_dumps(storage.tests)
+    return storage.tests
+
 
 bottle.run(host='localhost', port=port, quiet=False)
+
+

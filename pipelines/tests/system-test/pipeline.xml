@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline>
+        <stage process="Generate" withFile="sample-document.doc"/>
+        <stage process="Test" withFile="check-content.xsl"/>
+
+</pipeline>

@@ -4,10 +4,12 @@ import StringIO
 import lxml.etree
 import os.path
 
-def extract_useful_open_document_files(data, storage, prefix=None):
+def extract_useful_open_document_files(data, storage=None, prefix=None):
     archive = zipfile.ZipFile(data)
     archive_files = archive.namelist()
     xml_string = extract_xml(archive, archive_files)
+    if storage is None: #we can't extract binaries
+        return xml_string
     return extract_useful_binaries(archive, archive_files, storage, prefix, xml_string)
 
 def extract_useful_binaries(archive, archive_files, storage, prefix, xml_string):
@@ -18,10 +20,11 @@ def extract_useful_binaries(archive, archive_files, storage, prefix, xml_string)
     for archive_path in archive_files:
         path_minus_extension, extension = os.path.splitext(archive_path)
         if extension in extensions:
-            storage_path = "%s/%s%s" % (prefix, os.path.basename(path_minus_extension), extension)
+            storage_path = "%s/%s" % (prefix, os.path.basename(archive_path))
             #step 1. extract binaries
             storage[storage_path] = archive.open(archive_path).read() 
             #step 2. update XML references
+            path_relative_to_xml = os.path.basename(archive_path)
             xpath = lxml.etree.ETXPath(xpath_template % archive_path)
             for match in xpath(document):
                 match.attrib['{%s}href' % xlink_namespace] = storage_path
@@ -34,7 +37,7 @@ def extract_xml(archive, archive_files):
     for xml_file_to_extract in xml_files_to_extract:
         if xml_file_to_extract in archive_files:
             xml_string.write('<docvert:external-file xmlns:docvert="docvert:5" docvert:name="%s">' % xml_file_to_extract)
-            document = lxml.etree.fromstring(archive.open(xml_file_to_extract).read())
+            document = lxml.etree.fromstring(archive.open(xml_file_to_extract).read()) #parsing as XML to remove any doctype
             xml_string.write(lxml.etree.tostring(document))
             xml_string.write('</docvert:external-file>')
     xml_string.write('</docvert:root>')

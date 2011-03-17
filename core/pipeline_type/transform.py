@@ -1,30 +1,27 @@
 # -*- coding: utf-8 -*-
 import os
-import lxml.etree
 import StringIO
 import pipeline_item
 import core.docvert_exception
+import core.docvert_xml
 
 
 class Transform(pipeline_item.pipeline_stage):
     def stage(self, pipeline_value):
-        xslt_path = os.path.join(self.pipeline_directory, self.attributes['withFile'])
+        if not self.attributes.has_key("withFile"):
+            raise no_with_file_attribute("In process Transform there wasn't a withFile attribute.")
+        if pipeline_value is None:
+            raise xml_empty("Cannot Transform with %s because pipeline_value is None." % self.attributes['withFile'])
+        xslt_path = self.resolve_pipeline_resource(self.attributes['withFile'])
         if not os.path.exists(xslt_path):
             raise xslt_not_found("XSLT file not found at %s" % xslt_path)
-        xslt_string = open(xslt_path).read()
-        xslt_document = lxml.etree.XML(xslt_string)
-        #print "XSLT was %s" % xslt_string
-        transform = lxml.etree.XSLT(xslt_document)
-        pipeline_document = None
-        if hasattr(pipeline_value, 'getvalue'):
-            pipeline_document = lxml.etree.XML(pipeline_value.getvalue())
-        elif hasattr(pipeline_value, 'read'):
-            pipeline_document = lxml.etree.XML(pipeline_value.read())
-        elif isinstance(pipeline_value, lxml.etree._Element):
-            pass
-        else: #last ditch attempt...
-            pipeline_document = lxml.etree.XML(str(pipeline_value))
-        return transform(pipeline_document)
+        return core.docvert_xml.transform(pipeline_value, xslt_path)
+
+class no_with_file_attribute(core.docvert_exception.docvert_exception):
+    pass
 
 class xslt_not_found(core.docvert_exception.docvert_exception):
+    pass
+
+class xml_empty(core.docvert_exception.docvert_exception):
     pass

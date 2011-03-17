@@ -10,6 +10,11 @@
     </head>
     <body onunload="" class="tests-page">
         <h1>Doc<span class="syllable">vert</span> <span class="version">5</span> <span class="slogan"><abbr title="Microsoft">MS</abbr>Word to Open Standards</span></h1>
-        
+        <h2>Tests</h2>
+        <ul>
+% for pipeline in tests:
+            <li><a href="/web-service/tests/{{pipeline['id']}}">{{pipeline['name']}}</a></li>
+% end
+        </ul>
     </body>
 </html>

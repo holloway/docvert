@@ -5,8 +5,8 @@ import docvert_exception
 
 docvert_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-def get_pipeline_definition(pipeline_id, auto_pipeline_id):
-    pipeline = get_pipeline_xml(pipeline_id, auto_pipeline_id)
+def get_pipeline_definition(namespaced_pipeline_id, auto_pipeline_id):
+    pipeline = get_pipeline_xml(namespaced_pipeline_id, auto_pipeline_id)
     pipeline['stages'] = process_stage_level( pipeline['xml'].getroot() )
     return pipeline
 
@@ -22,11 +22,11 @@ def process_stage_level(nodes):
         stages.append(child)
     return stages
 
-def get_pipeline_xml(pipeline_id, auto_pipeline_id):
-    path = os.path.join(docvert_root, "pipelines", "pipelines", pipeline_id, "pipeline.xml")
+def get_pipeline_xml(namespaced_pipeline_id, auto_pipeline_id):
+    path = os.path.join(docvert_root, "pipelines", namespaced_pipeline_id, "pipeline.xml")
     autopath = None
     if not os.path.exists(path):
-        raise docvert_exception.unrecognised_pipeline("Unknown pipeline '%s'" % pipeline_id)
+        raise docvert_exception.unrecognised_pipeline("Unknown pipeline '%s' (checked %s)" % (namespaced_pipeline_id, path))
     xml = lxml.etree.parse(path)
     if xml.getroot().tag == "autopipeline":
         if auto_pipeline_id is None:

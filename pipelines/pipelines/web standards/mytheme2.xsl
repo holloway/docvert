@@ -4,7 +4,15 @@
 	<xsl:output method="xml" omit-xml-declaration="no"  />
 
     <xsl:template match="/">
-        <x>what</x>
+        <root>
+            <xsl:apply-templates/>
+        </root>
+    </xsl:template>
+
+    <xsl:template match="node()|@*">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
     </xsl:template>
 
 </xsl:stylesheet>

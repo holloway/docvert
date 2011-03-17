@@ -2,6 +2,10 @@
 import zipfile
 import StringIO
 import time
+import docvert_exception
+import core.docvert_xml
+import core.docvert_exception
+
 
 class storage_type(object):
     file_based = "file based storage"
@@ -15,6 +19,8 @@ def get_storage(name):
     raise docvert_exception.unrecognised_storage_type("Unknown storage type '%s'" % name)
 
 class storage(object):
+    _docvert_namespace = '{docvert:5}'
+    
     def __init__(self, *args, **kargs):
         raise NotImplemented()
 
@@ -26,6 +32,23 @@ class storage(object):
 
     def __getitem__(self, key):
         return self.get(key)
+
+    def add_tests(self, tests):
+        if not hasattr(self, 'test_results'):
+            self.tests = []
+        if type(tests) == type([]): #assume correctly formatted list
+            return self.tests.extend(tests)
+        #otherwise assume xml
+        document = core.docvert_xml.get_document(tests)
+        if document.getroot().tag != "%sgroup" % self._docvert_namespace:
+            raise docvert_exception.invalid_test_root_node("Error parsing test results. Expected a root node of 'group' but got '%s'" % document.getroot().tag)
+        for child in document.getroot():
+            if child.tag == "%spass" % self._docvert_namespace:
+                self.tests.append( {"status":"pass", "message":str(child.text)} )
+            elif child.tag == "%sfail" % self._docvert_namespace:
+                self.tests.append(dict(status="fail", message=str(child.text)))
+            else:
+                raise invalid_test_child_node("Error parsing test results. Unexpected child element of '%s' %s" % (child.tag, child))
 
 class storage_file_based(storage):
     def __init__(self):
@@ -69,6 +92,8 @@ class storage_memory_based(storage):
             archive.writestr(key.replace("\\", "/").encode("utf-8"),value)
         archive.close()
         return zipdata
+
+
 
     def _dispose(self):
         pass

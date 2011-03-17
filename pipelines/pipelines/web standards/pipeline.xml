@@ -6,7 +6,8 @@
         <!-- <stage process="ValidateAgainstSchema" withFile="docbook.rng"/> -->
         <stage process="GeneratePostConversionEditorFiles"/>
 
-        <stage process="Test" withFile="internal://test-docbook.xsl"/>
+
+        <!-- <stage process="Test" withFile="internal://test-docbook.xsl"/> -->
         
         <stage process="Loop" numberOfTimes="xpathCount://db:chapter">
                 <stage process="SplitPages"/>
@@ -28,5 +29,5 @@
         <!-- <stage process="ValidateAgainstSchema" withFile="xhtml.rng"/> -->
         <stage process="Transform" withFile="mytheme2.xsl"/>
         <!-- <stage process="ValidateAgainstSchema" withFile="xhtml.rng"/> -->
-        <stage process="Serialize" toFile="index.html"/>
+        <stage process="Serialize" toFile="index.xml"/>
 </pipeline>
