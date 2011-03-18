@@ -128,12 +128,17 @@ def web_service_tests(test_id):
     if bottle.DEBUG is False:
         raise core.docvert_exception.tests_disabled("Sorry, but tests are only viewable in DEBUG mode.") #not that they'll be able to see the exception in debug mode. Natch.
     storage = core.docvert_storage.storage_memory_based()
+    error_message = None
     try:
         core.docvert.process_pipeline(None, test_id, "tests", None, storage)
     except core.docvert_exception.debug_exception, exception:
         bottle.response.content_type = exception.content_type
         return exception.data
-    return bottle.json_dumps(storage.tests) #is this safe to use?
+    except Exception, exception:
+        bottle.response.content_type = "text/plain"
+        class_name = "%s" % type(exception).__name__
+        return bottle.json_dumps([{"status":"fail", "message": "<%s> %s" % (class_name, exception)}])
+    return bottle.json_dumps(storage.tests)
 
 @bottle.route('/tests/', method='GET')
 def tests_wrongdir():

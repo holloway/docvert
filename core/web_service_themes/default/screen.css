@@ -431,12 +431,12 @@ body.tests-page
     body.tests-page ul
         {
         list-style:none;
-        padding:0px 0px;
+        padding:0px 0px 0px 2px;
         }
 
         body.tests-page ul li
             {
-            
+            margin-bottom:3px;
             }
 
             body.tests-page ul li a

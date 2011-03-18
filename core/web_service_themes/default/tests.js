@@ -7,9 +7,10 @@ var docvert = {
         } else {
             sublist.empty()
         }
-        list.after(sublist)
+        list.append(sublist)
+        $(list).find(".testSummary").removeClass("pass fail").addClass("result").text("?")
         sublist.html("<li>please wait...</li>").slideDown()
-        jQuery.getJSON($(event.target).attr("href"), function(data, textStatus){
+        jQuery.getJSON($(event.target).attr("href") + "?callback_id=" + list.attr("id"), function(data, textStatus, jqXHR){
             if(sublist.length != 1) {
                 return alert("Can't find a sublist.")
             }
@@ -24,7 +25,7 @@ var docvert = {
                 })
                 sublist.slideDown()
                 var text = (test_status == "pass") ? "&#x2714;" : "&#x2718;"
-                sublist.parent().parent().find(".result").removeClass("testSummary").addClass(test_status).html(text)
+                sublist.parent().find(".testSummary").removeClass("result pass fail").addClass(test_status).html(text)
             })
         })
         return false

@@ -13,7 +13,7 @@
         <h2>Tests <span id="run-all">(<a href="#run-all">run all</a>)</span></h2>
         <ul>
 % for pipeline in tests:
-            <li><a href="/web-service/tests/{{pipeline['id']}}"><span class="result testSummary">?</span>  {{pipeline['name']}}</a></li>
+            <li id="test-{{pipeline['id']}}"><a href="/web-service/tests/{{pipeline['id']}}"><span class="result testSummary">?</span>  {{pipeline['name']}}</a></li>
 % end
         </ul>
     </body>
