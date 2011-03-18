@@ -93,8 +93,6 @@ class storage_memory_based(storage):
         archive.close()
         return zipdata
 
-
-
     def _dispose(self):
         pass
 

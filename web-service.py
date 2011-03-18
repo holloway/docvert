@@ -133,9 +133,11 @@ def web_service_tests(test_id):
     except core.docvert_exception.debug_exception, exception:
         bottle.response.content_type = exception.content_type
         return exception.data
-    return  bottle.json_dumps(storage.tests)
-    return storage.tests
+    return bottle.json_dumps(storage.tests) #is this safe to use?
 
+@bottle.route('/tests/', method='GET')
+def tests_wrongdir():
+    bottle.redirect('/tests')
 
 bottle.run(host='localhost', port=port, quiet=False)
 

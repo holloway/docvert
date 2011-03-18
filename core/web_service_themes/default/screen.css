@@ -415,3 +415,114 @@ h2.upload_list
     background: white;
     border: solid 2px #bbbbbb;
     }
+
+
+body.tests-page
+    {
+    
+    }
+
+    body.tests-page h2
+        {
+        margin-left:40px;
+        font-weight:normal;
+        }
+
+    body.tests-page ul
+        {
+        list-style:none;
+        padding:0px 0px;
+        }
+
+        body.tests-page ul li
+            {
+            
+            }
+
+            body.tests-page ul li a
+                {
+                padding:5px 10px;
+                display:block;
+                text-decoration:none;
+                border-radius: 4px;
+                -moz-border-radius: 8px;
+                background: #FFFFFF; /* old browsers */
+                background: -moz-linear-gradient(top, #FFFFFF 11%, #8C8C8C 99%); /* firefox */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(11%,#FFFFFF), color-stop(99%,#8C8C8C)); /* webkit */
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#8C8C8C',GradientType=0 ); /* ie */
+                color: #333333;
+                text-shadow: #ffffff 1px 1px 1px;
+                }
+
+                body.tests-page ul ul
+                    {
+                    margin:0px 5px 0px 33px;
+                    padding:0px 0px 0px 4px;
+                    background: #dddddd;
+                    font-size:small;
+                    border-bottom-right-radius: 5px;
+                    -moz-border-radius-bottomright: 5px; 
+                    -webkit-border-bottom-right-radius: 5px;
+                    border-bottom-left-radius: 5px; 
+                    -moz-border-radius-bottomleft: 5px; 
+                    -webkit-border-bottom-left-radius: 5px;
+                    }
+
+                    body.tests-page ul ul li
+                        {
+                        margin:0px;
+                        padding:5px 0px 5px 5px;
+                        color:#666666;
+                        }
+
+                body.tests-page ul li a:hover
+                    {
+                    background:#bbbbbb;
+                    border: inset 1px #cccccc;
+                    }
+
+                body.tests-page ul li .result,
+                body.tests-page ul li .pass,
+                body.tests-page ul li .fail
+                    {
+                    border-radius:1em;
+                    -moz-border-radius:1em;
+                    background:#bbbbbb;
+                    border: inset 1px #cccccc;
+                    font-weight:bold;
+                    padding:0px 5px;
+                    margin: 0px 5px 0px 0px 
+                    }
+
+                    body.tests-page ul li .result
+                        {
+                        background: #bbbbbb;
+                        }
+
+                    body.tests-page ul li .pass
+                        {
+                        border: inset 1px #57a012;
+                        background: #57a012;
+                        color:#ccffcc;
+                        }
+
+                    body.tests-page ul li .fail
+                        {
+                        border: inset 1px #e31b1b;
+                        background: #e31b1b;
+                        color:#ffcccc;
+                        }
+
+
+                body.tests-page #run-all
+                    {
+                    font-size:small;
+                    color:#666666;
+                    }
+
+                    body.tests-page #run-all a
+                        {
+                        color:#666666;
+                        font-weight:bold;
+                        margin: 0px 3px;
+                        }

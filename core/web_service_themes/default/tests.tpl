@@ -10,10 +10,10 @@
     </head>
     <body onunload="" class="tests-page">
         <h1>Doc<span class="syllable">vert</span> <span class="version">5</span> <span class="slogan"><abbr title="Microsoft">MS</abbr>Word to Open Standards</span></h1>
-        <h2>Tests</h2>
+        <h2>Tests <span id="run-all">(<a href="#run-all">run all</a>)</span></h2>
         <ul>
 % for pipeline in tests:
-            <li><a href="/web-service/tests/{{pipeline['id']}}">{{pipeline['name']}}</a></li>
+            <li><a href="/web-service/tests/{{pipeline['id']}}"><span class="result testSummary">?</span>  {{pipeline['name']}}</a></li>
 % end
         </ul>
     </body>
