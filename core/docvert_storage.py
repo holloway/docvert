@@ -38,11 +38,13 @@ class storage(object):
             self.tests = []
         if type(tests) == type([]): #assume correctly formatted list
             return self.tests.extend(tests)
-        #otherwise assume xml
         document = core.docvert_xml.get_document(tests)
-        if document.getroot().tag != "%sgroup" % self._docvert_namespace:
-            raise docvert_exception.invalid_test_root_node("Error parsing test results. Expected a root node of 'group' but got '%s'" % document.getroot().tag)
-        for child in document.getroot():
+        if hasattr(document, 'getroottree'):
+            document = document.getroottree()
+        root = document.getroot()
+        if root.tag != "%sgroup" % self._docvert_namespace:
+            raise docvert_exception.invalid_test_root_node("Error parsing test results. Expected a root node of 'group' but got '%s'" % root.tag)
+        for child in root:
             if child.tag == "%spass" % self._docvert_namespace:
                 self.tests.append( {"status":"pass", "message":str(child.text)} )
             elif child.tag == "%sfail" % self._docvert_namespace:

@@ -125,19 +125,24 @@ def tests():
 
 @bottle.route('/web-service/tests/:test_id', method='GET')
 def web_service_tests(test_id):
+    suppress_error = bottle.request.GET.get('suppress_error') == "true"
     if bottle.DEBUG is False:
         raise core.docvert_exception.tests_disabled("Sorry, but tests are only viewable in DEBUG mode.") #not that they'll be able to see the exception in debug mode. Natch.
     storage = core.docvert_storage.storage_memory_based()
     error_message = None
-    try:
+    if suppress_error:
+        try:
+            core.docvert.process_pipeline(None, test_id, "tests", None, storage)
+        except core.docvert_exception.debug_exception, exception:
+            bottle.response.content_type = exception.content_type
+            return exception.data
+        except Exception, exception:
+            if not suppress_error: raise exception
+            bottle.response.content_type = "text/plain"
+            class_name = "%s" % type(exception).__name__
+            return bottle.json_dumps([{"status":"fail", "message": "<%s> %s" % (class_name, exception)}])
+    else:
         core.docvert.process_pipeline(None, test_id, "tests", None, storage)
-    except core.docvert_exception.debug_exception, exception:
-        bottle.response.content_type = exception.content_type
-        return exception.data
-    except Exception, exception:
-        bottle.response.content_type = "text/plain"
-        class_name = "%s" % type(exception).__name__
-        return bottle.json_dumps([{"status":"fail", "message": "<%s> %s" % (class_name, exception)}])
     return bottle.json_dumps(storage.tests)
 
 @bottle.route('/tests/', method='GET')
