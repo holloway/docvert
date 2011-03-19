@@ -9,6 +9,10 @@
         <script type="text/javascript" src="static/default/index.js"></script>
     </head>
     <body onunload="" class="index-page">
+        <ul id="menu">
+            <li class="current"><a href="#index">Web Service</a></li>
+            <li><a href="tests">Tests</a></li>
+        </ul>
         <h1>Doc<span class="syllable">vert</span> <span class="version">5</span> <span class="slogan"><abbr title="Microsoft">MS</abbr>Word to Open Standards</span></h1>
         <form method="post" action="web-service" enctype="multipart/form-data">
             <div id="page">
@@ -37,7 +41,7 @@
                 </fieldset>
                 <fieldset id="autopipelines">
                     <legend>Break Up Pages Over</legend>
-                    <select name="auto_pipeline" id="auto_pipeline">
+                    <select name="autopipeline" id="autopipeline">
 % for auto_pipeline in auto_pipelines:
                         <option value="{{auto_pipeline['id']}}">{{auto_pipeline['name']}}</option>
 % end

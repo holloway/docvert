@@ -41,14 +41,14 @@ var docvert = {
     },
 
     run_all: function(event) {
-        $("ul a").click()
+        $("ul.tests a").click()
         return false
     }
 
 }
 
 $(document).ready(function(){
-    $("ul a").click(docvert.click_test)
+    $("ul.tests a").click(docvert.click_test)
     $("#run-all a").click(docvert.run_all)
 })
 

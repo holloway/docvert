@@ -15,6 +15,39 @@ body
     border-radius: 1em;
     }
 
+#menu
+    {
+    position:absolute;
+    right:50px;
+    top:0px;
+    list-style:none;
+    background: #bbbbbb;
+    font-size:x-small;
+    margin:0px;
+    padding:0px;
+    }
+
+    #menu li
+        {
+        float:right;
+        padding:0px;
+        margin:0px;
+        }
+
+        #menu li.current a
+            {
+            background: #999999;
+            }
+
+        #menu li a
+            {
+            padding:0.5em;
+            display:block;
+            color:#fff;
+            text-decoration:none;
+            text-shadow: #333333 1px 1px 1px;
+            }
+
 h1
     {
     color:#888888;
@@ -24,6 +57,12 @@ h1
     font-size:xx-large;
     letter-spacing: -0.1em;
     }
+
+    h1 a
+        {
+        text-decoration:none;
+        color:#888888;
+        }
 
     h1 span.syllable
         {
@@ -428,18 +467,18 @@ body.tests-page
         font-weight:normal;
         }
 
-    body.tests-page ul
+    body.tests-page ul.tests
         {
         list-style:none;
         padding:0px 0px 0px 2px;
         }
 
-        body.tests-page ul li
+        body.tests-page ul.tests li
             {
             margin-bottom:3px;
             }
 
-            body.tests-page ul li a
+            body.tests-page ul.tests li a
                 {
                 padding:5px 10px;
                 display:block;
@@ -454,7 +493,7 @@ body.tests-page
                 text-shadow: #ffffff 1px 1px 1px;
                 }
 
-                body.tests-page ul ul
+                body.tests-page ul.tests ul
                     {
                     margin:0px 5px 0px 33px;
                     padding:0px 0px 0px 4px;
@@ -466,24 +505,25 @@ body.tests-page
                     border-bottom-left-radius: 5px; 
                     -moz-border-radius-bottomleft: 5px; 
                     -webkit-border-bottom-left-radius: 5px;
+                    list-style:none;
                     }
 
-                    body.tests-page ul ul li
+                    body.tests-page ul.tests ul li
                         {
                         margin:0px;
                         padding:5px 0px 5px 5px;
                         color:#666666;
                         }
 
-                body.tests-page ul li a:hover
+                body.tests-page ul.tests li a:hover
                     {
                     background:#bbbbbb;
                     border: inset 1px #cccccc;
                     }
 
-                body.tests-page ul li .result,
-                body.tests-page ul li .pass,
-                body.tests-page ul li .fail
+                body.tests-page ul.tests li .result,
+                body.tests-page ul.tests li .pass,
+                body.tests-page ul.tests li .fail
                     {
                     border-radius:1em;
                     -moz-border-radius:1em;
@@ -494,25 +534,24 @@ body.tests-page
                     margin: 0px 5px 0px 0px 
                     }
 
-                    body.tests-page ul li .result
+                    body.tests-page ul.tests li .result
                         {
                         background: #bbbbbb;
                         }
 
-                    body.tests-page ul li .pass
+                    body.tests-page ul.tests li .pass
                         {
                         border: inset 1px #57a012;
                         background: #57a012;
                         color:#ccffcc;
                         }
 
-                    body.tests-page ul li .fail
+                    body.tests-page ul.tests li .fail
                         {
                         border: inset 1px #e31b1b;
                         background: #e31b1b;
                         color:#ffcccc;
                         }
-
 
                 body.tests-page #run-all
                     {

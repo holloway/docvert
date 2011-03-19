@@ -58,8 +58,11 @@ def webservice():
             first_document_id = filename
         files[filename] = StringIO.StringIO(item.value)
     pipeline_id = bottle.request.POST.get('pipeline')
-    auto_pipeline_id = bottle.request.POST.get('auto_pipeline')
-    after_conversion = bottle.request.POST.get('after_conversion')
+    auto_pipeline_id = bottle.request.POST.get('autopipeline')
+    docvert_4_default = '.default'
+    if auto_pipeline_id and auto_pipeline_id.endswith(docvert_4_default):
+        auto_pipeline_id = auto_pipeline_id[0:-len(docvert_4_default)]
+    after_conversion = bottle.request.POST.get('afterconversion')
     urls = bottle.request.POST.get('upload_web[]')
     response = None
     try:
@@ -67,7 +70,7 @@ def webservice():
     except core.docvert_exception.debug_exception, exception:
         bottle.response.content_type = exception.content_type
         return exception.data
-    if after_conversion == "zip":
+    if after_conversion == "downloadZip":
         bottle.response.content_type = 'application/zip'
         return response.to_zip().getvalue()
     pipeline_summary = "%s (%s)" % (pipeline_id, auto_pipeline_id)
@@ -120,14 +123,14 @@ def conversion_static_file(conversion_id, path):
 @bottle.view('tests')
 def tests():
     if bottle.DEBUG is False:
-        raise core.docvert_exception.tests_disabled("Sorry, but tests are only viewable in DEBUG mode.") #not that they'll be able to see the exception in debug mode. Natch.
+        return "Sorry, but tests are only viewable in DEBUG mode."
     return core.docvert.get_all_pipelines()
 
 @bottle.route('/web-service/tests/:test_id', method='GET')
 def web_service_tests(test_id):
     suppress_error = bottle.request.GET.get('suppress_error') == "true"
     if bottle.DEBUG is False:
-        raise core.docvert_exception.tests_disabled("Sorry, but tests are only viewable in DEBUG mode.") #not that they'll be able to see the exception in debug mode. Natch.
+        return "Sorry, but tests are only viewable in DEBUG mode."
     storage = core.docvert_storage.storage_memory_based()
     error_message = None
     if suppress_error:
