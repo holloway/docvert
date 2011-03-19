@@ -37,6 +37,7 @@ body
         #menu li.current a
             {
             background: #999999;
+            cursor:text;
             }
 
         #menu li a

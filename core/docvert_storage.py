@@ -34,7 +34,7 @@ class storage(object):
         return self.get(key)
 
     def add_tests(self, tests):
-        if not hasattr(self, 'test_results'):
+        if not hasattr(self, 'tests'):
             self.tests = []
         if type(tests) == type([]): #assume correctly formatted list
             return self.tests.extend(tests)

@@ -25,6 +25,7 @@ def get_document(data):
     elif isinstance(data, lxml.etree._XSLTResultTree):
         return data
     elif hasattr(data, 'read'):
+        data.seek(0)
         return lxml.etree.XML(data.read())
     elif data[0:1] == "/" or data[0:1] == "\\": #path
         return lxml.etree.XML(file(data).read())

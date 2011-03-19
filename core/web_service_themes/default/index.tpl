@@ -10,8 +10,8 @@
     </head>
     <body onunload="" class="index-page">
         <ul id="menu">
-            <li class="current"><a href="#index">Web Service</a></li>
             <li><a href="tests">Tests</a></li>
+            <li class="current"><a href="#index">Web Service</a></li>
         </ul>
         <h1>Doc<span class="syllable">vert</span> <span class="version">5</span> <span class="slogan"><abbr title="Microsoft">MS</abbr>Word to Open Standards</span></h1>
         <form method="post" action="web-service" enctype="multipart/form-data">

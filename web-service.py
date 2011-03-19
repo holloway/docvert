@@ -122,30 +122,26 @@ def conversion_static_file(conversion_id, path):
 @bottle.route('/tests', method='GET')
 @bottle.view('tests')
 def tests():
-    if bottle.DEBUG is False:
-        return "Sorry, but tests are only viewable in DEBUG mode."
     return core.docvert.get_all_pipelines()
 
 @bottle.route('/web-service/tests/:test_id', method='GET')
 def web_service_tests(test_id):
     suppress_error = bottle.request.GET.get('suppress_error') == "true"
-    if bottle.DEBUG is False:
-        return "Sorry, but tests are only viewable in DEBUG mode."
     storage = core.docvert_storage.storage_memory_based()
     error_message = None
     if suppress_error:
         try:
             core.docvert.process_pipeline(None, test_id, "tests", None, storage)
-        except core.docvert_exception.debug_exception, exception:
-            bottle.response.content_type = exception.content_type
-            return exception.data
         except Exception, exception:
-            if not suppress_error: raise exception
             bottle.response.content_type = "text/plain"
             class_name = "%s" % type(exception).__name__
-            return bottle.json_dumps([{"status":"fail", "message": "<%s> %s" % (class_name, exception)}])
+            return bottle.json_dumps([{"status":"fail", "message": "Unable to run tests due to exception. <%s> %s" % (class_name, exception)}])
     else:
-        core.docvert.process_pipeline(None, test_id, "tests", None, storage)
+        try:
+            core.docvert.process_pipeline(None, test_id, "tests", None, storage)
+        except (core.docvert_exception.debug_exception, core.docvert_exception.debug_xml_exception), exception:
+            bottle.response.content_type = exception.content_type
+            return exception.data
     return bottle.json_dumps(storage.tests)
 
 @bottle.route('/tests/', method='GET')
