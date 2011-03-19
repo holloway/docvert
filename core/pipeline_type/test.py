@@ -29,6 +29,7 @@ class Test(pipeline_item.pipeline_stage):
             document_string = str(pipeline_value)
             if hasattr(pipeline_value, "read"):
                 document_string = pipeline_value.read()
+                pipeline_value.seek(0)
             prefix = ""
             if self.attributes.has_key("prefix"):
                 prefix = "%s: " % self.attributes["prefix"]

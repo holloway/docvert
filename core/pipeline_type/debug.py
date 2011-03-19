@@ -11,7 +11,7 @@ class Debug(pipeline_item.pipeline_stage):
             pipeline_value = lxml.etree.tostring(pipeline_value)
         elif hasattr(pipeline_value, 'read'):
             pipeline_value = pipeline_value.read()
-        help_text = "In debug mode we want to display an XML tree but if the root node is <html> or there's an HTML namespace then popular browsers will render it as HTML."
+        help_text = "In debug mode we want to display an XML tree but if the root node is <html> or there's an HTML namespace then popular browsers will render it as HTML so these have been changed. See core/pipeline_type/debug.py for the details."
         document = lxml.etree.fromstring(pipeline_value)
         if hasattr(document, 'getroottree'):
             document = document.getroottree()
