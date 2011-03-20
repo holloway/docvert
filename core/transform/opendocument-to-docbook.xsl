@@ -1,11 +1,9 @@
 <?xml version='1.0' encoding="UTF-8"?>
 <xsl:stylesheet	version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:db="http://docbook.org/ns/docbook" xmlns:docvert="docvert:5" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0" xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0" xmlns:xlink="http://www.w3.org/1999/xlink">
-
 <xsl:output method="xml" omit-xml-declaration="no"/>
 
 <!-- <xsl:key name='heading-children' match="*[not(self::text:h or self::text:section)]" use="generate-id((..|preceding-sibling::text:h[@text:outline-level='1']|preceding-sibling::text:h[@text:outline-level='2']|preceding-sibling::text:h[@text:outline-level='3']|preceding-sibling::text:h[@text:outline-level='4']|preceding-sibling::text:h[@text:outline-level='5']|preceding-sibling::text:h[@text:outline-level='6'])[last()])"/> -->
 <xsl:key name='heading-children' match="text:p | table:table | text:ordered-list | text:list | draw:frame | draw:image | svg:desc | office:annotation | text:unordered-list | text:footnote | text:a | text:list-item | draw:plugin | draw:text-box | text:footnote-body | text:section" use="generate-id((..|preceding-sibling::text:h[@text:outline-level='1']|preceding-sibling::text:h[@text:outline-level='2']|preceding-sibling::text:h[@text:outline-level='3']|preceding-sibling::text:h[@text:outline-level='4']|preceding-sibling::text:h[@text:outline-level='5']|preceding-sibling::text:h[@text:outline-level='6'])[last()])"/>
-<xsl:key name="children" match="text:h[@text:outline-level &gt; 1]" use="generate-id(preceding-sibling::text:h[@text:outline-level &lt; current()/@text:outline-level][1])"/>
 
 <xsl:key name="styles-by-name" match="//style:style" use="@style:name"/>
 <xsl:key name="elements-by-style-name" match="//*" use="@text:style-name"/>
@@ -22,19 +20,25 @@
         <xsl:attribute name="version">5.0</xsl:attribute>
         <xsl:element name="db:preface">
             <xsl:apply-templates select="key('heading-children', generate-id())"/>
-            <xsl:apply-templates select="*[not(self::text:h) and not(preceding-sibling::text:h)]"/>
             <xsl:if test="not(//text:h[@text:outline-level='1'])"><xsl:apply-templates select="//text:h"/></xsl:if>
-            <xsl:if test="not(//text:h)"><xsl:apply-templates/></xsl:if>
+            <xsl:if test="not(//text:h)">[<xsl:apply-templates/>]</xsl:if>
         </xsl:element>
         <xsl:apply-templates select="text:h[@text:outline-level='1']"/>
     </xsl:element>
 </xsl:template>
 
 <xsl:template match="text:h[@text:outline-level='1']">
+    <xsl:call-template name="section">
+        <xsl:with-param name="outline-level" select="@text:outline-level"/>
+        <xsl:with-param name="previous-outline-level" select="1"/>
+    </xsl:call-template>
+</xsl:template>
+
+<xsl:template match="text:h">
     <xsl:variable name="outline-level" select="@text:outline-level"/>
     <xsl:call-template name="section">
         <xsl:with-param name="outline-level" select="$outline-level"/>
-        <xsl:with-param name="previous-outline-level" select="1"/>
+        <xsl:with-param name="previous-outline-level" select="preceding-sibling::text:h[@text:outline-level &lt; $outline-level][1]/@text:outline-level"/>
     </xsl:call-template>
 </xsl:template>
 
@@ -43,42 +47,20 @@
     <xsl:param name="previous-outline-level"/>
     <xsl:choose>
         <xsl:when test="$outline-level &gt; $previous-outline-level + 1">
-            <xsl:text disable-output-escaping="yes">&lt;db:sect</xsl:text>
-            <xsl:value-of select="$previous-outline-level"/>
-            <xsl:text disable-output-escaping="yes">&gt;</xsl:text>
-            <xsl:call-template name="section">
+            <xsl:call-template name="draw-section-level">
+                <xsl:with-param name="descend-sections-or-apply-templates" select="'descend-sections'"/>
                 <xsl:with-param name="outline-level" select="$outline-level"/>
-                <xsl:with-param name="previous-outline-level" select="$previous-outline-level + 1"/>
+                <xsl:with-param name="previous-outline-level" select="$previous-outline-level"/>
             </xsl:call-template>
-            <xsl:text disable-output-escaping="yes">&lt;/db:sect</xsl:text>
-            <xsl:value-of select="$previous-outline-level"/>
-            <xsl:text disable-output-escaping="yes">&gt;</xsl:text>
-        </xsl:when>
-        <xsl:when test="$outline-level = 1">
-            <xsl:element name="db:chapter">
-                <xsl:element name="db:title"><xsl:apply-templates/></xsl:element>
-                <xsl:apply-templates select="key('heading-children', generate-id())"/>
-                <xsl:apply-templates select="key('children', generate-id())"/>
-            </xsl:element>
         </xsl:when>
         <xsl:otherwise>
-            <xsl:text disable-output-escaping="yes">&lt;db:sect</xsl:text>
-            <xsl:value-of select="$outline-level - 1"/>
-            <xsl:text disable-output-escaping="yes">&gt;</xsl:text>
-            <xsl:element name="db:title"><xsl:apply-templates/></xsl:element>
-            <xsl:call-template name="section">
+            <xsl:call-template name="draw-section-level">
+                <xsl:with-param name="descend-sections-or-apply-templates" select="'apply-templates'"/>
                 <xsl:with-param name="outline-level" select="$outline-level"/>
-                <xsl:with-param name="previous-outline-level" select="$previous-outline-level + 1"/>
+                <xsl:with-param name="previous-outline-level" select="$previous-outline-level"/>
             </xsl:call-template>
-            <xsl:text disable-output-escaping="yes">&lt;/db:sect</xsl:text>
-            <xsl:value-of select="$outline-level - 1"/>
-            <xsl:text disable-output-escaping="yes">&gt;</xsl:text>
         </xsl:otherwise>
     </xsl:choose>
-</xsl:template>
-
-<xsl:template match="text:footnote-body | text:note-body | draw:text-box">
-        <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="text:p">
@@ -124,17 +106,14 @@
     </xsl:choose>
 </xsl:template>
 
-<xsl:template match="draw:image">
+<xsl:template match="draw:frame/draw:image">
     <xsl:element name="db:mediaobject">
         <xsl:element name="db:imageobject">
             <xsl:element name="db:imagedata">
                 <xsl:attribute name="fileref"><xsl:value-of select="@xlink:href"/></xsl:attribute>
-                <xsl:attribute name="format">
-                    <xsl:choose>
-                        <xsl:when test="@format"><xsl:value-of select="@format"/></xsl:when>
-                        <xsl:otherwise><xsl:value-of select="substring-after(@xlink:href, '.')"/></xsl:otherwise>
-                    </xsl:choose>
-                </xsl:attribute>
+                <xsl:attribute name="height"><xsl:value-of select="parent::*/@svg:width"/></xsl:attribute>
+                <xsl:attribute name="depth"><xsl:value-of select="parent::*/@svg:height"/></xsl:attribute>
+                <xsl:attribute name="fileref"><xsl:value-of select="@xlink:href"/></xsl:attribute>
             </xsl:element>
         </xsl:element>
     </xsl:element>
@@ -168,6 +147,78 @@
     </xsl:element>
 </xsl:template>
 
+<xsl:template name="draw-section-level">
+    <xsl:param name="descend-sections-or-apply-templates"/>
+    <xsl:param name="outline-level"/>
+    <xsl:param name="previous-outline-level"/>
+    <xsl:choose>
+        <xsl:when test="$outline-level - 1 = 0">
+            <xsl:element name="db:chapter"><xsl:call-template name="draw-section-children"><xsl:with-param name="descend-sections-or-apply-templates" select="$descend-sections-or-apply-templates"/><xsl:with-param name="outline-level" select="$outline-level"/><xsl:with-param name="previous-outline-level" select="$previous-outline-level"/></xsl:call-template></xsl:element>
+        </xsl:when>
+        <xsl:when test="$outline-level - 1 = 1">
+            <xsl:element name="db:sect1"><xsl:call-template name="draw-section-children"><xsl:with-param name="descend-sections-or-apply-templates" select="$descend-sections-or-apply-templates"/><xsl:with-param name="outline-level" select="$outline-level"/><xsl:with-param name="previous-outline-level" select="$previous-outline-level"/></xsl:call-template></xsl:element>
+        </xsl:when>
+        <xsl:when test="$outline-level - 1 = 2">
+            <xsl:element name="db:sect2"><xsl:call-template name="draw-section-children"><xsl:with-param name="descend-sections-or-apply-templates" select="$descend-sections-or-apply-templates"/><xsl:with-param name="outline-level" select="$outline-level"/><xsl:with-param name="previous-outline-level" select="$previous-outline-level"/></xsl:call-template></xsl:element>
+        </xsl:when>
+        <xsl:when test="$outline-level - 1 = 3">
+            <xsl:element name="db:sect3"><xsl:call-template name="draw-section-children"><xsl:with-param name="descend-sections-or-apply-templates" select="$descend-sections-or-apply-templates"/><xsl:with-param name="outline-level" select="$outline-level"/><xsl:with-param name="previous-outline-level" select="$previous-outline-level"/></xsl:call-template></xsl:element>
+        </xsl:when>
+        <xsl:when test="$outline-level - 1 = 4">
+            <xsl:element name="db:sect4"><xsl:call-template name="draw-section-children"><xsl:with-param name="descend-sections-or-apply-templates" select="$descend-sections-or-apply-templates"/><xsl:with-param name="outline-level" select="$outline-level"/><xsl:with-param name="previous-outline-level" select="$previous-outline-level"/></xsl:call-template></xsl:element>
+        </xsl:when>
+        <xsl:when test="$outline-level - 1 = 5">
+            <xsl:element name="db:sect5"><xsl:call-template name="draw-section-children"><xsl:with-param name="descend-sections-or-apply-templates" select="$descend-sections-or-apply-templates"/><xsl:with-param name="outline-level" select="$outline-level"/><xsl:with-param name="previous-outline-level" select="$previous-outline-level"/></xsl:call-template></xsl:element>
+        </xsl:when>
+        <xsl:when test="$outline-level - 1 = 6">
+            <xsl:element name="db:sect6"><xsl:call-template name="draw-section-children"><xsl:with-param name="descend-sections-or-apply-templates" select="$descend-sections-or-apply-templates"/><xsl:with-param name="outline-level" select="$outline-level"/><xsl:with-param name="previous-outline-level" select="$previous-outline-level"/></xsl:call-template></xsl:element>
+        </xsl:when>
+        <xsl:when test="$outline-level - 1 = 7">
+            <xsl:element name="db:sect7"><xsl:call-template name="draw-section-children"><xsl:with-param name="descend-sections-or-apply-templates" select="$descend-sections-or-apply-templates"/><xsl:with-param name="outline-level" select="$outline-level"/><xsl:with-param name="previous-outline-level" select="$previous-outline-level"/></xsl:call-template></xsl:element>
+        </xsl:when>
+        <xsl:when test="$outline-level - 1 = 8">
+            <xsl:element name="db:sect8"><xsl:call-template name="draw-section-children"><xsl:with-param name="descend-sections-or-apply-templates" select="$descend-sections-or-apply-templates"/><xsl:with-param name="outline-level" select="$outline-level"/><xsl:with-param name="previous-outline-level" select="$previous-outline-level"/></xsl:call-template></xsl:element>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:element name="db:sect9"><xsl:call-template name="draw-section-children"><xsl:with-param name="descend-sections-or-apply-templates" select="$descend-sections-or-apply-templates"/><xsl:with-param name="outline-level" select="$outline-level"/><xsl:with-param name="previous-outline-level" select="$previous-outline-level"/></xsl:call-template></xsl:element>
+        </xsl:otherwise>
+    </xsl:choose>
+</xsl:template>
+
+<xsl:template name="draw-section-children">
+    <xsl:param name="descend-sections-or-apply-templates"/>
+    <xsl:param name="outline-level"/>
+    <xsl:param name="previous-outline-level"/>
+    <xsl:choose>
+        <xsl:when test="$descend-sections-or-apply-templates = 'descend sections'">
+            <xsl:call-template name="section">
+                <xsl:with-param name="outline-level" select="$outline-level"/>
+                <xsl:with-param name="previous-outline-level" select="$previous-outline-level + 1"/>
+            </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:element name="db:title"><xsl:apply-templates/></xsl:element>
+            <xsl:apply-templates select="key('heading-children', generate-id())"/>
+            <xsl:call-template name="apply-templates-children-headings"/>
+        </xsl:otherwise>
+    </xsl:choose>
+</xsl:template>
+
+<xsl:template name="apply-templates-children-headings">
+    <!--
+    Temporary workaround until we can write xsl:keys for this function.
+    TODO: can't use current() in patterns such as xsl:key http://www.w3.org/TR/xslt#function-current
+    -->
+    <xsl:variable name="generate-id" select="generate-id()"/>
+    <xsl:variable name="outline-level" select="number(@text:outline-level)"/>
+    <xsl:for-each select="following-sibling::text:h">
+        <xsl:variable name="subheading-outline-level" select="@text:outline-level"/>
+        <xsl:variable name="first-preceding-heading" select="./preceding-sibling::text:h[@text:outline-level &lt; $subheading-outline-level][1]"/>
+        <xsl:if test="generate-id($first-preceding-heading) = $generate-id">
+            <xsl:apply-templates select="."/>
+        </xsl:if>
+    </xsl:for-each>
+</xsl:template>
+
 
 </xsl:stylesheet>
-

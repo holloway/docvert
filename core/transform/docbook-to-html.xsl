@@ -1,31 +1,10 @@
 <?xml version='1.0' encoding="UTF-8"?>
-<xsl:stylesheet
-        version="1.0"
-        xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-
-        xmlns:db="http://docbook.org/ns/docbook"
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:html="http://www.w3.org/1999/xhtml"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-
-        exclude-result-prefixes="db html xlink"
-        >
-
-        <xsl:output
-                method="xml"
-                version="1.0"
-                encoding="utf-8"
-                indent="yes"
-                doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
-                doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
-                omit-xml-declaration="yes"/>
-
-        <xsl:preserve-space elements="db:para"/>
-
-        <xsl:param name="withTableOfContents"/>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:db="http://docbook.org/ns/docbook" xmlns="http://www.w3.org/1999/xhtml" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink" exclude-result-prefixes="db html xlink">
+<xsl:output method="xml" version="1.0" encoding="utf-8" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" omit-xml-declaration="yes"/>
+<xsl:param name="withTableOfContents"/>
 
 <xsl:template match="/db:book">
-        <html xml:lang="en" lang="en">
+        <html lang="en">
                 <head>
                         <title>
                                 <xsl:choose>
@@ -51,7 +30,6 @@
                 </body>
         </html>
 </xsl:template>
-
 
 <xsl:template match="db:toc | db:abstract | db:info"/>
 
@@ -203,60 +181,61 @@
         </h1>
 </xsl:template>
 
-<xsl:template match="db:sect1 | db:sect2 | db:sect3 | db:sect4 | db:sect5 | db:sect6">
-        <div class="{local-name()}">
-                <xsl:apply-templates/>
-        </div>
+<xsl:template match="db:chapter | db:sect1 | db:sect2 | db:sect3 | db:sect4 | db:sect5 | db:sect6 | db:sect7 | db:sect8 | db:sect9">
+    <xsl:element name="div">
+        <xsl:attribute name="class"><xsl:value-of select="local-name()"/></xsl:attribute>
+        <xsl:apply-templates/>
+    </xsl:element>
 </xsl:template>
 
 <xsl:template match="db:sect1/db:title">
-        <h2>
-                <xsl:if test="@id">
-                        <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-                        <a name="{@id}"></a>
-                </xsl:if>
-                <xsl:apply-templates/>
-        </h2>
+    <xsl:element name="h2">
+        <xsl:if test="@id">
+            <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+            <xsl:element name="a"><xsl:attribute name="name"><xsl:value-of select="@id"/></xsl:attribute></xsl:element>
+        </xsl:if>
+        <xsl:apply-templates/>
+    </xsl:element>
 </xsl:template>
 
 <xsl:template match="db:sect2/db:title">
-        <h3>
-                <xsl:if test="@id">
-                        <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-                        <a name="{@id}"></a>
-                </xsl:if>
-                <xsl:apply-templates/>
-        </h3>
+    <xsl:element name="h3">
+        <xsl:if test="@id">
+            <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+            <xsl:element name="a"><xsl:attribute name="name"><xsl:value-of select="@id"/></xsl:attribute></xsl:element>
+        </xsl:if>
+        <xsl:apply-templates/>
+    </xsl:element>
 </xsl:template>
 
 <xsl:template match="db:sect3/db:title">
-        <h4>
-                <xsl:if test="@id">
-                        <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-                        <a name="{@id}"></a>
-                </xsl:if>
-                <xsl:apply-templates/>
-        </h4>
+    <xsl:element name="h4">
+        <xsl:if test="@id">
+            <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+            <xsl:element name="a"><xsl:attribute name="name"><xsl:value-of select="@id"/></xsl:attribute></xsl:element>
+        </xsl:if>
+        <xsl:apply-templates/>
+    </xsl:element>
 </xsl:template>
 
 <xsl:template match="db:sect4/db:title">
-        <h5>
-                <xsl:if test="@id">
-                        <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-                        <a name="{@id}"></a>
-                </xsl:if>
-                <xsl:apply-templates/>
-        </h5>
+    <xsl:element name="h5">
+        <xsl:if test="@id">
+            <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+            <xsl:element name="a"><xsl:attribute name="name"><xsl:value-of select="@id"/></xsl:attribute></xsl:element>
+        </xsl:if>
+        <xsl:apply-templates/>
+    </xsl:element>
 </xsl:template>
 
 <xsl:template match="db:sect5/db:title | db:sect6/db:title | db:sect7/db:title | db:sect8/db:title | db:sect9/db:title">
-        <h6>
-                <xsl:if test="@id">
-                        <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-                        <a name="{@id}"></a>
-                </xsl:if>
-                <xsl:apply-templates/>
-        </h6>
+    <xsl:element name="h6">
+        <xsl:if test="@id">
+            <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+            <xsl:element name="a"><xsl:attribute name="name"><xsl:value-of select="@id"/></xsl:attribute></xsl:element>
+        </xsl:if>
+        <xsl:apply-templates/>
+    </xsl:element>
 </xsl:template>
 
 <xsl:template match="db:table">
@@ -334,7 +313,7 @@
         </xsl:element>
 </xsl:template>
 
-<xsl:template match="db:literal[@role='linebreak']"><br/></xsl:template>
+<xsl:template match="db:sbr"><br/></xsl:template>
 
 <xsl:template match="db:GUIMenu">
         <xsl:if test="normalize-space(.)">

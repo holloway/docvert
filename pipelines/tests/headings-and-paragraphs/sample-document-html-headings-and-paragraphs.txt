@@ -1,0 +1,7 @@
+<h1>We Can Put an End to Word Attachments</h1>
+<h1>Here some list formatting to check</h1>
+<p>by Richard M. Stallman, Jan 2002</p>
+<h2>An example response</h2>
+<h2>Another example response1</h2>
+<h2>Another example response2</h2>
+<h2>Other example responses</h2>

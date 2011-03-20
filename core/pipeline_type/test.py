@@ -36,11 +36,16 @@ class Test(pipeline_item.pipeline_stage):
             test_result = '<group xmlns="docvert:5">'
             for line in open(test_path, 'r').readlines():
                 test_string = line[0:-1].strip()
+                if len(test_string) == 0: continue
                 node_name = "fail"
                 description = "doesn't contain"
-                if test_string in document_string:
+                occurences = document_string.count(test_string)
+                if occurences == 1:
                     node_name = "pass"
-                    description = "contains"
+                    description = "contains one of"
+                elif occurences > 1:
+                    node_name = "fail"
+                    description = "contains %i of" % occurences
                 test_result += '<%s>%s%s</%s>' % (node_name, prefix, core.docvert_xml.escape_text('Document %s the string "%s"' % (description, test_string)), node_name)
             test_result += '</group>'
         else: #XSLT

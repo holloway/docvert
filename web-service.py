@@ -50,7 +50,6 @@ def webservice():
     for key, item in bottle.request.files.iteritems():
         filename = item.filename
         unique = 1
-        #print filename
         while files.has_key(filename):
             filename = item.filename + unique
             unique += 1

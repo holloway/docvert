@@ -19,17 +19,28 @@ var docvert = {
                     return alert("Can't find a sublist.")
                 }
                 sublist.slideUp(function(){
-                    var test_status = "pass"
                     sublist.empty()
+                    var test_count = {"pass":0,"fail":0}
                     $(data).each(function(key,value){
-                        if(value.status == "fail") test_status = "fail"
-                        var text = (value.status == "pass") ? "&#x2714;" : "&#x2718;"
+                        var text = "&#x2714;"
+                        if(value.status == "fail") {
+                            test_count.fail++
+                            text = "&#x2718;"
+                        } else {
+                            test_count.pass++
+                        }
                         var list_item = $('<li><span class="' + value.status + '">' + text + '</span>' + $('<div/>').text(value.message).html() + '</li>')
                         sublist.append(list_item)
                     })
-                    sublist.slideDown()
+                    var maximum_rows = 6
+                    if(test_count.fail + test_count.pass > maximum_rows) {
+                        sublist.css("height","0px").show().animate({"display":"block","height":(maximum_rows * 20)+"px"})
+                    } else {
+                        sublist.slideDown()
+                    }
+                    var test_status = (test_count.fail > 0) ? "fail" : "pass"
                     var text = (test_status == "pass") ? "&#x2714;" : "&#x2718;"
-                    sublist.parent().find(".testSummary").removeClass("result pass fail").addClass(test_status).html(text)
+                    sublist.parent().find(".testSummary").removeClass("result pass fail").addClass(test_status).html(text).attr("title", test_count.pass + " pass, " + test_count.fail + " fail")
                 })
             }
         })  

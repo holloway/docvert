@@ -492,6 +492,7 @@ body.tests-page
                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#8C8C8C',GradientType=0 ); /* ie */
                 color: #333333;
                 text-shadow: #ffffff 1px 1px 1px;
+                border: inset 1px #ffffff;
                 }
 
                 body.tests-page ul.tests ul
@@ -507,6 +508,7 @@ body.tests-page
                     -moz-border-radius-bottomleft: 5px; 
                     -webkit-border-bottom-left-radius: 5px;
                     list-style:none;
+                    overflow:auto;
                     }
 
                     body.tests-page ul.tests ul li
