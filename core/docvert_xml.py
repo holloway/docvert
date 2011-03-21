@@ -3,11 +3,14 @@ import docvert_exception
 import lxml.etree
 import xml.sax.saxutils
 
-def transform(data, xslt):
+def transform(data, xslt, params=None):
+    if params is None:
+        params = dict()
     xslt_document = get_document(xslt)
     xslt_processor = lxml.etree.XSLT(xslt_document)
     xml_document = get_document(data)
-    return xslt_processor(xml_document)
+    params = convert_dict_to_params(params)
+    return xslt_processor(xml_document, **params)
 
 def relaxng(data, relaxng_path):
     relaxng_document = get_document(relaxng_path)
@@ -35,5 +38,7 @@ def get_document(data):
         return lxml.etree.XML(str(data))
     raise docvert_exception.unable_to_generate_xml_document()
 
-
-
+def convert_dict_to_params(params):
+    for key in params.keys():
+        params[key] = "'%s'" % params[key]
+    return params

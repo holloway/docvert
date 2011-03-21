@@ -1,0 +1,10 @@
+This is a bullet point
+This is a 2nd level bullet point
+This is the 3rd level bullet
+This is a numbered list
+Return and check the text
+Next line is multi level numbered list.
+Next level formatted from normal text
+Return and indent used for next level of list.
+Return gives correct number return
+Return and indent for the next line gives correct result

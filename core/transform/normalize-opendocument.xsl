@@ -3,18 +3,23 @@
 
 <xsl:output method="xml" omit-xml-declaration="no"/>
 
-<xsl:key name="styles-by-name" match="//style:style" use="@style:name"/>
-<xsl:key name="elements-by-style-name" match="//*" use="@text:style-name"/>
+<xsl:key name="styles-by-name" match="style:style" use="@style:name"/>
+<xsl:key name="list-styles-by-name" match="text:list-style" use="@style:name"/>
+<xsl:key name="elements-by-style-name" match="*[@text:style-name]" use="@text:style-name"/>
+
+
 
 <xsl:variable name="lowercase">abcdefghijklmnopqrstuvwxyz</xsl:variable>
 <xsl:variable name="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
 <xsl:variable name="remove-when-normalizing">_- 01234567890</xsl:variable><!-- space character is intentional -->
 <xsl:variable name="remove-for-outline-level" select="concat($uppercase,$lowercase,'_- ')"/><!-- space character is intentional -->
 
-<!-- these two variables are lists of normalized (as per above) style names seperated by AND ending with a | character -->
+<!-- these variables are | separated lists of normalized (as per above) style names AND ending with a | character -->
 <xsl:variable name="table-heading-styles">tableheading|tableheader|titredetableau|titretableau|</xsl:variable>
 <xsl:variable name="document-title-styles">title|titre|</xsl:variable>
 <xsl:variable name="heading-styles">heading|header|</xsl:variable>
+<xsl:variable name="bulleted-list-styles">bullet|</xsl:variable>
+
 
 <xsl:template match="text:p">
     <xsl:variable name="style" select="key('styles-by-name', @text:style-name)"/>
@@ -92,6 +97,34 @@
     </xsl:if>
 </xsl:template>
 
+<xsl:template match="text:list">
+    <xsl:variable name="list-style">
+        <xsl:choose>
+            <xsl:when test="@text:style-name"><xsl:value-of select="@text:style-name"/></xsl:when>
+            <xsl:otherwise><xsl:value-of select="ancestor::text:list[@text:style-name]/@text:style-name"/></xsl:otherwise>
+        </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="style" select="key('list-styles-by-name', $list-style)"/>
+    <xsl:variable name="normalized-style-name" select="translate(translate($style/@style:name, $uppercase, $lowercase),$remove-when-normalizing,'')"/>
+    <xsl:variable name="parent-style" select="key('list-styles-by-name', $style/@style:parent-style-name)"/>
+    <xsl:variable name="normalized-parent-style-name" select="translate(translate($parent-style/@style:name, $uppercase, $lowercase),$remove-when-normalizing,'')"/>
+    <xsl:variable name="list-depth" select="count(ancestor::text:list-item) + 1"/>
+    <xsl:choose>
+        <xsl:when test="$style/text:list-level-style-number[@text:level=$list-depth] or $parent-style/text:list-level-style-number[@text:level=$list-depth]">
+            <xsl:element name="text:ordered-list">
+                <xsl:if test="normalize-space($list-style)"><xsl:attribute name="text:style-name"><xsl:value-of select="$list-style"/></xsl:attribute></xsl:if>
+                <xsl:apply-templates/>
+            </xsl:element>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:element name="text:unordered-list">
+                <xsl:if test="normalize-space($list-style)"><xsl:attribute name="text:style-name"><xsl:value-of select="$list-style"/></xsl:attribute></xsl:if>
+                <xsl:apply-templates/>
+            </xsl:element>
+        </xsl:otherwise>
+    </xsl:choose>
+</xsl:template>
+
 <xsl:template match="office:meta">
     <xsl:copy>
         <xsl:apply-templates select="@*|node()"/>
@@ -127,6 +160,10 @@
             </xsl:choose>
         </xsl:otherwise>
     </xsl:choose>
+</xsl:template>
+
+<xsl:template match="text:section">
+    <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="@*|node()">

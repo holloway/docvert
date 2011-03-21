@@ -144,23 +144,20 @@
 </xsl:template>
 
 <xsl:template match="db:listitem">
-        <li>
-                <xsl:choose>
-                        <xsl:when test="count(*)=1 and count(db:para)=1"><xsl:apply-templates select="*/child::node()"/></xsl:when>
-                        <xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
-                </xsl:choose>
-        </li>
+    <xsl:element name="li">
+        <xsl:apply-templates/>
+    </xsl:element>
 </xsl:template>
 
 <xsl:template match="db:para">
-        <p>
-                <xsl:if test="contains(@role, 'dc.')">
-                        <xsl:attribute name="class">
-                                <xsl:value-of select="translate(@role, '.', '-')"/>
-                        </xsl:attribute>
-                </xsl:if>
-                <xsl:apply-templates/>
-        </p>
+    <xsl:element name="p">
+        <xsl:if test="contains(@role, 'dc.')">
+            <xsl:attribute name="class">
+                <xsl:value-of select="translate(@role, '.', '-')"/>
+            </xsl:attribute>
+        </xsl:if>
+        <xsl:apply-templates/>
+    </xsl:element>
 </xsl:template>
 
 <xsl:template match="db:chapter/db:title">

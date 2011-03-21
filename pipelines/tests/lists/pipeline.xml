@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline>
+    <stage process="Generate" withFile="sample-document.doc"/>
+    <stage process="Test" withFile="sample-document.txt" prefix="Pre-normalized OpenDocument"/>
+    <stage process="Transform" withFile="internal://normalize-opendocument.xsl"/>
+    <stage process="Test" withFile="sample-document.txt" prefix="Post normalized OpenDocument"/>
+    <stage process="Transform" withFile="internal://opendocument-to-docbook.xsl"/>
+    <stage process="Test" withFile="sample-document.xsl" prefix="Pre-normalized OpenDocument"/>
+    <stage process="Test" withFile="sample-document.txt" prefix="DocBook"/>
+    <stage process="Test" withFile="sample-document-docbook-lists.txt" prefix="DocBook"/>
+    <stage process="Transform" withFile="internal://docbook-to-html.xsl"/>
+    <stage process="Test" withFile="sample-document-html-lists.txt" prefix="HTML"/>
+    <stage process="Test" withFile="sample-document.txt" prefix="HTML"/>
+
+    <stage process="Generate" withFile="docvert-test-five.odt"/>
+    <stage process="Test" withFile="docvert-test-five.txt" prefix="Pre-normalized OpenDocument"/>
+    <stage process="Transform" withFile="internal://normalize-opendocument.xsl"/>
+    <stage process="Test" withFile="docvert-test-five.txt" prefix="Post-normalized OpenDocument"/>
+    <stage process="Transform" withFile="internal://opendocument-to-docbook.xsl"/>
+    <stage process="Test" withFile="docvert-test-five.txt" prefix="DocBook"/>
+    <stage process="Transform" withFile="internal://docbook-to-html.xsl"/>
+    <stage process="Test" withFile="docvert-test-five.txt" prefix="HTML"/>
+    
+
+</pipeline>

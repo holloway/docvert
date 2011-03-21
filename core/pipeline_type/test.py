@@ -19,20 +19,20 @@ class Test(pipeline_item.pipeline_stage):
         test_path = self.resolve_pipeline_resource(self.attributes['withFile'])
         if not os.path.exists(test_path):
             raise file_not_found("Test file not found at %s" % test_path)
+        prefix = ""
+        if self.attributes.has_key("prefix"):
+            prefix = "%s: " % self.attributes["prefix"]
         if test_path.endswith(".rng"): # RelaxNG test
             relaxng_response = core.docvert_xml.relaxng(pipeline_value, test_path)
             node_name = "pass"
             if not relaxng_response["valid"]:
                 node_name = "fail"
-            test_result = '<group xmlns="docvert:5"><%s>%s</%s></group>' % (node_name, core.docvert_xml.escape_text(str(relaxng_response["log"])), node_name)
+            test_result = '<group xmlns="docvert:5"><%s>%s%s</%s></group>' % (node_name, prefix, core.docvert_xml.escape_text(str(relaxng_response["log"])), node_name)
         elif test_path.endswith(".txt"): # Substring test (new substring on each line)
             document_string = str(pipeline_value)
             if hasattr(pipeline_value, "read"):
                 document_string = pipeline_value.read()
                 pipeline_value.seek(0)
-            prefix = ""
-            if self.attributes.has_key("prefix"):
-                prefix = "%s: " % self.attributes["prefix"]
             test_result = '<group xmlns="docvert:5">'
             for line in open(test_path, 'r').readlines():
                 test_string = line[0:-1].strip()
@@ -49,7 +49,7 @@ class Test(pipeline_item.pipeline_stage):
                 test_result += '<%s>%s%s</%s>' % (node_name, prefix, core.docvert_xml.escape_text('Document %s the string "%s"' % (description, test_string)), node_name)
             test_result += '</group>'
         else: #XSLT
-            test_result = core.docvert_xml.transform(pipeline_value, test_path)
+            test_result = core.docvert_xml.transform(pipeline_value, test_path, dict(**self.attributes))
         if self.attributes.has_key("debug"):
             raise core.docvert_exception.debug_xml_exception("Test Results", str(test_result), "text/xml; charset=UTF-8")
         self.add_tests(test_result)
