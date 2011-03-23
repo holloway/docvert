@@ -19,13 +19,16 @@ def get_storage(name):
     raise docvert_exception.unrecognised_storage_type("Unknown storage type '%s'" % name)
 
 class storage(object):
-    _docvert_namespace = '{docvert:5}'
+    _docvert_xml_namespace = '{docvert:5}'
     
     def __init__(self, *args, **kargs):
         raise NotImplemented()
 
     def __setitem__(self, key, value):
         self.add(key, value)
+
+    def keys(self):
+        return self.storage.keys()
 
     def has_key(self, key):
         return self.storage.has_key(key)
@@ -42,12 +45,12 @@ class storage(object):
         if hasattr(document, 'getroottree'):
             document = document.getroottree()
         root = document.getroot()
-        if root.tag != "%sgroup" % self._docvert_namespace:
+        if root.tag != "%sgroup" % self._docvert_xml_namespace:
             raise docvert_exception.invalid_test_root_node("Error parsing test results. Expected a root node of 'group' but got '%s'" % root.tag)
         for child in root:
-            if child.tag == "%spass" % self._docvert_namespace:
+            if child.tag == "%spass" % self._docvert_xml_namespace:
                 self.tests.append( {"status":"pass", "message":str(child.text)} )
-            elif child.tag == "%sfail" % self._docvert_namespace:
+            elif child.tag == "%sfail" % self._docvert_xml_namespace:
                 self.tests.append(dict(status="fail", message=str(child.text)))
             else:
                 raise invalid_test_child_node("Error parsing test results. Unexpected child element of '%s' %s" % (child.tag, child))
@@ -86,6 +89,9 @@ class storage_memory_based(storage):
 
     def get(self, path):
         return self.storage[path]
+
+    def remove(self, path):
+        del self.storage[path]
 
     def to_zip(self):
         zipdata = StringIO.StringIO()

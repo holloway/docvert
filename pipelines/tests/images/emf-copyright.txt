@@ -1,0 +1,2 @@
+All EMF files except the last one produced by http://pyemf.sourceforge.net and licensed under the LGPL 3 (linked on their site)
+The last EMF file taken from FreeHep http://java.freehep.org/vectorgraphics/ and licensed under the LGPL 3 (linked on their site)

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import lxml.etree
 import os.path
 
 docvert_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

@@ -1,0 +1,2 @@
+Copied from Ubuntu 10.10 Desktop in /usr/lib/openoffice/basis3.2/share/template/en-US/wizard/bitmap/germany.wmf
+Image file licensed under OpenOffice.org license of the GPLv3
