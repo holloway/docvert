@@ -8,10 +8,10 @@ class types(object):
     unknown_type = "unknown file type"
 
 def detect_document_type(data):
-    data.seek(0)
     try:
         # 1. Try OpenDocument
         magic_bytes_open_document = 'PK'
+        data.seek(0)
         first_bytes = data.read(len(magic_bytes_open_document))
         if first_bytes.decode("utf-8") == magic_bytes_open_document: # 1.1 Ok it's a ZIP but...
             archive = zipfile.ZipFile(data)
@@ -19,14 +19,10 @@ def detect_document_type(data):
                 return types.oasis_open_document
         # 2. Try PDF
         magic_bytes_pdf = '%PDF'
+        data.seek(0)
         first_bytes = data.read(len(magic_bytes_pdf))
         if first_bytes.decode("utf-8") == magic_bytes_pdf:
             return types.pdf
-        # 3. Try XML ... XML doesn't have magic bytes per se (let alone a serialization format), and XML declarations aren't required in XML 1.0, but for our purposes we'll assume they exist. Please don't let this bit of code bite me in the ass.
-        magic_bytes_xml = '<?xml version'
-        first_bytes = data.read(len(magic_bytes_xml))
-        if first_bytes.decode("utf-8") == magic_bytes_xml:
-            return types.xml
     except UnicodeDecodeError, exception:
         pass
     finally:

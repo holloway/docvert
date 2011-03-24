@@ -18,6 +18,9 @@ class unrecognised_converter(docvert_exception):
 class converter_unable_to_generate_open_document(docvert_exception):
     pass
 
+class converter_unable_to_generate_pdf(docvert_exception):
+    pass
+
 class unknown_docvert_process(docvert_exception):
     pass
 

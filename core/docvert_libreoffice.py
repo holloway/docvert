@@ -58,8 +58,8 @@ class libreoffice_client(object):
         self._desktop = context.ServiceManager.createInstanceWithContext("com.sun.star.frame.Desktop", context)
 
     def convert_by_stream(self, data, format=LIBREOFFICE_OPEN_DOCUMENT):
-        data.seek(0)
         input_stream = self._service_manager.createInstanceWithContext("com.sun.star.io.SequenceInputStream", self._local_context)
+        data.seek(0)
         input_stream.initialize((uno.ByteSequence(data.read()),)) 
         document = self._desktop.loadComponentFromURL('private:stream', "_blank", 0, self._to_properties(InputStream=input_stream,ReadOnly=True))
         if not document:
@@ -70,15 +70,18 @@ class libreoffice_client(object):
             pass
         output_stream = output_stream_wrapper()
         try:
-            document.storeToURL('private:stream', self._to_properties(
-                OutputStream=output_stream,
-                FilterName=format))
+            document.storeToURL('private:stream', self._to_properties(OutputStream=output_stream, FilterName=format))
+        except Exception, e: #ignore any error, verify the output before complaining
+            pass
         finally:
             document.close(True)
-        if format == LIBREOFFICE_OPEN_DOCUMENT:
+        if format == LIBREOFFICE_OPEN_DOCUMENT or format == LIBREOFFICE_PDF:
             doc_type = document_type.detect_document_type(output_stream.data)
-            if doc_type != document_type.types.oasis_open_document:
-                raise docvert_exception.converter_unable_to_generate_open_document()
+            output_stream.data.seek(0)
+            if format == LIBREOFFICE_OPEN_DOCUMENT and doc_type != document_type.types.oasis_open_document:
+                raise docvert_exception.converter_unable_to_generate_open_document("Unable to generate OpenDocument, was detected as %s. First 2 bytes = %s" % (doc_type, output_stream.data.read(2)))
+            elif format == LIBREOFFICE_PDF and doc_type != document_type.types.pdf:
+                raise docvert_exception.converter_unable_to_generate_pdf("Unable to generate PDF, was detected as %s. First 4 bytes = %s" % (doc_type, output_stream.data.read(4)))
         return output_stream.data
 
     def _to_properties(self, **args):
@@ -89,4 +92,7 @@ class libreoffice_client(object):
             prop.Value = args[key]
             props.append(prop)
         return tuple(props)
+
+
+client = libreoffice_client()
 

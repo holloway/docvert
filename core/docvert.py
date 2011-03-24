@@ -34,8 +34,7 @@ def process_pipeline(initial_pipeline_value, pipeline_id, pipeline_id_namespace,
 
 def generate_open_document(data, converter=converter_type.python_streaming_to_libreoffice):
     if converter == converter_type.python_streaming_to_libreoffice:
-        client = docvert_libreoffice.libreoffice_client()
-        return client.convert_by_stream(data, docvert_libreoffice.LIBREOFFICE_OPEN_DOCUMENT)
+        return docvert_libreoffice.client.convert_by_stream(data, docvert_libreoffice.LIBREOFFICE_OPEN_DOCUMENT)
     raise docvert_exception.unrecognised_converter("Unknown converter '%s'" % converter)
 
 def get_all_pipelines():

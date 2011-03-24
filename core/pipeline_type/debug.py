@@ -5,11 +5,10 @@ import core.docvert_exception
 
 class Debug(pipeline_item.pipeline_stage):
     def stage(self, pipeline_value):
-        if isinstance(pipeline_value, lxml.etree._Element):
-            pipeline_value = lxml.etree.tostring(pipeline_value)
-        elif isinstance(pipeline_value, lxml.etree._XSLTResultTree):
+        if isinstance(pipeline_value, lxml.etree._Element) or isinstance(pipeline_value, lxml.etree._XSLTResultTree):
             pipeline_value = lxml.etree.tostring(pipeline_value)
         elif hasattr(pipeline_value, 'read'):
+            pipeline_value.seek(0)
             pipeline_value = pipeline_value.read()
         help_text = "In debug mode we want to display an XML tree but if the root node is <html> or there's an HTML namespace then popular browsers will render it as HTML so these have been changed. See core/pipeline_type/debug.py for the details."
         try:
@@ -19,6 +18,10 @@ class Debug(pipeline_item.pipeline_stage):
         content_type = 'text/xml'
         if self.attributes.has_key("contentType"):
             content_type = self.attributes['contentType']
+        if self.attributes.has_key("zip"):
+            content_type = 'application/zip'
+            pipeline_value = self.storage.to_zip().getvalue()
+
         if content_type == 'text/xml':
             if hasattr(document, 'getroottree'):
                 document = document.getroottree()
@@ -28,4 +31,4 @@ class Debug(pipeline_item.pipeline_stage):
             xml_declaration = '<?xml version="1.0" ?>'
             if pipeline_value[0:5] != xml_declaration[0:5]:
                 pipeline_value = xml_declaration + "\n" + pipeline_value
-        raise core.docvert_exception.debug_xml_exception("Current contents of pipeline", pipeline_value, "%s; charset=UTF-8" % content_type)
+        raise core.docvert_exception.debug_xml_exception("Current contents of pipeline", pipeline_value, content_type)
