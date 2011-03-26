@@ -93,6 +93,9 @@ class storage_memory_based(storage):
     def remove(self, path):
         del self.storage[path]
 
+    def __delitem__(self, path):
+        del self.storage[path]
+
     def to_zip(self):
         zipdata = StringIO.StringIO()
         archive = zipfile.ZipFile(zipdata, 'w')
