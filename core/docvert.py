@@ -40,7 +40,10 @@ def generate_open_document(data, converter=converter_type.python_streaming_to_li
 
 def get_all_pipelines():
     def _title(name):
+        if name.endswith('.default'):
+            name = name[0:-len('.default')]
         return name.replace('_',' ').replace('-',' ').title()
+
     pipeline_types_path = os.path.join(docvert_root, "pipelines")
     pipeline_types = dict()
     for pipeline_type in os.listdir(pipeline_types_path):

@@ -296,17 +296,23 @@
 <xsl:template match="db:mediaobject">
         <xsl:element name="img">
                 <xsl:attribute name="src">
-                        <xsl:value-of select="descendant::db:imagedata/@fileref"/>
+                        <xsl:value-of select="substring-after(descendant::db:imagedata/@fileref, '/')"/>
                 </xsl:attribute>
                 <xsl:attribute name="alt">
                         <xsl:value-of select="descendant::db:caption"/>
                 </xsl:attribute>
-                <xsl:if test="normalize-space(descendant::db:imagedata/@width)">
-                        <xsl:attribute name="width"><xsl:value-of select="descendant::db:imagedata/@width"/></xsl:attribute>
-                </xsl:if>
-                <xsl:if test="normalize-space(descendant::db:imagedata/@height)">
-                        <xsl:attribute name="height"><xsl:value-of select="descendant::db:imagedata/@height"/></xsl:attribute>
-                </xsl:if>
+                    <xsl:attribute name="width">
+                        <xsl:call-template name="dimension-to-pixels">
+                            <xsl:with-param name="size" select="descendant::db:imagedata/@depth"/>
+                        </xsl:call-template>
+                    </xsl:attribute>
+
+                    <xsl:attribute name="height">
+                        <xsl:call-template name="dimension-to-pixels">
+                            <xsl:with-param name="size" select="descendant::db:imagedata/@height"/>
+                        </xsl:call-template>
+                    </xsl:attribute>
+
         </xsl:element>
 </xsl:template>
 
@@ -367,5 +373,28 @@
         <img src="{@fileref}" alt="{normalize-space(.)}"/>
 </xsl:template>
 
+<xsl:variable name="lowercase">abcdefghijklmnopqrstuvwxyz</xsl:variable>
+<xsl:variable name="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
+<xsl:variable name="numbers">0123456789</xsl:variable>
+<xsl:variable name="numberswithdot">0123456789.</xsl:variable>
+
+<xsl:template name="dimension-to-pixels">
+    <xsl:param name="size"/>
+    <xsl:variable name="dpi">96</xsl:variable>
+    <xsl:variable name="cm-to-inches" select=" number('0.393700787') "/>
+    <xsl:variable name="mm-to-inches" select=" number('0.0393700787') "/>
+    <xsl:variable name="units" select="translate($size, $numberswithdot, '')"/>
+    <xsl:variable name="lowercase-units" select="translate($units, $uppercase, $lowercase)"/>
+    <xsl:variable name="numbers" select="translate($size, concat($uppercase,$lowercase), '')"/>
+    <xsl:choose>
+        <xsl:when test="$lowercase-units = 'cm' "><xsl:value-of select=" $numbers * $cm-to-inches * $dpi "/></xsl:when>
+        <xsl:when test="$lowercase-units = 'mm' "><xsl:value-of select=" $numbers * $mm-to-inches * $dpi "/></xsl:when>
+        <xsl:when test="$lowercase-units = 'in' "><xsl:value-of select=" $numbers * $dpi "/></xsl:when>
+        <xsl:when test="$lowercase-units = 'px' "><xsl:value-of select=" $numbers "/></xsl:when>
+        <xsl:otherwise>
+            <xsl:message terminate="yes">Unrecognised size of "<xsl:value-of select="$size"/>".</xsl:message>
+        </xsl:otherwise>
+    </xsl:choose>
+</xsl:template>
 
 </xsl:stylesheet>
