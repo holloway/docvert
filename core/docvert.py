@@ -14,7 +14,7 @@ version = '5.0'
 class converter_type(object):
     python_streaming_to_libreoffice = "python streaming to libreoffice"
 
-def process_conversion(files=None, urls=None, pipeline_id=None, pipeline_id_namespace="pipelines", auto_pipeline_id=None, storage_type_name=docvert_storage.storage_type.memory_based, converter=converter_type.python_streaming_to_libreoffice):
+def process_conversion(files=None, urls=None, pipeline_id=None, pipeline_type="pipelines", auto_pipeline_id=None, storage_type_name=docvert_storage.storage_type.memory_based, converter=converter_type.python_streaming_to_libreoffice):
     if files is None and urls is None:
         raise docvert_exception.needs_files_or_urls()
     if pipeline_id is None:
@@ -25,11 +25,11 @@ def process_conversion(files=None, urls=None, pipeline_id=None, pipeline_id_name
         if doc_type != document_type.types.oasis_open_document:
             data = generate_open_document(data, converter)
         document_xml = opendocument.extract_useful_open_document_files(data, storage, filename)
-        process_pipeline(document_xml, pipeline_id, pipeline_id_namespace, auto_pipeline_id, storage, filename)
+        process_pipeline(document_xml, pipeline_id, pipeline_type, auto_pipeline_id, storage, filename)
     return storage
 
-def process_pipeline(initial_pipeline_value, pipeline_id, pipeline_id_namespace, auto_pipeline_id, storage, storage_prefix=None):
-    pipeline_definition = docvert_pipeline.get_pipeline_definition("%s/%s" % (pipeline_id_namespace, pipeline_id), auto_pipeline_id)
+def process_pipeline(initial_pipeline_value, pipeline_id, pipeline_type, auto_pipeline_id, storage, storage_prefix=None):
+    pipeline_definition = docvert_pipeline.get_pipeline_definition(pipeline_type, pipeline_id, auto_pipeline_id)
     pipeline = docvert_pipeline.pipeline_processor(storage, pipeline_definition['stages'], pipeline_definition['pipeline_directory'], storage_prefix)
     return pipeline.start(initial_pipeline_value)
 

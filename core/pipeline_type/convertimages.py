@@ -54,11 +54,11 @@ class ConvertImages(pipeline_item.pipeline_stage):
         # 3. Delete original images
         if self.attributes.has_key("deleteOriginals") and not self.attributes["deleteOriginals"].strip().lower() in ['false','f','n','0','']:
             for storage_path in storage_paths:
-                if not storage_file.startswith(self.pipeline_storage_prefix):
+                if not storage_path.startswith(self.pipeline_storage_prefix):
                     continue
-                extension = os.path.splitext(storage_file)[1][1:]
+                extension = os.path.splitext(storage_path)[1][1:]
                 if conversions.has_key(extension):
-                    self.storage.remove(storage_file)
+                    self.storage.remove(storage_path)
 
         for intermediate_file in self.intermediate_files:
             path, extension = os.path.splitext(intermediate_file)
@@ -126,10 +126,10 @@ class ConvertImages(pipeline_item.pipeline_stage):
         return getattr(self, from_format_method)(png_path, to_format, pipeline_value, width, height)
         
     def convert_png(self, storage_path, to_format, pipeline_value, width=None, height=None):
-        im = Image.open('icon.gif')
-        transparency = im.info['transparency'] 
-        im .save('icon.png', transparency=transparency)
-        print dir(Image)
+        #im = Image.open('icon.gif')
+        #transparency = im.info['transparency'] 
+        #im .save('icon.png', transparency=transparency)
+        #print dir(Image)
         return pipeline_value
 
     def get_dimensions_from_xml(self, storage_path, pipeline_value):

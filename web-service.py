@@ -65,7 +65,7 @@ def webservice():
     urls = bottle.request.POST.get('upload_web[]')
     response = None
     try:
-        response = core.docvert.process_conversion(files, urls, pipeline_id, "pipelines", auto_pipeline_id)
+        response = core.docvert.process_conversion(files, urls, pipeline_id, 'pipelines', auto_pipeline_id)
     except core.docvert_exception.debug_exception, exception:
         bottle.response.content_type = exception.content_type
         return exception.data

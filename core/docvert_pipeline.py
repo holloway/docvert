@@ -5,8 +5,8 @@ import docvert_exception
 
 docvert_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-def get_pipeline_definition(namespaced_pipeline_id, auto_pipeline_id):
-    pipeline = get_pipeline_xml(namespaced_pipeline_id, auto_pipeline_id)
+def get_pipeline_definition(pipeline_type, pipeline_id, auto_pipeline_id):
+    pipeline = get_pipeline_xml(pipeline_type, pipeline_id, auto_pipeline_id)
     pipeline['stages'] = process_stage_level( pipeline['xml'].getroot() )
     return pipeline
 
@@ -22,20 +22,20 @@ def process_stage_level(nodes):
         stages.append(child)
     return stages
 
-def get_pipeline_xml(namespaced_pipeline_id, auto_pipeline_id):
-    path = os.path.join(docvert_root, "pipelines", namespaced_pipeline_id, "pipeline.xml")
-    autopath = None
+def get_pipeline_xml(pipeline_type, pipeline_id, auto_pipeline_id):
+    path = os.path.join(docvert_root, "pipelines", pipeline_type, pipeline_id, "pipeline.xml")
     if not os.path.exists(path):
-        raise docvert_exception.unrecognised_pipeline("Unknown pipeline '%s' (checked %s)" % (namespaced_pipeline_id, path))
+        raise docvert_exception.unrecognised_pipeline("Unknown pipeline_id '%s' (checked %s)" % (pipeline_id, path))
+    autopipeline_path = None
     xml = lxml.etree.parse(path)
     if xml.getroot().tag == "autopipeline":
         if auto_pipeline_id is None:
             raise docvert_exception.unrecognised_auto_pipeline("Unknown auto pipeline '%s'" % auto_pipeline_id)
         raise Exception("Sorry, auto pipelines aren't implemented yet.")
-        autopath = os.path.join(docvert_root, "pipelines", "autopipeline", auto_pipeline_id, "pipeline.xml")
+        autopipeline_path = os.path.join(docvert_root, "pipelines", "autopipeline", auto_pipeline_id, "pipeline.xml")
         if not os.path.exists(path):
             raise docvert_exception.unrecognised_auto_pipeline("Unknown auto pipeline '%s'" % auto_pipeline_id)
-    return dict(xml=xml, pipeline_directory=os.path.dirname(path), path=path, autopath=autopath)
+    return dict(xml=xml, pipeline_directory=os.path.dirname(path), path=path, autopath=autopipeline_path)
 
 class pipeline_processor(object):
     """ Processes through a list() of pipeline_item(s) """
