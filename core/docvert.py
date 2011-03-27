@@ -9,6 +9,7 @@ import docvert_libreoffice
 import opendocument
 
 docvert_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+version = '5.0'
 
 class converter_type(object):
     python_streaming_to_libreoffice = "python streaming to libreoffice"
