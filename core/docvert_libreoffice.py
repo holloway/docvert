@@ -10,6 +10,9 @@ import docvert_exception
 DEFAULT_LIBREOFFICE_PORT = 2002
 LIBREOFFICE_OPEN_DOCUMENT = 'writer8'
 LIBREOFFICE_PDF = 'writer_pdf_Export'
+
+client = None
+
 try:
     import uno
 except ImportError:
@@ -93,6 +96,9 @@ class libreoffice_client(object):
             props.append(prop)
         return tuple(props)
 
-
-client = libreoffice_client()
+def get_client():
+    global client
+    if client is None:
+        client = libreoffice_client()
+    return client
 

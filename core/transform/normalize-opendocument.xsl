@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding="UTF-8"?>
-<xsl:stylesheet	version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0">
+<xsl:stylesheet	version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0">
 
 <xsl:output method="xml" omit-xml-declaration="no"/>
 
@@ -66,7 +66,7 @@
         </xsl:if>
     </xsl:variable>
     <xsl:variable name="inner-text" select="normalize-space(.)"/>
-    <xsl:if test="$inner-text">
+    <xsl:if test="$inner-text or descendant::draw:frame/draw:image">
         <xsl:choose>
             <xsl:when test="not($table-heading) and not($document-title) and not($heading)">
                 <xsl:copy>

@@ -387,10 +387,10 @@
     <xsl:variable name="lowercase-units" select="translate($units, $uppercase, $lowercase)"/>
     <xsl:variable name="numbers" select="translate($size, concat($uppercase,$lowercase), '')"/>
     <xsl:choose>
-        <xsl:when test="$lowercase-units = 'cm' "><xsl:value-of select=" $numbers * $cm-to-inches * $dpi "/></xsl:when>
-        <xsl:when test="$lowercase-units = 'mm' "><xsl:value-of select=" $numbers * $mm-to-inches * $dpi "/></xsl:when>
-        <xsl:when test="$lowercase-units = 'in' "><xsl:value-of select=" $numbers * $dpi "/></xsl:when>
-        <xsl:when test="$lowercase-units = 'px' "><xsl:value-of select=" $numbers "/></xsl:when>
+        <xsl:when test="$lowercase-units = 'cm' "><xsl:value-of select=" round($numbers * $cm-to-inches * $dpi) "/></xsl:when>
+        <xsl:when test="$lowercase-units = 'mm' "><xsl:value-of select=" round($numbers * $mm-to-inches * $dpi) "/></xsl:when>
+        <xsl:when test="$lowercase-units = 'in' "><xsl:value-of select=" round($numbers * $dpi) "/></xsl:when>
+        <xsl:when test="$lowercase-units = 'px' "><xsl:value-of select=" round($numbers) "/></xsl:when>
         <xsl:otherwise>
             <xsl:message terminate="yes">Unrecognised size of "<xsl:value-of select="$size"/>".</xsl:message>
         </xsl:otherwise>
