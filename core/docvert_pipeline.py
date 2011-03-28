@@ -17,6 +17,7 @@ def process_stage_level(nodes):
             continue
         child = dict()
         child['attributes'] = child_node.attrib
+        child['children'] = None
         if(len(child_node) > 0):
             child['children'] = process_stage_level(child_node)
         stages.append(child)
@@ -39,11 +40,12 @@ def get_pipeline_xml(pipeline_type, pipeline_id, auto_pipeline_id):
 
 class pipeline_processor(object):
     """ Processes through a list() of pipeline_item(s) """
-    def __init__(self, storage, pipeline_items, pipeline_directory, pipeline_storage_prefix=None):
+    def __init__(self, storage, pipeline_items, pipeline_directory, pipeline_storage_prefix=None, depth=None):
         self.storage = storage
         self.pipeline_items = pipeline_items
         self.pipeline_directory = pipeline_directory
         self.pipeline_storage_prefix = pipeline_storage_prefix
+        self.depth = list() if depth is None else depth
 
     def start(self, pipeline_value):
         for item in self.pipeline_items:
@@ -52,7 +54,7 @@ class pipeline_processor(object):
             #try:
             stage_module = __import__("%s.%s" % (namespace, process.lower()), fromlist=[namespace])
             stage_class = getattr(stage_module, process)
-            stage_instance = stage_class(self.storage, self.pipeline_directory, item['attributes'], self.pipeline_storage_prefix)
+            stage_instance = stage_class(self.storage, self.pipeline_directory, item['attributes'], self.pipeline_storage_prefix, item['children'], self.depth)
             pipeline_value = stage_instance.stage(pipeline_value)
             #except ImportError, exception:
             #    raise exception

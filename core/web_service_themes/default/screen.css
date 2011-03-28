@@ -436,6 +436,28 @@ h2.upload_list
             font-size:small;
             }
 
+    #conversion-tabs .zip-download
+        {
+        float:right;
+        display:block;
+        color:#fff;
+        text-decoration:none;
+        text-shadow: #333333 1px 1px 1px;
+        margin-right: 150px;
+        background: #bbbbbb;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        color: #666666;
+        font-size:small;
+        }
+
+        #conversion-tabs .zip-download a
+            {
+            text-decoration:none;
+            color:#000000;
+            }
+
+
 .back-link
     {
     position:absolute;

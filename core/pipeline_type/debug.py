@@ -10,7 +10,6 @@ class Debug(pipeline_item.pipeline_stage):
                 data.seek(0)
                 return data.read()
             return data
-        
         if isinstance(pipeline_value, lxml.etree._Element) or isinstance(pipeline_value, lxml.etree._XSLTResultTree):
             pipeline_value = lxml.etree.tostring(pipeline_value)
         elif hasattr(pipeline_value, 'read'):
@@ -29,14 +28,12 @@ class Debug(pipeline_item.pipeline_stage):
         if self.attributes.has_key("zip"):
             content_type = 'application/zip'
             pipeline_value = self.storage.to_zip().getvalue()
-
         if content_type == 'text/xml':
             help_text += "\nConversion files:\n" + "\n".join(self.storage.keys())
             if hasattr(document, 'getroottree'):
                 document = document.getroottree()
             if document.getroot().tag == "{http://www.w3.org/1999/xhtml}html":
                 pipeline_value = "<root><!-- %s -->%s</root>" % (help_text, lxml.etree.tostring(document.getroot())) 
-
             pipeline_value = pipeline_value.replace('"http://www.w3.org/1999/xhtml"', '"XHTML_NAMESPACE_REPLACED_BY_DOCVERT_DURING_DEBUG_MODE"')
             xml_declaration = '<?xml version="1.0" ?>'
             if pipeline_value[0:5] != xml_declaration[0:5]:

@@ -72,7 +72,7 @@ class storage_file_based(storage):
     def _dispose(self):
         os.removedirs(self.working_directory)
 
-    def getzip(self):
+    def to_zip(self):
         raise NotImplemented("Not implemented, yet...")
 
     def __str__(self):

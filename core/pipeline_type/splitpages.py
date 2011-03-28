@@ -4,10 +4,11 @@ import pipeline_item
 import core.docvert_exception
 import core.docvert_xml
 
-class GetPreface(pipeline_item.pipeline_stage):
+class SplitPages(pipeline_item.pipeline_stage):
     def stage(self, pipeline_value):
+        depth_string = '-'.join(self.depth)
         params = dict(
-            loopDepth = 0,
+            loopDepth = depth_string,
             process = self.attributes['process'],
             customFilenameIndex = 'index.html',
             customFilenameSection = 'section#.html'

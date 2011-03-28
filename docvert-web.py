@@ -118,6 +118,15 @@ def conversion_static_file(conversion_id, path):
         bottle.response.content_type = "plain/text"
     return session[conversion_id][path]
 
+@bottle.route('/conversions-zip/:conversion_id')
+def conversion_zip(conversion_id):
+    session_manager = lib.bottlesession.bottlesession.PickleSession()
+    session = session_manager.get_session()
+    if not session.has_key(conversion_id): # They don't have authorisation
+        raise bottle.HTTPError(code=404)
+    bottle.response.content_type = 'application/zip'
+    return session[conversion_id].to_zip().getvalue()
+
 @bottle.route('/tests', method='GET')
 @bottle.view('tests')
 def tests():

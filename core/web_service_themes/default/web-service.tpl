@@ -19,6 +19,7 @@
 % for filename, conversion in conversions.iteritems():
          <li><a href="conversions/{{conversion_id}}/{{filename}}" title="{{filename}} via {{conversion['pipeline']}}/{{conversion['auto_pipeline']}}">{{filename}}</a></li>
 % end
+         <li class="zip-download"><a href="conversions-zip/{{conversion_id}}">Download ZIP</a></li>
         </ul>
         <iframe id="preview" src="conversions/{{conversion_id}}/{{first_document_id}}/">
         </iframe>

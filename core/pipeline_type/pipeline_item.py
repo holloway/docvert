@@ -4,13 +4,15 @@ import os.path
 docvert_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 class pipeline_stage(object):
-    def __init__(self, storage, pipeline_directory, attributes, pipeline_storage_prefix=None):
+    def __init__(self, storage, pipeline_directory, attributes, pipeline_storage_prefix=None, child_stages=None, depth=None):
         self.storage = storage
         self.pipeline_directory = pipeline_directory
         self.pipeline_id = os.path.basename(pipeline_directory)
         self.pipeline_id_namespace = os.path.basename(os.path.dirname(pipeline_directory))
         self.attributes = attributes
         self.pipeline_storage_prefix = pipeline_storage_prefix
+        self.child_stages = child_stages
+        self.depth = list() if depth is None else depth
 
     def resolve_pipeline_resource(self, resource_path):
         internal_prefix = 'internal://'
