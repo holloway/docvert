@@ -4,7 +4,6 @@
         <stage process="Transform" withFile="internal://normalize-opendocument.xsl"/>
         <stage process="Transform" withFile="internal://opendocument-to-docbook.xsl"/>
         <stage process="Loop" numberOfTimes="xpathCount://db:chapter">
-                <stage process="Debug"/>
                 <stage process="SplitPages"/>
                 <stage process="DocBookToXHTML"/>
                 <stage process="Serialize" toFile="{customSection}"/>
