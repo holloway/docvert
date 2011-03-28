@@ -1,0 +1,130 @@
+How to Write Themes
+===================
+
+
+Concepts
+--------
+
+If you don't know XSLT, well, you'll need to know XSLT. It's a
+popular W3C standard for messing around with XML, so find a
+tutorial and learn it because it's integral to theming in Docvert
+and this "How to Write Themes" document doesn't teach you it.
+
+Now that you know XSLT please do continue reading,
+
+Docvert is built around "XML Pipelines" which are simply a
+series of conversion stages, where the results of one stage
+are passed to the next.
+
+For example,
+
+	1)	world-news.xml
+			|
+	2)	filter-news-by-New-Zealand.xslt
+			|
+	3)	reformat-into-HTML.xslt
+			|
+	4)	Save the result to file "index.html"
+
+The file from (1) is passed to (2) which makes some conversion.
+The New Zealand results from (2) are passed as input to (3)
+(Step 3 does not have access to world-news.xml, only the
+result of step 2). Finally, the results are saved in step (4).
+
+XML Pipelines are also known as XML Chains.
+
+This is useful because - like in other types of programming
+- you can separate out conversion steps into components and
+reuse them in other pipelines (Eg, have two pipelines that
+share the "filter-news-by-New-Zealand.xslt").
+
+So writing Docvert themes is about learning Docverts particular
+XML Pipeline syntax, and about writing the XSLT for each stage
+to generate the XML/HTML that you want.
+
+
+Pipelines
+---------
+
+So far as Docvert's concerned a pipeline is a theme. And a
+theme is a pipeline.
+
+Each pipeline gets its own directory under "pipelines".
+In there Docvert will look for a pipeline.xml file which
+defines the XML Pipeline (the conversion stages). Each pipeline
+can only have one of these pipeline.xml files. If you want another
+one you'll have to make another directory.
+
+Lets look at a simple example,
+
+	<?xml version="1.0" encoding="UTF-8"?>
+	<pipeline>
+		<stage process="TransformToDocBook"/>
+		<stage process="Transform" withFile="webstyle.xsl"/>
+		<stage process="Serialize" toFile="index.html"/>
+	</pipeline>
+
+It doesn't matter if you don't understand this yet, just
+see that there's a series of stages, each with a process
+attribute.
+
+-	The first process converts the file to DocBook. This is a
+	built-in process and is a feature of Docvert.
+
+-	The second process passes the results of the first stage
+	through webstyle.xsl.
+
+-	The last process saves this to "index.html".
+
+Get it?
+
+Let's assume so.
+
+And try something harder. Here's "standard-break-up-on-heading1".
+Try opening up its pipeline.xml and you'll find something like...
+
+	<?xml version="1.0" encoding="UTF-8"?>
+	<pipeline>
+		<stage process="TransformToDocBook"/>
+		<stage process="Loop" numberOfTimes="xpathCount://sect1">
+			<stage process="SplitPages"/>
+			<stage process="Transform" withFile="webstyle.xsl"/>
+			<stage process="Serialize" toFile="section{LoopIndex}.html"/>
+		</stage>
+		<stage process="GetPreface" forSectionLevel="0" splitPagesDepth="1"/>
+		<stage process="Transform" withFile="webstyle.xsl"/>
+		<stage process="Serialize" toFile="index.html"/>
+	</pipeline>
+
+To explain, all pipelines begins with an Oasis OpenDocument, which is
+then converted to DocBook. It then loops a number of times based on
+the number of "sect1" tags in the document in order to pull out
+every section and transform it with "webstyle.xsl" and then serialize (save)
+each section to sequentially numbered file.
+
+Now have a look at the GetPreface stage... Loops are effectively branches
+and their transformations don't affect the main pipeline's XML.
+This means you can use them to extract chapters, style and serialize,
+without affecting the rest.
+So the GetPreface stage is NOT affected by the transformations occuring
+above, in the loop.
+
+The GetPreface extracts the preface, which in the following two stages is
+styled by webstyle.xsl and then serialized (saved) to index.html.
+
+When creating pipelines valid processes are "TransformToDocBook",
+"Transform", "Serialize", "Loop", "SplitPages", and "GetPreface".
+
+If you wish to add a custom process, see under ~core/pipeline_type (it's
+recommended that anything you can do in XSLT, but writing your own
+Python plugins that manipulation the XML is allowed)
+
+If you wish to pass any parameters to your XSLT, just include them as
+XML attributes in the pipeline and they will be made available. Eg,
+
+	<stage process="Transform" myParam="some value"/>
+
+Will make a parameter named "myParam" with a value of "some value"
+for your XSLT.
+
+
