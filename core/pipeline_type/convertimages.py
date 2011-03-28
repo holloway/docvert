@@ -23,8 +23,9 @@ class ConvertImages(pipeline_item.pipeline_stage):
         self.intermediate_files = list()
         intermediate_file_extensions_to_retain = list()
         #TODO add format sniffing code
-        self.conversions = dict()
-        
+        conversions = dict()
+        if not self.storage.has_key('__convertimages'):
+            self.storage['__convertimages'] = dict()
         # 1. Parse conversion requests
         formats = ("%s," % self.attributes["formats"]).split(",")
         for format in formats:
@@ -33,10 +34,10 @@ class ConvertImages(pipeline_item.pipeline_stage):
             from_format, to_format = conversion.split("2")
             if self.synonym_formats.has_key(from_format):
                 from_format = self.synonym_formats[from_format]
-            if not self.conversions.has_key(from_format):
-                self.conversions[from_format] = list()
+            if not conversions.has_key(from_format):
+                conversions[from_format] = list()
             intermediate_file_extensions_to_retain.append(str(to_format))
-            self.conversions[str(from_format)].append(str(to_format))
+            conversions[str(from_format)].append(str(to_format))
 
         # 2. Convert images
         # <stage process="ConvertImages" formats="wmf2png, wmf2svg, bmp2png" deleteOriginals="true" autoCrop="false" autoCropThreshold="20"/>
@@ -46,7 +47,7 @@ class ConvertImages(pipeline_item.pipeline_stage):
                 continue
             path, extension = os.path.splitext(storage_path)
             extension_minus_dot = str(extension[1:])
-            for from_format, to_formats in self.conversions.iteritems():
+            for from_format, to_formats in conversions.iteritems():
                 from_format_method = "convert_%s" % extension_minus_dot
                 if extension_minus_dot == from_format and hasattr(self, from_format_method):
                     for to_format in to_formats:
@@ -58,7 +59,7 @@ class ConvertImages(pipeline_item.pipeline_stage):
                 if not storage_path.startswith(self.pipeline_storage_prefix):
                     continue
                 extension = os.path.splitext(storage_path)[1][1:]
-                if self.conversions.has_key(extension):
+                if conversions.has_key(extension):
                     self.storage.remove(storage_path)
 
         for intermediate_file in self.intermediate_files:
@@ -69,19 +70,23 @@ class ConvertImages(pipeline_item.pipeline_stage):
                     del self.storage[intermediate_file]
                 except KeyError, e:
                     pass
-        #done
+
         return pipeline_value
 
     def convert_wmf(self, storage_path, to_format, pipeline_value, width=None, height=None):
         # We can't reliably parse wmf/emf here so use LibreOffice to generate PDF no matter the to_format
-        if width is None or height is None:
-            width, height, pipeline_value = self.get_dimensions_from_xml(storage_path, pipeline_value, to_format)
-        opendocument = core.opendocument.generate_single_image_document(self.storage[storage_path], width, height)
-        pdf = core.docvert_libreoffice.get_client().convert_by_stream(opendocument, core.docvert_libreoffice.LIBREOFFICE_PDF)
         path, extension = os.path.splitext(storage_path)
-        pdf_path = "%s.pdf" % path
-        self.storage[pdf_path] = pdf
-        if to_format == "pdf":
+        pdf_path = str("%s.pdf" % path)
+        if not self.storage.has_key(pdf_path):
+            if width is None or height is None:
+                width, height, pipeline_value = self.get_dimensions_from_xml(storage_path, pipeline_value, to_format)
+            #print "Generate document for %s because %s doesn't exist\n%s\n\n" % (storage_path, pdf_path, self.storage.keys())
+            opendocument = core.opendocument.generate_single_image_document(self.storage[storage_path], width, height)
+            self.storage[pdf_path] = core.docvert_libreoffice.get_client().convert_by_stream(opendocument, core.docvert_libreoffice.LIBREOFFICE_PDF)
+        else:
+            #print "Cache hit! No need to generate %s" % pdf_path
+            pass
+        if to_format == 'pdf':
             return pipeline_value
         self.intermediate_files.append(pdf_path)
         from_format = 'pdf'
@@ -91,15 +96,19 @@ class ConvertImages(pipeline_item.pipeline_stage):
         return getattr(self, from_format_method)(pdf_path, to_format, pipeline_value, width, height)
 
     def convert_pdf(self, storage_path, to_format, pipeline_value, width=None, height=None):
-        if width is None or height is None:
-            width, height, pipeline_value = self.get_dimensions_from_xml(storage_path, pipeline_value)
         path, extension = os.path.splitext(storage_path)
-        from_format = str(extension[1:])
-        synonym_from_format = from_format
-        if self.synonym_formats.has_key(synonym_from_format):
-            synonym_from_format = self.synonym_formats[synonym_from_format]
-        svg_path = "%s.svg" % path
-        self.storage[svg_path] = self.run_conversion_command_with_temporary_files(storage_path, "pdf2svg %s %s")
+        svg_path = str("%s.svg" % path)
+        if not self.storage.has_key(svg_path):
+            if width is None or height is None:
+                width, height, pipeline_value = self.get_dimensions_from_xml(storage_path, pipeline_value)
+            from_format = str(extension[1:])
+            synonym_from_format = from_format
+            if self.synonym_formats.has_key(synonym_from_format):
+                synonym_from_format = self.synonym_formats[synonym_from_format]
+            self.storage[svg_path] = self.run_conversion_command_with_temporary_files(storage_path, "pdf2svg %s %s")
+        else:
+            #print "Cache hit! No need to generate %s" % svg_path
+            pass
         if to_format == 'svg':
             return pipeline_value
         self.intermediate_files.append(svg_path)
@@ -110,15 +119,19 @@ class ConvertImages(pipeline_item.pipeline_stage):
         return getattr(self, from_format_method)(svg_path, to_format, pipeline_value, width, height)
 
     def convert_svg(self, storage_path, to_format, pipeline_value, width=None, height=None):
-        if width is None or height is None:
-            width, height, pipeline_value = self.get_dimensions_from_xml(storage_path, pipeline_value)
         path, extension = os.path.splitext(storage_path)
-        from_format = str(extension[1:])
-        synonym_from_format = from_format
-        if self.synonym_formats.has_key(synonym_from_format):
-            synonym_from_format = self.synonym_formats[synonym_from_format]
-        png_path = "%s.png" % path
-        self.storage[png_path] = self.run_conversion_command_with_temporary_files(storage_path, "rsvg %s %s")
+        png_path = str("%s.png" % path)
+        if not self.storage.has_key(png_path):
+            if width is None or height is None:
+                width, height, pipeline_value = self.get_dimensions_from_xml(storage_path, pipeline_value)
+            from_format = str(extension[1:])
+            synonym_from_format = from_format
+            if self.synonym_formats.has_key(synonym_from_format):
+                synonym_from_format = self.synonym_formats[synonym_from_format]
+            self.storage[png_path] = self.run_conversion_command_with_temporary_files(storage_path, "rsvg %s %s")
+        else:
+            #print "Cache hit! No need to generate %s" % png_path
+            pass
         if to_format == 'png':
             return pipeline_value
         self.intermediate_files.append(png_path)
@@ -141,6 +154,11 @@ class ConvertImages(pipeline_item.pipeline_stage):
                 data.seek(0)
                 return data.read()
             return data
+        path, extension = os.path.splitext(storage_path)
+        path = str(path)
+        if self.storage['__convertimages'].has_key(path): #intentionally extensionless because all formats of this single image are considered to have the same dimensions
+            return (self.storage['__convertimages'][path]['width'], self.storage['__convertimages'][path]['height'], pipeline_value)
+
         default_dimensions = ('10cm', '10cm') #we had to choose something
         #if self.pipeline_storage_prefix:
         #    storage_path = storage_path[len(self.pipeline_storage_prefix) + 1:]
@@ -163,16 +181,16 @@ class ConvertImages(pipeline_item.pipeline_stage):
             height = image_node.attrib[height_attribute]
             #print "success... and %s" % change_image_path_extension_to
             if change_image_path_extension_to:
+                path, extension = os.path.splitext(storage_path)
+                xlink_href_attribute = "{%s}%s" % (namespaces['xlink'], 'href')
+                change_image_path = '%s.%s' % (path, change_image_path_extension_to)
+                #print "New image path is %s" % change_image_path
                 image_nodes = image_node.xpath('*[@xlink:href="%s"]' % storage_path, namespaces=namespaces)
-                if len(image_nodes) == 1:
-                    image_node = image_nodes[0]
-                    path, extension = os.path.splitext(storage_path)
-                    xlink_href_attribute = "{%s}%s" % (namespaces['xlink'], 'href')
-                    change_image_path = '%s.%s' % (path, change_image_path_extension_to)
+                for image_node in image_nodes:
                     #print "Value was %s" % image_node.attrib[xlink_href_attribute]
-                    #print "New image path is %s" % change_image_path
                     image_node.attrib[xlink_href_attribute] = change_image_path
                     #print "Value is %s" % image_node.attrib[xlink_href_attribute]
+            self.storage['__convertimages'][path] = dict(width=width, height=height) #intentionally extensionless because all formats of this single image are considered to have the same dimensions
             return (width, height, lxml.etree.tostring(xml))
         except KeyError, e:
             pass

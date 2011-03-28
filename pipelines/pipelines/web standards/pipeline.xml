@@ -6,10 +6,6 @@
 
         <stage process="Transform" withFile="internal://opendocument-to-docbook.xsl"/>
 
-
-
-
         <stage process="DocBookToXHTML"/>
-        <stage process="Debug"/>
         <stage process="Serialize" toFile="index.html"/>
 </pipeline>

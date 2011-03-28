@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding="UTF-8"?>
-<xsl:stylesheet	version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:db="http://docbook.org/ns/docbook" xmlns:docvert="docvert:5" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0" xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0" xmlns:xlink="http://www.w3.org/1999/xlink">
+<xsl:stylesheet	version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:db="http://docbook.org/ns/docbook" xmlns:docvert="docvert:5" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0" xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0">
     <xsl:output method="xml" omit-xml-declaration="no"/>
 
     <!-- <xsl:key name='heading-children' match="*[not(self::text:h or self::text:section)]" use="generate-id((..|preceding-sibling::text:h[@text:outline-level='1']|preceding-sibling::text:h[@text:outline-level='2']|preceding-sibling::text:h[@text:outline-level='3']|preceding-sibling::text:h[@text:outline-level='4']|preceding-sibling::text:h[@text:outline-level='5']|preceding-sibling::text:h[@text:outline-level='6'])[last()])"/> -->
@@ -21,7 +21,6 @@
             <xsl:element name="db:preface">
                 <xsl:apply-templates select="key('heading-children', generate-id())"/>
                 <xsl:if test="not(//text:h[@text:outline-level='1'])"><xsl:apply-templates select="//text:h"/></xsl:if>
-                <xsl:if test="not(//text:h)">[<xsl:apply-templates/>]</xsl:if>
             </xsl:element>
             <xsl:apply-templates select="text:h[@text:outline-level='1']"/>
         </xsl:element>
@@ -66,7 +65,17 @@
     <xsl:template match="text:p">
         <xsl:if test="normalize-space(.) or descendant::draw:frame">
             <xsl:element name="db:para">
-                <xsl:apply-templates/>
+                <xsl:variable name="text-style" select="key('styles-by-name', @text:style-name)"/>
+                <xsl:choose>
+                    <xsl:when test="contains($text-style/style:text-properties/@fo:font-style, 'italic')">
+                        <xsl:element name="db:emphasis">
+                            <xsl:apply-templates/>
+                        </xsl:element>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:apply-templates/>
+                    </xsl:otherwise>
+                </xsl:choose>
             </xsl:element>
         </xsl:if>
     </xsl:template>
@@ -236,9 +245,14 @@
 
     <xsl:template match="text:span">
         <xsl:variable name="text-style" select="key('styles-by-name', @text:style-name)"/>
+        <xsl:variable name="child-text-style" select="key('styles-by-name', */@text:style-name)"/>
         <xsl:choose>
-            <xsl:when test="@text:style-name='Emphasis'">
+            <xsl:when test="$child-text-style and contains($text-style/style:text-properties/@fo:font-style, 'italic') and contains($child-text-style/style:text-properties/@fo:font-style, 'normal')">
+                <xsl:apply-templates/>
+            </xsl:when>
+            <xsl:when test="contains($text-style/style:text-properties/@fo:font-style, 'italic')">
                 <xsl:element name="db:emphasis">
+                    <!--[<xsl:value-of select="@text:style-name"/>|<xsl:value-of select="$text-style/style:text-properties/@fo:font-style"/>[ -->
                     <xsl:apply-templates/>
                 </xsl:element>
             </xsl:when>
@@ -263,8 +277,8 @@
             <xsl:element name="db:imageobject">
                 <xsl:element name="db:imagedata">
                     <xsl:attribute name="fileref"><xsl:value-of select="@xlink:href"/></xsl:attribute>
-                    <xsl:attribute name="height"><xsl:value-of select="parent::*/@svg:width"/></xsl:attribute>
-                    <xsl:attribute name="depth"><xsl:value-of select="parent::*/@svg:height"/></xsl:attribute>
+                    <xsl:attribute name="depth"><xsl:value-of select="parent::*/@svg:width"/></xsl:attribute>
+                    <xsl:attribute name="height"><xsl:value-of select="parent::*/@svg:height"/></xsl:attribute>
                     <xsl:attribute name="fileref"><xsl:value-of select="@xlink:href"/></xsl:attribute>
                 </xsl:element>
             </xsl:element>

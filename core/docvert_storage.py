@@ -103,6 +103,8 @@ class storage_memory_based(storage):
             if hasattr(value, "read"):
                 value.seek(0)
                 archive.writestr(key.replace("\\", "/").encode("utf-8"), value.read())
+            elif key.startswith("__"): #internal data, not for output
+                pass 
             else:
                 archive.writestr(key.replace("\\", "/").encode("utf-8"), value)
         archive.close()

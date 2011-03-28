@@ -270,22 +270,22 @@
         <xsl:choose>
                 <xsl:when test="ancestor::db:thead or @role='heading' ">
                         <th>
-                                <xsl:if test="@html:colspan">
-                                        <xsl:attribute name="colspan"><xsl:value-of select="@html:colspan"/></xsl:attribute>
+                                <xsl:if test="@colspan">
+                                        <xsl:attribute name="colspan"><xsl:value-of select="@colspan"/></xsl:attribute>
                                 </xsl:if>
-                                <xsl:if test="@html:rowspan">
-                                        <xsl:attribute name="rowspan"><xsl:value-of select="@html:rowspan"/></xsl:attribute>
+                                <xsl:if test="@owspan">
+                                        <xsl:attribute name="rowspan"><xsl:value-of select="@rowspan"/></xsl:attribute>
                                 </xsl:if>
                                 <xsl:apply-templates/>
                         </th>
                 </xsl:when>
                 <xsl:otherwise>
                         <td>
-                                <xsl:if test="@html:colspan">
-                                        <xsl:attribute name="colspan"><xsl:value-of select="@html:colspan"/></xsl:attribute>
+                                <xsl:if test="@colspan">
+                                        <xsl:attribute name="colspan"><xsl:value-of select="@colspan"/></xsl:attribute>
                                 </xsl:if>
-                                <xsl:if test="@html:rowspan">
-                                        <xsl:attribute name="rowspan"><xsl:value-of select="@html:rowspan"/></xsl:attribute>
+                                <xsl:if test="@owspan">
+                                        <xsl:attribute name="rowspan"><xsl:value-of select="@rowspan"/></xsl:attribute>
                                 </xsl:if>
                                 <xsl:apply-templates/>
                         </td>
@@ -301,18 +301,18 @@
                 <xsl:attribute name="alt">
                         <xsl:value-of select="descendant::db:caption"/>
                 </xsl:attribute>
+                <xsl:if test="descendant::db:imagedata/@depth and descendant::db:imagedata/@height">
                     <xsl:attribute name="width">
                         <xsl:call-template name="dimension-to-pixels">
                             <xsl:with-param name="size" select="descendant::db:imagedata/@depth"/>
                         </xsl:call-template>
                     </xsl:attribute>
-
                     <xsl:attribute name="height">
                         <xsl:call-template name="dimension-to-pixels">
                             <xsl:with-param name="size" select="descendant::db:imagedata/@height"/>
                         </xsl:call-template>
                     </xsl:attribute>
-
+                </xsl:if>
         </xsl:element>
 </xsl:template>
 

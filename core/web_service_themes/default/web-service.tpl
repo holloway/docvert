@@ -9,6 +9,10 @@
         <script type="text/javascript" src="static/default/web-service.js"></script>
     </head>
     <body class="web-service-page">
+        <ul id="menu">
+            <li><a href="tests">Tests</a></li>
+            <li><a href="#index">Web Service</a></li>
+        </ul>
         <h1>Doc<span class="syllable">vert</span> <span class="version">5</span> <span class="slogan"><abbr title="Microsoft">MS</abbr>Word to Open Standards</span></h1>
         <p class="back-link"><a href="/index#slide-in">&larr;back</a></p>
         <ul id="conversion-tabs">
