@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pipeline>
-        <stage process="ConvertImages" formats="wmf2png, wmf2svg, bmp2png" deleteOriginals="true" autoCrop="false" autoCropThreshold="20"/>
-        <stage process="Transform" withFile="internal://normalize-opendocument.xsl"/>
-        <stage process="Transform" withFile="internal://opendocument-to-docbook.xsl"/>
-        <stage process="Loop" numberOfTimes="xpathCount://db:chapter">
-                <stage process="SplitPages"/>
-                <stage process="DocBookToXHTML"/>
-                <stage process="Serialize" toFile="{customSection}"/>
-        </stage>
-        <stage process="GetPreface"/>
-        <stage process="DocBookToXHTML"/>
-        <stage process="Serialize" toFile="index.html"/>
-</pipeline>
+<autopipeline>
+    <stage process="Transform" withFile="mytheme2.xsl"/>
+   <stage process="Transform" withFile="mytheme2.xsl"/>
+</autopipeline>

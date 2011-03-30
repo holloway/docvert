@@ -32,10 +32,20 @@ def get_pipeline_xml(pipeline_type, pipeline_id, auto_pipeline_id):
     if xml.getroot().tag == "autopipeline":
         if auto_pipeline_id is None:
             raise docvert_exception.unrecognised_auto_pipeline("Unknown auto pipeline '%s'" % auto_pipeline_id)
-        raise Exception("Sorry, auto pipelines aren't implemented yet.")
-        autopipeline_path = os.path.join(docvert_root, "pipelines", "autopipeline", auto_pipeline_id, "pipeline.xml")
+        autopipeline_path = os.path.join(docvert_root, "pipelines", "auto_pipelines", auto_pipeline_id, "pipeline.xml")
         if not os.path.exists(path):
             raise docvert_exception.unrecognised_auto_pipeline("Unknown auto pipeline '%s'" % auto_pipeline_id)
+        custom_stages = "".join(map(lxml.etree.tostring,xml.getroot()))
+        autopipeline = ""
+        try:        
+            autopipeline_handle = open(autopipeline_path)
+        except IOError, e:
+            autopipeline_path_with_default = os.path.join(docvert_root, "pipelines", "auto_pipelines", "%s.default" % auto_pipeline_id, "pipeline.xml")
+            autopipeline_handle = open(autopipeline_path_with_default)
+        autopipeline = autopipeline_handle.read().replace('{{custom-stages}}', custom_stages)
+        xml = lxml.etree.fromstring(autopipeline)
+        xml = xml.getroottree()
+        print autopipeline
     return dict(xml=xml, pipeline_directory=os.path.dirname(path), path=path, autopath=autopipeline_path)
 
 class pipeline_processor(object):
