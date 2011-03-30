@@ -1,6 +1,19 @@
 Docvert 5.0
-Released under the GPL3
+Released under the GPL3 see LICENCE
+
+WEB SERVICE http://localhost:8080
+    ./docvert-web.py
+
+COMMAND LINE
+    usage: docvert-cli.py [-h] [--version] --pipeline PIPELINE
+        [--response {auto,path,stdout}]
+        [--autopipeline {Break up over Heading 1.default,Nothing one long page}]
+        [--url URL] [--list-pipelines]
+        [--pipelinetype {tests,auto_pipelines,pipelines}]
+        infile [infile ...]
 
 COMMUNITY
-Post on https://lists.catalyst.net.nz/mailman/listinfo/docvert
-Or email docvert@holloway.co.nz
+    http://lists.catalyst.net.nz/mailman/listinfo/docvert
+
+
+
