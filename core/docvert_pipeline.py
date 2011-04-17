@@ -45,7 +45,7 @@ def get_pipeline_xml(pipeline_type, pipeline_id, auto_pipeline_id):
         autopipeline = autopipeline_handle.read().replace('{{custom-stages}}', custom_stages)
         xml = lxml.etree.fromstring(autopipeline)
         xml = xml.getroottree()
-        print autopipeline
+        #print autopipeline
     return dict(xml=xml, pipeline_directory=os.path.dirname(path), path=path, autopath=autopipeline_path)
 
 class pipeline_processor(object):
