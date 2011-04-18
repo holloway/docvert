@@ -309,6 +309,23 @@
             <xsl:if test="@table:number-columns-spanned"><xsl:attribute name="colspan"><xsl:value-of select="@table:number-columns-spanned"/></xsl:attribute></xsl:if>
             <xsl:if test="@table:number-rows-spanned"><xsl:attribute name="rowspan"><xsl:value-of select="@table:number-rows-spanned"/></xsl:attribute></xsl:if>
             <xsl:if test="descendant::text:p[@text:class-names='table-heading']"><xsl:attribute name="role">heading</xsl:attribute></xsl:if>
+            <xsl:if test="count(text:p) = 1">
+                <xsl:variable name="style-alignment" select="key('styles-by-name', text:p/@text:style-name)/style:paragraph-properties/@fo:text-align"/>
+                <xsl:variable name="parent-style-alignment" select="key('styles-by-name', key('styles-by-name', text:p/@text:style-name)/@style:parent-style-name)/style:paragraph-properties/@fo:text-align"/>
+                <xsl:if test="normalize-space(concat($style-alignment,$parent-style-alignment))">
+                    <xsl:attribute name="align">
+                        <xsl:choose>
+                            <xsl:when test="$style-alignment='start'">left</xsl:when>
+                            <xsl:when test="$style-alignment='center'">center</xsl:when>
+                            <xsl:when test="$style-alignment='end'">right</xsl:when>
+                            <xsl:when test="$parent-style-alignment='start'">left</xsl:when>
+                            <xsl:when test="$parent-style-alignment='center'">center</xsl:when>
+                            <xsl:when test="$parent-style-alignment='end'">right</xsl:when>
+                            <!--<xsl:otherwise><xsl:value-of select="$style-alignment"/>,<xsl:value-of select="$parent-style-alignment"/></xsl:otherwise>-->
+                        </xsl:choose>
+                    </xsl:attribute>
+                </xsl:if>
+            </xsl:if>
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>

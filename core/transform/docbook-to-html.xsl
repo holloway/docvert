@@ -273,8 +273,11 @@
                                 <xsl:if test="@colspan">
                                         <xsl:attribute name="colspan"><xsl:value-of select="@colspan"/></xsl:attribute>
                                 </xsl:if>
-                                <xsl:if test="@owspan">
+                                <xsl:if test="@rowspan">
                                         <xsl:attribute name="rowspan"><xsl:value-of select="@rowspan"/></xsl:attribute>
+                                </xsl:if>
+                                <xsl:if test="@align">
+                                        <xsl:attribute name="class">align-<xsl:value-of select="@align"/></xsl:attribute>
                                 </xsl:if>
                                 <xsl:apply-templates/>
                         </th>
@@ -284,8 +287,11 @@
                                 <xsl:if test="@colspan">
                                         <xsl:attribute name="colspan"><xsl:value-of select="@colspan"/></xsl:attribute>
                                 </xsl:if>
-                                <xsl:if test="@owspan">
+                                <xsl:if test="@rowspan">
                                         <xsl:attribute name="rowspan"><xsl:value-of select="@rowspan"/></xsl:attribute>
+                                </xsl:if>
+                                <xsl:if test="@align">
+                                        <xsl:attribute name="class">align-<xsl:value-of select="@align"/></xsl:attribute>
                                 </xsl:if>
                                 <xsl:apply-templates/>
                         </td>

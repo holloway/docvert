@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline>
+    <stage process="Generate" withFile="table-list.odt"/>
+    <stage process="TransformOpenDocumentToDocBook"/>
+    <stage process="DocBookToXHTML"/>
+    <stage process="Test" withFile="table-list.xsl" prefix="HTML"/>
+</pipeline>
