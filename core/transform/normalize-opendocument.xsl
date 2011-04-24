@@ -89,12 +89,28 @@
                 <xsl:element name="text:h">
                     <xsl:attribute name="text:outline-level"><xsl:value-of select="$heading-outline-level"/></xsl:attribute>
                     <xsl:attribute name="text:style-name"><xsl:value-of select="@text:style-name"/></xsl:attribute>
-                    <xsl:apply-templates/>
+                    [<xsl:apply-templates/>
                     <!--[{<xsl:value-of select="@text:style-name"/>}<xsl:value-of select="$style/@style:name"/>:<xsl:value-of select="$normalized-style-name"/> | <xsl:value-of select="$normalized-parent-style-name"/>]-->
                 </xsl:element>
             </xsl:when>
         </xsl:choose>
     </xsl:if>
+</xsl:template>
+
+<xsl:template match="text:h">
+    <xsl:choose>
+        <xsl:when test="ancestor::table:table">
+            <xsl:element name="text:p">
+                <xsl:copy-of select="@*"/>
+                <xsl:apply-templates/>
+            </xsl:element>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:copy>
+                <xsl:apply-templates select="@*|node()"/>
+            </xsl:copy>
+        </xsl:otherwise>
+    </xsl:choose>
 </xsl:template>
 
 <xsl:template match="text:list">
