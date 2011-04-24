@@ -17,10 +17,15 @@ def extract_useful_binaries(archive, archive_files, storage, prefix, xml_string)
     xpath_template = '//*[@{%s}href="%s"]' % (xlink_namespace, '%s')
     document = lxml.etree.fromstring(xml_string.getvalue())
     extensions = [".wmf", ".emf", ".svg", ".png", ".gif", ".bmp", ".jpg", ".jpe", ".jpeg"]
+    index = 0
     for archive_path in archive_files:
         path_minus_extension, extension = os.path.splitext(archive_path)
         if extension in extensions:
-            storage_path = "%s/%s" % (prefix, os.path.basename(archive_path))
+            storage_path = u"%s/file%i.%s" % (prefix, index, extension)
+            try:
+                storage_path = u"%s/%s" % (prefix, os.path.basename(archive_path))
+            except UnicodeDecodeError, e:
+                pass
             #step 1. extract binaries
             storage[storage_path] = archive.open(archive_path).read() 
             #step 2. update XML references
@@ -28,6 +33,7 @@ def extract_useful_binaries(archive, archive_files, storage, prefix, xml_string)
             xpath = lxml.etree.ETXPath(xpath_template % archive_path)
             for match in xpath(document):
                 match.attrib['{%s}href' % xlink_namespace] = storage_path
+            index += 1
     return StringIO.StringIO(lxml.etree.tostring(document))
 
 def extract_xml(archive, archive_files):

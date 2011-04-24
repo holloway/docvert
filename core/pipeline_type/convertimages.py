@@ -76,7 +76,7 @@ class ConvertImages(pipeline_item.pipeline_stage):
     def convert_wmf(self, storage_path, to_format, pipeline_value, width=None, height=None):
         # We can't reliably parse wmf/emf here so use LibreOffice to generate PDF no matter the to_format
         path, extension = os.path.splitext(storage_path)
-        pdf_path = str("%s.pdf" % path)
+        pdf_path = "%s.pdf" % path
         if not self.storage.has_key(pdf_path):
             if width is None or height is None:
                 width, height, pipeline_value = self.get_dimensions_from_xml(storage_path, pipeline_value, to_format)
@@ -97,7 +97,7 @@ class ConvertImages(pipeline_item.pipeline_stage):
 
     def convert_pdf(self, storage_path, to_format, pipeline_value, width=None, height=None):
         path, extension = os.path.splitext(storage_path)
-        svg_path = str("%s.svg" % path)
+        svg_path = "%s.svg" % path
         if not self.storage.has_key(svg_path):
             if width is None or height is None:
                 width, height, pipeline_value = self.get_dimensions_from_xml(storage_path, pipeline_value)
@@ -120,7 +120,7 @@ class ConvertImages(pipeline_item.pipeline_stage):
 
     def convert_svg(self, storage_path, to_format, pipeline_value, width=None, height=None):
         path, extension = os.path.splitext(storage_path)
-        png_path = str("%s.png" % path)
+        png_path = "%s.png" % path
         if not self.storage.has_key(png_path):
             if width is None or height is None:
                 width, height, pipeline_value = self.get_dimensions_from_xml(storage_path, pipeline_value)
@@ -155,7 +155,6 @@ class ConvertImages(pipeline_item.pipeline_stage):
                 return data.read()
             return data
         path, extension = os.path.splitext(storage_path)
-        path = str(path)
         if self.storage['__convertimages'].has_key(path): #intentionally extensionless because all formats of this single image are considered to have the same dimensions
             return (self.storage['__convertimages'][path]['width'], self.storage['__convertimages'][path]['height'], pipeline_value)
 

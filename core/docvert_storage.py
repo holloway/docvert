@@ -100,13 +100,12 @@ class storage_memory_based(storage):
         zipdata = StringIO.StringIO()
         archive = zipfile.ZipFile(zipdata, 'w')
         for key, value in self.storage.iteritems():
+            data = value
             if hasattr(value, "read"):
-                value.seek(0)
-                archive.writestr(key.replace("\\", "/").encode("utf-8"), value.read())
-            elif key.startswith("__"): #internal data, not for output
-                pass 
-            else:
-                archive.writestr(key.replace("\\", "/").encode("utf-8"), value)
+                data = value.seek(0)
+                data = value.read()
+            if not key.startswith("__"): #if it's not internal data
+                archive.writestr(key.replace("\\", "/"), data)
         archive.close()
         return zipdata
 

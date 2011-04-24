@@ -53,6 +53,10 @@ def webservice():
         while files.has_key(filename):
             filename = item.filename + unique
             unique += 1
+        try:
+            filename = filename.decode("utf-8")
+        except UnicodeDecodeException, exception:
+            pass
         if first_document_id is None:
             first_document_id = filename
         files[filename] = StringIO.StringIO(item.value)
@@ -96,6 +100,11 @@ def conversion_static_file(conversion_id, path):
     session = session_manager.get_session()
     if not session.has_key(conversion_id): # They don't have authorisation
         raise bottle.HTTPError(code=404)
+    print path
+    try:
+        path = path.decode("utf-8")
+    except UnicodeDecodeException, exception:
+        pass
     if not session[conversion_id].has_key(path): # They have authorisation but that exact path doesn't exist, try fallbacks
         fallbacks = ["index.html", "index.htm", "index.xml", "index.php", "default.htm", "default.html", "index.asp", "default.aspx", "index.aspx", "default.aspx"]
         valid_fallback_path = None
