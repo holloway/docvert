@@ -1,5 +1,3 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pipeline>
-        <stage process="Transform" withFile="onepage.xsl"/>
-        <stage process="Serialize" toFile="index.html"/>
-</pipeline>
+<autopipeline>
+</autopipeline>
