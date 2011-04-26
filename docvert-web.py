@@ -3,15 +3,25 @@ import sys
 import StringIO
 import uuid
 import os.path
+docvert_root = os.path.dirname(os.path.abspath(__file__))
+inbuilt_bottle_path = os.path.join(docvert_root, 'lib/bottle')
 try:
     import bottle
-except ImportError:
-    sys.path.append('./lib/bottle') 
+    if not hasattr(bottle, 'static_file'):
+        message = "Notice: Old version of Bottle at %s, instead using bundled version at %s%sbottle.py" % (bottle.__file__, inbuilt_bottle_path, os.sep)
+        print message
+        raise ImportError, message
+except ImportError, exception:
     try:
-        import bottle
+        sys.path.insert(0, inbuilt_bottle_path)
+        try:
+            reload(bottle)
+        except NameError:
+            import bottle
     except ImportError:
         sys.stderr.write("Error: Unable to find Bottle libraries in %s. Exiting..." % sys.path)
         sys.exit(0)
+
 import lib.bottlesession.bottlesession
 bottle.debug(True)
 
