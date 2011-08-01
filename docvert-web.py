@@ -3,6 +3,9 @@ import sys
 import StringIO
 import uuid
 import os.path
+import socket
+import optparse
+
 docvert_root = os.path.dirname(os.path.abspath(__file__))
 inbuilt_bottle_path = os.path.join(docvert_root, 'lib/bottle')
 try:
@@ -29,12 +32,17 @@ import core.docvert
 import core.docvert_storage
 import core.docvert_exception
 
-# START CONFIG
+# START DEFAULT CONFIG
 theme='default'
 port=8080
 # END CONFIG
+parser = optparse.OptionParser()
+parser.add_option("-p", "--port", dest="port", help="Port to run on", type="int")
+(options, args) = parser.parse_args()
+if options.port:
+    port = options.port
 
-theme_directory='./core/web_service_themes'
+theme_directory='%s/core/web_service_themes' % docvert_root
 bottle.TEMPLATE_PATH.append('%s/%s' % (theme_directory, theme))
 
 @bottle.route('/index', method='GET')
@@ -49,7 +57,7 @@ def static(path=''):
 
 @bottle.route('/lib/:path#.*#', method='GET')
 def libstatic(path=None):
-    return bottle.static_file(path, root='./lib')
+    return bottle.static_file(path, root='%s/lib' % docvert_root)
 
 @bottle.route('/web-service.php', method='POST') #for legacy support
 @bottle.route('/web-service', method='POST')
@@ -175,6 +183,12 @@ def web_service_tests(test_id):
 def tests_wrongdir():
     bottle.redirect('/tests')
 
-bottle.run(host='localhost', port=port, quiet=False)
+try:
+    bottle.run(host='localhost', port=port, quiet=False)
+except socket.error, e:
+    if 'address already in use' in str(e).lower():
+        print 'ERROR: localhost:%i already in use.\nTry another port? Use command line parameter -p PORT' % port
+    else:
+        raise
 
 
