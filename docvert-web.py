@@ -49,7 +49,7 @@ bottle.TEMPLATE_PATH.append('%s/%s' % (theme_directory, theme))
 @bottle.route('/', method='GET')
 @bottle.view('index')
 def index():
-    return core.docvert.get_all_pipelines()
+    return dict(core.docvert.get_all_pipelines().items() + {"libreOfficeStatus": core.docvert_libreoffice.checkLibreOfficeStatus()}.items() )
 
 @bottle.route('/static/:path#.*#', method='GET')
 def static(path=''):

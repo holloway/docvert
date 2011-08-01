@@ -590,3 +590,41 @@ body.tests-page
                         font-weight:bold;
                         margin: 0px 3px;
                         }
+
+    #libreOfficeStatus
+        {
+        float:left;
+        padding:2px 5px 4px 5px;
+        margin:0px 0px 0px 36px;
+        font-size:x-small;
+        border-bottom-right-radius: 5px;
+        -moz-border-radius-bottomright: 5px;
+        border-bottom-left-radius: 5px;
+        -moz-border-radius-bottomleft: 5px;
+        }
+
+        .libreOfficeStatus_True
+            {
+            background: #dddddd;
+            color: #666666;
+            border-top: solid 1px #bbffbb;
+            }
+
+            .libreOfficeStatus_True span:after
+                {
+                content: " running"
+                }
+
+        .libreOfficeStatus_False
+            {
+            background: #dddddd;
+            color: #996666;
+            border-top: solid 1px #ffbbbb;
+            }
+
+            .libreOfficeStatus_False span:after
+                {
+                content: " not running"
+                }
+
+

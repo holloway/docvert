@@ -66,6 +66,7 @@
                     <input type="submit" value="Submit" id="upload_submit">
                 </div>
             </div>
+            <div id="libreOfficeStatus" class="libreOfficeStatus_{{libreOfficeStatus}}">LibreOffice <span></span></div>
         </form>
     </body>
 </html>

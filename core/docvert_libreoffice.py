@@ -6,6 +6,7 @@ import sys
 from StringIO import StringIO
 import document_type
 import docvert_exception
+import socket
 
 DEFAULT_LIBREOFFICE_PORT = 2002
 LIBREOFFICE_OPEN_DOCUMENT = 'writer8'
@@ -95,6 +96,13 @@ class libreoffice_client(object):
             prop.Value = args[key]
             props.append(prop)
         return tuple(props)
+
+def checkLibreOfficeStatus():
+    try:
+        libreoffice_client()
+        return True
+    except Exception:
+        return False
 
 def get_client():
     global client
