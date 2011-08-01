@@ -413,37 +413,53 @@ h2.upload_list
 
 #conversion-tabs
     {
-    margin:30px 0px 0px 40px;
+    margin:30px 0px 0px 0px;
     padding:0px;
     list-style:none;
+    clear:both;
     }
 
     #conversion-tabs li
         {
         float:left;
         margin-right: 1em;
-        background: #bbbbbb;
+        border: solid 2px #bbbbbb;
+        border-bottom: 0px;
         border-radius: 5px;
-        -moz-border-radius: 5px;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        background: white;
         }
 
         #conversion-tabs li a
             {
             text-decoration:none;
             color: #666666;
-            padding:0.3em;
+            padding:0.3em 5px 5px 5px;
             float:left;
             font-size:small;
             }
 
-    #conversion-tabs .zip-download
+#conversion-navigation-tabs
+    {
+    margin:0px 0px 1em 0px;
+    padding:0px 0px 1em 0px;
+    list-style:none;
+    clear:both;
+    }
+
+    #conversion-navigation-tabs li
         {
-        float:right;
-        display:block;
-        color:#fff;
-        text-decoration:none;
-        text-shadow: #333333 1px 1px 1px;
-        margin-right: 150px;
+        float:left;
+        margin-right:1em;
+        padding:2px 5px;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        }
+
+    #conversion-navigation-tabs .zip-download
+        {
+        text-shadow: #666666 1px 1px 1px;
         background: #bbbbbb;
         border-radius: 5px;
         -moz-border-radius: 5px;
@@ -451,31 +467,41 @@ h2.upload_list
         font-size:small;
         }
 
-        #conversion-tabs .zip-download a
+        #conversion-navigation-tabs .zip-download a
             {
-            text-decoration:none;
-            color:#000000;
+            color:#666666;
             }
 
-
-.back-link
-    {
-    position:absolute;
-    left:5px;
-    top:80px;
-    font-size:small;
-    }
-
-    .back-link a
+    #conversion-navigation-tabs .back-link
         {
-        text-decoration:none;
-        color:#666666;
+        background: #999999;
+        color:#ffffff;
+        text-shadow: #333333 1px 1px 1px;
+        font-size:small;
         }
+
+        #conversion-navigation-tabs .back-link a
+            {
+            -webkit-box-shadow: 1px 1px 5px #888;
+            box-shadow: 1px 1px 5px #888;
+            text-decoration:none;
+            color:#ffffff;
+            }
+
+        #conversion-navigation-tabs .back-link a:hover
+            {
+            -moz-box-shadow: 3px 3px 5px #888;
+            -webkit-box-shadow: 3px 3px 5px #888;
+            box-shadow: 3px 3px 5px #888;
+            }
 
 .web-service-page iframe
     {
     background: white;
     border: solid 2px #bbbbbb;
+    border-top: 0px;
+    clear:both;
+    width:100%;
     }
 
 
