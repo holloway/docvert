@@ -1,3 +1,4 @@
+#!/usr/bin/env python2.6
 # -*- coding: utf-8 -*-
 import sys
 import StringIO
@@ -153,6 +154,11 @@ def conversion_zip(conversion_id):
         raise bottle.HTTPError(code=404)
     bottle.response.content_type = 'application/zip'
     return session[conversion_id].to_zip().getvalue()
+
+@bottle.route('/libreoffice-status', method='GET')
+def libreoffice_status():
+    return bottle.json_dumps( {"libreoffice-status":core.docvert_libreoffice.checkLibreOfficeStatus()} )
+
 
 @bottle.route('/tests', method='GET')
 @bottle.view('tests')
