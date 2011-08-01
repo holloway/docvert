@@ -2,9 +2,10 @@ Docvert 5.0
 Released under the GPL3 see LICENCE
 
 WEB SERVICE http://localhost:8080
-    ./docvert-web.py
+    python ./docvert-web.py [-p PORT]
 
 COMMAND LINE
+    python ./docvert-cli.py
     usage: docvert-cli.py [-h] [--version] --pipeline PIPELINE
         [--response {auto,path,stdout}]
         [--autopipeline {Break up over Heading 1.default,Nothing one long page}]
