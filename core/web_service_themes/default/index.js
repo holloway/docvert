@@ -117,15 +117,10 @@ var docvert = {
         }
     },
 
-    error: function(){
-        alert("Unable to make AJAX request")
-    },
-
     check_libreoffice_status: function(event) {
         $.ajax({
             url: '/libreoffice-status',
             dataType: 'json',
-            error: docvert.error,
             success: function(data, textStatus, jqXHR){
                 if(data['libreoffice-status']) {
                     $("#libreOfficeStatus").removeClass("libreOfficeStatus_False").addClass("libreOfficeStatus_True")

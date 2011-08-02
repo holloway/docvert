@@ -1,0 +1,52 @@
+body {
+    background:white;
+    color:black;
+    font-family:Helvetica, Tahoma;
+    }
+
+.page,
+.chapter {
+    float:right;
+    width:70%;
+    }
+
+#pagesMenu {
+    float:left;
+    width:30%;
+}
+    #pagesMenu h1,
+    #pagesMenu li {
+        font-size:small;
+    }
+
+    #pagesMenu ul {
+        margin:0px;
+        padding:0px;
+    } 
+
+#nextPreviousMenu {
+    border-top: solid 1px #cccccc;
+    float:right;
+    width:70%;
+    text-align:left;
+}
+    #nextPreviousMenu ul {
+        list-style:none;
+        margin:0px;
+        padding:0px;
+    }
+
+    #nextPreviousMenu h1,
+    #nextPreviousMenu li {
+        font-size:small;
+    }
+
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin:1em 0px 0px 0px;
+    }

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <autopipeline>
-    <!-- any custom conversions go here -->
+    <stage process="Transform" withFile="mytheme2.xsl"/>
 </autopipeline>

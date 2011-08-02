@@ -1,27 +1,13 @@
 <?xml version='1.0' encoding="UTF-8"?>
-<xsl:stylesheet
-	version="1.0"
-	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	xmlns:db="http://docbook.org/ns/docbook"
-	xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:xlink="http://www.w3.org/1999/xlink"
->
+<xsl:stylesheet	version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:db="http://docbook.org/ns/docbook" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink">
+<xsl:output	method="xml" version="1.0" encoding="UTF-8" doctype-public="-//OASIS//DTD DocBook XML V4.1.2//EN" doctype-system="http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" indent="yes" omit-xml-declaration="no"/>
+
+<xsl:key name="elementById" match="*[@xml:id]" use="@xml:id"/>
 
 <xsl:param name="loopDepth"/>
 <xsl:param name="process"/>
-
 <xsl:param name="customFilenameIndex"/>
 <xsl:param name="customFilenameSection"/>
-
-<xsl:output
-	method="xml"
-	version="1.0"
-	encoding="UTF-8"
-	doctype-public="-//OASIS//DTD DocBook XML V4.1.2//EN"
-	doctype-system="http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
-	indent="yes"
-	omit-xml-declaration="no"/>
-
 
 <xsl:variable name="detectedDepth">
 	<xsl:call-template name="detectDepth"/>
@@ -33,7 +19,6 @@
 		<xsl:apply-templates select="db:abstract"/>
 		<xsl:apply-templates select="db:toc"/>
 		<xsl:apply-templates select="db:info"/>
-
 		<xsl:if test="//db:chapter">
 			<xsl:choose>
 				<xsl:when test="$detectedDepth = 'ByChapters' ">
@@ -47,13 +32,10 @@
 				</xsl:when>
 			</xsl:choose>
 		</xsl:if>
-
 		<xsl:choose>
 			<xsl:when test="$process = 'GetPreface' ">
 				<xsl:choose>
 					<xsl:when test="$detectedDepth = 'ByChapters' ">
-						<!-- <xsl:apply-templates select="/db:book/db:toc" role="toc"/> -->
-						
 						<xsl:apply-templates select="db:preface"/>
 					</xsl:when>
 					<xsl:when test="$detectedDepth = 'BySect1s' ">
@@ -87,7 +69,6 @@
 				$process = "<xsl:value-of select="$process"/>" which is invalid. Valid options are "SplitPages" and "GetPreface".
 			</xsl:otherwise>
 		</xsl:choose>
-	
 		<xsl:if test="//db:chapter">
 			<xsl:choose>
 				<xsl:when test="$detectedDepth = 'ByChapters' ">
@@ -99,7 +80,6 @@
 			</xsl:choose>
 		</xsl:if>
 	</xsl:copy>
-
 </xsl:template>
 
 <xsl:template name="detectDepth">
@@ -162,7 +142,6 @@
 				</xsl:apply-templates>
 			</db:tocchap>
 		</xsl:if>
-
 	</db:tocentry>
 </xsl:template>
 
@@ -201,7 +180,6 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
-
 	<db:GUIMenu id="nextPreviousMenu">
 		<xsl:if test="normalize-space($previousSection)">
 			<db:GUISubMenu>
@@ -304,7 +282,6 @@
 	</xsl:message>
 </xsl:template>
 
-
 <xsl:template match="db:title">
 	<xsl:copy>
 		<xsl:attribute name="id">
@@ -313,6 +290,41 @@
 		</xsl:attribute>
 		<xsl:apply-templates select="@*|node()"/>
 	</xsl:copy>
+</xsl:template>
+
+<xsl:template match="db:link">
+    <xsl:element name="db:link">
+        <xsl:attribute name="xlink:href">
+            <xsl:choose>
+                <xsl:when test="starts-with(@xlink:href, '#')">
+                    <xsl:variable name="target" select="key('elementById', substring(@xlink:href, 2))"/>
+                    <xsl:if test="$target">
+                        <xsl:variable name="section" select="$target/ancestor::*[self::db:preface or self::db:chapter][1]"/>
+                        <xsl:if test="$section">
+                            <xsl:variable name="sectionIndex" select="count($section/preceding::*[self::db:preface or self::db:chapter])"/>
+                            <xsl:choose>
+                                <xsl:when test="$sectionIndex = 0">
+						            <xsl:value-of select="$customFilenameIndex"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+						            <xsl:call-template name="search-and-replace">
+							            <xsl:with-param name="input" select="$customFilenameSection"/>
+							            <xsl:with-param name="search-string" select=" '#' "/>
+							            <xsl:with-param name="replace-string" select=" $sectionIndex "/>
+						            </xsl:call-template>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:if>
+                    </xsl:if>
+                    <xsl:value-of select="@xlink:href"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="@xlink:href"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:attribute>
+        <xsl:apply-templates/>
+    </xsl:element>
 </xsl:template>
 
 <xsl:template match="@*|node()">
