@@ -4,8 +4,7 @@ body {
     font-family:Helvetica, Tahoma;
     }
 
-.page,
-.chapter {
+.page {
     float:right;
     width:70%;
     }

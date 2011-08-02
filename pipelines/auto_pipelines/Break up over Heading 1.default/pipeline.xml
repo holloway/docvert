@@ -8,7 +8,9 @@
                 {{custom-stages}}
                 <stage process="Serialize" toFile="{customSection}"/>
         </stage>
+
         <stage process="GetPreface"/>
+
         <stage process="DocBookToXHTML"/>
         {{custom-stages}}
         <stage process="Serialize" toFile="index.html"/>

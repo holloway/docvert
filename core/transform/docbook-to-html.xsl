@@ -33,8 +33,16 @@
             </title>
         </head>
         <body>
-            <xsl:apply-templates select="*[not(self::db:toc)]"/>
-            <xsl:call-template name="drawFootNoteContent"/>
+            <xsl:if test="$withTableOfContents">
+                <xsl:apply-templates select="db:toc"/>
+            </xsl:if>
+            <xsl:apply-templates select="db:GUIMenu[not(@id='nextPreviousMenu')]"/>
+            <div class="page">
+                <xsl:apply-templates select="*[not(self::db:toc or self::db:GUIMenu)]"/>
+                <xsl:call-template name="drawFootNoteContent"/>
+            </div>
+            <xsl:apply-templates select="db:GUIMenu[@id='nextPreviousMenu']"/>
+
         </body>
     </html>
 </xsl:template>
@@ -54,15 +62,6 @@
                 <xsl:value-of select="/db:book/db:title"/>
             </p>
         </xsl:if>
-</xsl:template>
-
-<xsl:template match="db:chapter | db:preface">
-    <div class="page">
-        <xsl:if test="$withTableOfContents">
-            <xsl:apply-templates select="/db:book/db:toc"/>
-        </xsl:if>
-        <xsl:apply-templates/>
-    </div>
 </xsl:template>
 
 <xsl:template match="db:toc">
