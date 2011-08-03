@@ -185,7 +185,7 @@
             <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
         </xsl:if>
         <xsl:apply-templates/>
-        <xsl:text> </xsl:text>
+        <xsl:if test="not(normalize-space(descendant::text()))"><xsl:text> </xsl:text></xsl:if>
     </xsl:element>
 </xsl:template>
 
@@ -196,7 +196,7 @@
                 <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
         </xsl:if>
         <xsl:apply-templates/>
-        <xsl:text> </xsl:text>
+        <xsl:if test="not(normalize-space(descendant::text()))"><xsl:text> </xsl:text></xsl:if>
     </xsl:element>
 </xsl:template>
 
@@ -214,7 +214,7 @@
             <xsl:element name="a"><xsl:attribute name="name"><xsl:value-of select="@id"/></xsl:attribute></xsl:element>
         </xsl:if>
         <xsl:apply-templates/>
-        <xsl:text> </xsl:text>
+        <xsl:if test="not(normalize-space(descendant::text()))"><xsl:text> </xsl:text></xsl:if>
     </xsl:element>
 </xsl:template>
 
@@ -225,7 +225,7 @@
             <xsl:element name="a"><xsl:attribute name="name"><xsl:value-of select="@id"/></xsl:attribute></xsl:element>
         </xsl:if>
         <xsl:apply-templates/>
-        <xsl:text> </xsl:text>
+        <xsl:if test="not(normalize-space(descendant::text()))"><xsl:text> </xsl:text></xsl:if>
     </xsl:element>
 </xsl:template>
 
@@ -236,7 +236,7 @@
             <xsl:element name="a"><xsl:attribute name="name"><xsl:value-of select="@id"/></xsl:attribute></xsl:element>
         </xsl:if>
         <xsl:apply-templates/>
-        <xsl:text> </xsl:text>
+        <xsl:if test="not(normalize-space(descendant::text()))"><xsl:text> </xsl:text></xsl:if>
     </xsl:element>
 </xsl:template>
 
@@ -247,7 +247,7 @@
             <xsl:element name="a"><xsl:attribute name="name"><xsl:value-of select="@id"/></xsl:attribute></xsl:element>
         </xsl:if>
         <xsl:apply-templates/>
-        <xsl:text> </xsl:text>
+        <xsl:if test="not(normalize-space(descendant::text()))"><xsl:text> </xsl:text></xsl:if>
     </xsl:element>
 </xsl:template>
 
@@ -258,7 +258,7 @@
             <xsl:element name="a"><xsl:attribute name="name"><xsl:value-of select="@id"/></xsl:attribute></xsl:element>
         </xsl:if>
         <xsl:apply-templates/>
-        <xsl:text> </xsl:text>
+        <xsl:if test="not(normalize-space(descendant::text()))"><xsl:text> </xsl:text></xsl:if>
     </xsl:element>
 </xsl:template>
 
