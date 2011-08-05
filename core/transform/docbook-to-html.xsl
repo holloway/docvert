@@ -193,7 +193,7 @@
     <xsl:element name="h1">
         <xsl:attribute name="class">documentTitle</xsl:attribute>
         <xsl:if test="@db:id">
-                <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+            <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
         </xsl:if>
         <xsl:apply-templates/>
         <xsl:if test="not(normalize-space(descendant::text()))"><xsl:text> </xsl:text></xsl:if>

@@ -49,3 +49,16 @@ h5,
 h6 {
     margin:1em 0px 0px 0px;
     }
+
+.align-left {
+    text-align:left;
+    }
+
+.align-center {
+    text-align:center;
+    }
+
+
+.align-right {
+    text-align:right;
+    }
