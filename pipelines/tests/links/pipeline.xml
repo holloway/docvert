@@ -2,8 +2,14 @@
 <pipeline>
     <stage process="Generate" withFile="links.odt"/>
     <stage process="Test" withFile="links.txt" prefix="Pre-normalized OpenDocument"/>
+
     <stage process="TransformOpenDocumentToDocBook"/>
+
     <stage process="Test" withFile="links.txt" prefix="DocBook"/>
+
     <stage process="DocBookToXHTML"/>
+
     <stage process="Test" withFile="links.txt" prefix="HTML"/>
+    <stage process="Test" withFile="links.xsl" prefix="HTML"/>
+
 </pipeline>

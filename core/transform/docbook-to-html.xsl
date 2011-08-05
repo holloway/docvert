@@ -181,8 +181,8 @@
 
 <xsl:template match="db:chapter/db:title">
     <xsl:element name="h1">
-        <xsl:if test="@id">
-            <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+        <xsl:if test="@db:id">
+            <xsl:attribute name="id"><xsl:value-of select="@db:id"/></xsl:attribute>
         </xsl:if>
         <xsl:apply-templates/>
         <xsl:if test="not(normalize-space(descendant::text()))"><xsl:text> </xsl:text></xsl:if>
@@ -192,7 +192,7 @@
 <xsl:template match="db:preface/db:title">
     <xsl:element name="h1">
         <xsl:attribute name="class">documentTitle</xsl:attribute>
-        <xsl:if test="@id">
+        <xsl:if test="@db:id">
                 <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
         </xsl:if>
         <xsl:apply-templates/>
@@ -203,14 +203,15 @@
 <xsl:template match="db:chapter | db:sect1 | db:sect2 | db:sect3 | db:sect4 | db:sect5 | db:sect6 | db:sect7 | db:sect8 | db:sect9">
     <xsl:element name="div">
         <xsl:attribute name="class"><xsl:value-of select="local-name()"/></xsl:attribute>
+        <xsl:if test="@db:id"><xsl:attribute name="id"><xsl:value-of select="@db:id"/></xsl:attribute></xsl:if>
         <xsl:apply-templates/>
     </xsl:element>
 </xsl:template>
 
 <xsl:template match="db:sect1/db:title">
     <xsl:element name="h2">
-        <xsl:if test="@id">
-            <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+        <xsl:if test="@db:id">
+            <xsl:attribute name="id"><xsl:value-of select="@db:id"/></xsl:attribute>
             <xsl:element name="a"><xsl:attribute name="name"><xsl:value-of select="@id"/></xsl:attribute></xsl:element>
         </xsl:if>
         <xsl:apply-templates/>
@@ -220,8 +221,8 @@
 
 <xsl:template match="db:sect2/db:title">
     <xsl:element name="h3">
-        <xsl:if test="@id">
-            <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+        <xsl:if test="@db:id">
+            <xsl:attribute name="id"><xsl:value-of select="@db:id"/></xsl:attribute>
             <xsl:element name="a"><xsl:attribute name="name"><xsl:value-of select="@id"/></xsl:attribute></xsl:element>
         </xsl:if>
         <xsl:apply-templates/>
@@ -231,8 +232,8 @@
 
 <xsl:template match="db:sect3/db:title">
     <xsl:element name="h4">
-        <xsl:if test="@id">
-            <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+        <xsl:if test="@db:id">
+            <xsl:attribute name="id"><xsl:value-of select="@db:id"/></xsl:attribute>
             <xsl:element name="a"><xsl:attribute name="name"><xsl:value-of select="@id"/></xsl:attribute></xsl:element>
         </xsl:if>
         <xsl:apply-templates/>
@@ -242,8 +243,8 @@
 
 <xsl:template match="db:sect4/db:title">
     <xsl:element name="h5">
-        <xsl:if test="@id">
-            <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+        <xsl:if test="@db:id">
+            <xsl:attribute name="id"><xsl:value-of select="@db:id"/></xsl:attribute>
             <xsl:element name="a"><xsl:attribute name="name"><xsl:value-of select="@id"/></xsl:attribute></xsl:element>
         </xsl:if>
         <xsl:apply-templates/>
@@ -253,8 +254,8 @@
 
 <xsl:template match="db:sect5/db:title | db:sect6/db:title | db:sect7/db:title | db:sect8/db:title | db:sect9/db:title">
     <xsl:element name="h6">
-        <xsl:if test="@id">
-            <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+        <xsl:if test="@db:id">
+            <xsl:attribute name="id"><xsl:value-of select="@db:id"/></xsl:attribute>
             <xsl:element name="a"><xsl:attribute name="name"><xsl:value-of select="@id"/></xsl:attribute></xsl:element>
         </xsl:if>
         <xsl:apply-templates/>
