@@ -117,6 +117,10 @@ var docvert = {
         }
     },
 
+    reset_check_libreoffice_status: function(){
+        docvert.number_of_libreoffice_checks_remaining = 60
+    },
+
     check_libreoffice_status: function(event) {
         $.ajax({
             url: '/libreoffice-status',
@@ -127,7 +131,10 @@ var docvert = {
                 } else {
                     $("#libreOfficeStatus").removeClass("libreOfficeStatus_True").addClass("libreOfficeStatus_False")
                 }
-                docvert.libreoffice_status_timer = setTimeout(docvert.check_libreoffice_status, 1000)
+                docvert.number_of_libreoffice_checks_remaining -= 1
+                if(docvert.number_of_libreoffice_checks_remaining > 0){
+                    docvert.libreoffice_status_timer = setTimeout(docvert.check_libreoffice_status, 1000)
+                }
             }
         })
     }
@@ -156,5 +163,6 @@ $(document).ready(function(){
     $("#advanced .inner").addClass("closed").hide()
     $("#advanced legend a").click(docvert.click_advanced)
     docvert.libreoffice_status_timer = setTimeout(docvert.check_libreoffice_status, 1000)
+    $(document).focus(docvert.reset_check_libreoffice_status)
 }).keydown(docvert.keydown)
 
