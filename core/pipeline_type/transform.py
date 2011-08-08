@@ -5,7 +5,6 @@ import pipeline_item
 import core.docvert_exception
 import core.docvert_xml
 
-
 class Transform(pipeline_item.pipeline_stage):
     def stage(self, pipeline_value):
         if not self.attributes.has_key("withFile"):

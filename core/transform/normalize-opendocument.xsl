@@ -1,13 +1,10 @@
 <?xml version='1.0' encoding="UTF-8"?>
 <xsl:stylesheet	version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0">
-
 <xsl:output method="xml" omit-xml-declaration="no"/>
 
 <xsl:key name="styles-by-name" match="style:style" use="@style:name"/>
 <xsl:key name="list-styles-by-name" match="text:list-style" use="@style:name"/>
 <xsl:key name="elements-by-style-name" match="*[@text:style-name]" use="@text:style-name"/>
-
-
 
 <xsl:variable name="lowercase">abcdefghijklmnopqrstuvwxyz</xsl:variable>
 <xsl:variable name="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
@@ -129,6 +126,7 @@
         <xsl:when test="$style/text:list-level-style-number[@text:level=$list-depth] or $parent-style/text:list-level-style-number[@text:level=$list-depth]">
             <xsl:element name="text:ordered-list">
                 <xsl:if test="normalize-space($list-style)"><xsl:attribute name="text:style-name"><xsl:value-of select="$list-style"/></xsl:attribute></xsl:if>
+                <xsl:if test="@text:continue-numbering"><xsl:attribute name="text:continue-numbering"><xsl:value-of select="@text:continue-numbering"/></xsl:attribute></xsl:if>
                 <xsl:apply-templates/>
             </xsl:element>
         </xsl:when>

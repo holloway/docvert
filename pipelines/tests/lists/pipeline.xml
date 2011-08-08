@@ -17,12 +17,17 @@
     <stage process="DocBookToXHTML"/>
     <stage process="Test" withFile="docvert-test-five.txt" prefix="HTML"/>
 
-
-
     <stage process="Generate" withFile="table-list.odt"/>
     <stage process="Test" withFile="table-list.txt" prefix="Pre-normalized OpenDocument"/>
     <stage process="TransformOpenDocumentToDocBook"/>
     <stage process="Test" withFile="table-list.txt" prefix="DocBook"/>
     <stage process="DocBookToXHTML"/>
     <stage process="Test" withFile="table-list.txt" prefix="HTML"/>
+
+    <stage process="Generate" withFile="continuation.odt"/>
+    <stage process="TransformOpenDocumentToDocBook"/>
+    <stage process="DocBookToXHTML"/>
+<!--    <stage process="Debug" contentType="text/html"/> -->
+
+
 </pipeline>

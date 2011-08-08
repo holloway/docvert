@@ -162,6 +162,7 @@ $(document).ready(function(){
     $("select").dropp()
     $("#advanced .inner").addClass("closed").hide()
     $("#advanced legend a").click(docvert.click_advanced)
+    docvert.number_of_libreoffice_checks_remaining = 60
     docvert.libreoffice_status_timer = setTimeout(docvert.check_libreoffice_status, 1000)
     $(document).focus(docvert.reset_check_libreoffice_status)
 }).keydown(docvert.keydown)

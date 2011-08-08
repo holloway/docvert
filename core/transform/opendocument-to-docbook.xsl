@@ -85,6 +85,9 @@
         <xsl:variable name="separate-list"><xsl:call-template name="is-separate-list"/></xsl:variable>
         <xsl:if test="normalize-space($separate-list)">
             <xsl:element name="db:orderedlist">
+                <xsl:if test="@text:continue-numbering = 'true'">
+                    <xsl:attribute name="continuation">continues</xsl:attribute>
+                </xsl:if>
                 <xsl:apply-templates/>
             </xsl:element>
         </xsl:if>

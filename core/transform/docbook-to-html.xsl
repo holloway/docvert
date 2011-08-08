@@ -159,7 +159,18 @@
 </xsl:template>
 
 <xsl:template match="db:orderedlist">
-        <ol><xsl:apply-templates/></ol>
+    <xsl:element name="ol">
+        <xsl:if test="@continuation">
+            <xsl:variable name="previousList" select="preceding::db:orderedlist[not(ancestor::db:orderedlist)]"/>
+            <xsl:if test="not($previousList)">
+                <xsl:message terminate="yes">Despite a db:orderedlist claiming to be a continuation I can't find a former list to continue from. Please send this document to the Docvert mailing list</xsl:message>
+            </xsl:if>                
+            <xsl:attribute name="start">
+                <xsl:value-of select="count($previousList/db:listitem) + 1"/>
+            </xsl:attribute>
+        </xsl:if>
+        <xsl:apply-templates/>
+    </xsl:element>
 </xsl:template>
 
 <xsl:template match="db:listitem">
