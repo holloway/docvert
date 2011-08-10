@@ -96,10 +96,9 @@
     <xsl:template match="text:unordered-list">
         <xsl:variable name="separate-list"><xsl:call-template name="is-separate-list"/></xsl:variable>
         <xsl:if test="normalize-space($separate-list)">
-            [unorder
             <xsl:element name="db:itemizedlist">
                 <xsl:apply-templates/>
-            </xsl:element>]
+            </xsl:element>
         </xsl:if>
     </xsl:template>
 
@@ -152,7 +151,7 @@
                 <xsl:variable name="list-pointer" select="$following-lists-within-group[1]/descendant::*[self::text:unordered-list or self::text:ordered-list][count(ancestor::text:list-item) &gt;= $list-depth]"/>
                 <xsl:choose>
                     <xsl:when test="$list-pointer">
-   				    	((last:<xsl:apply-templates select="$list-pointer" mode="joined-list"/>))
+   				    	<xsl:apply-templates select="$list-pointer" mode="joined-list"/>
                     </xsl:when>
                     <xsl:otherwise>
                     
