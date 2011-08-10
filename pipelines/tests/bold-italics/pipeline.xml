@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline>
+    <stage process="Generate" withFile="bold-italics.odt"/>
+    <stage process="Test" withFile="bold-italics.txt" prefix="Pre-normalized OpenDocument"/>
+
+    <stage process="TransformOpenDocumentToDocBook"/>
+
+    <stage process="Test" withFile="bold-italics.txt" prefix="DocBook"/>
+
+    <stage process="DocBookToXHTML"/>
+    
+    <stage process="Test" withFile="bold-italics.txt" prefix="HTML"/>
+    <stage process="Test" withFile="bold-italics.xsl" prefix="HTML"/>
+
+</pipeline>

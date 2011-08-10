@@ -374,9 +374,22 @@
             <xsl:when test="$child-text-style and contains($text-style/style:text-properties/@fo:font-style, 'italic') and contains($child-text-style/style:text-properties/@fo:font-style, 'normal')">
                 <xsl:apply-templates/>
             </xsl:when>
+            <xsl:when test="contains($text-style/style:text-properties/@fo:font-weight, 'bold') and contains($text-style/style:text-properties/@fo:font-style, 'italic')">
+                <xsl:element name="db:emphasis">
+                    <xsl:element name="db:emphasis">
+                        <xsl:attribute name="role">strong</xsl:attribute>
+                        <xsl:apply-templates/>
+                    </xsl:element>
+                </xsl:element>
+            </xsl:when>
+            <xsl:when test="contains($text-style/style:text-properties/@fo:font-weight, 'bold')">
+                <xsl:element name="db:emphasis">
+                    <xsl:attribute name="role">bold</xsl:attribute>
+                    <xsl:apply-templates/>
+                </xsl:element>
+            </xsl:when>
             <xsl:when test="contains($text-style/style:text-properties/@fo:font-style, 'italic')">
                 <xsl:element name="db:emphasis">
-                    <!--[<xsl:value-of select="@text:style-name"/>|<xsl:value-of select="$text-style/style:text-properties/@fo:font-style"/>[ -->
                     <xsl:apply-templates/>
                 </xsl:element>
             </xsl:when>

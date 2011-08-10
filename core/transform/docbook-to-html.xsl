@@ -384,13 +384,13 @@
 
 <xsl:template match="db:emphasis">
     <xsl:choose>
-        <xsl:when test="@role = 'bold' ">
-            <xsl:element name="b">
+        <xsl:when test="@role = 'bold' or @role = 'strong' ">
+            <xsl:element name="strong">
                 <xsl:apply-templates/>
             </xsl:element>
         </xsl:when>
         <xsl:otherwise>
-            <xsl:element name="i">
+            <xsl:element name="em">
                 <xsl:apply-templates/>
             </xsl:element>
         </xsl:otherwise>

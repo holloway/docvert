@@ -1,0 +1,6 @@
+Paragraph one with
+inline italics
+Paragraph two with
+inline bold
+Paragraph three with
+inline-bold and italics
