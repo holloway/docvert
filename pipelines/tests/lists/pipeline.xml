@@ -5,9 +5,11 @@
 
     <stage process="TransformOpenDocumentToDocBook"/>
     <stage process="Test" withFile="sample-document.xsl" prefix="1. Pre-normalized OpenDocument"/>
+
     <stage process="Test" withFile="sample-document.txt" prefix="1. DocBook"/>
 
     <stage process="Test" withFile="sample-document-docbook-lists.txt" prefix="1. DocBook"/>
+
     <stage process="DocBookToXHTML"/>
     <stage process="Test" withFile="sample-document-html-lists.txt" prefix="1. HTML"/>
     <stage process="Test" withFile="sample-document.txt" prefix="1. HTML"/>
