@@ -23,7 +23,7 @@ except ImportError, exception:
         except NameError:
             import bottle
     except ImportError:
-        sys.stderr.write("Error: Unable to find Bottle libraries in %s. Exiting..." % sys.path)
+        sys.stderr.write("Error: Unable to find Bottle libraries in %s. Exiting...\n" % sys.path)
         sys.exit(0)
 
 import lib.bottlesession.bottlesession
