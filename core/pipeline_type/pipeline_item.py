@@ -30,3 +30,6 @@ class pipeline_stage(object):
     def add_tests(self, tests):
         self.storage.add_tests(tests)
 
+    def get_tests(self):
+        return self.storage.get_tests()
+

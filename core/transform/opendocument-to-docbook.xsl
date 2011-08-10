@@ -183,7 +183,7 @@
             <xsl:if test="not(normalize-space($current-list-item-group-position))">
                 <xsl:message terminate="yes">ERROR: Unable to identify this list-item within a detected key('list-item-group').</xsl:message>
             </xsl:if>
-            <xsl:apply-templates select="$list-item-group[position() &gt; $current-list-item-group-position]"/>
+            [<xsl:value-of select="$current-list-item-group-position"/>:<xsl:apply-templates select="$list-item-group[position() &gt; $current-list-item-group-position]"/>]
         </xsl:if>
     </xsl:template>
 

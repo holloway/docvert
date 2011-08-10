@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pipeline>
     <stage process="Generate" withFile="sample-document.doc"/>
-    <stage process="Test" withFile="sample-document.txt" prefix="Pre-normalized OpenDocument"/>
+    <stage process="Test" withFile="sample-document.txt" prefix="1. Pre-normalized OpenDocument"/>
+
     <stage process="TransformOpenDocumentToDocBook"/>
-    <stage process="Test" withFile="sample-document.xsl" prefix="Pre-normalized OpenDocument"/>
-    <stage process="Test" withFile="sample-document.txt" prefix="DocBook"/>
-    <stage process="Test" withFile="sample-document-docbook-lists.txt" prefix="DocBook"/>
+    <stage process="Test" withFile="sample-document.xsl" prefix="1. Pre-normalized OpenDocument"/>
+    <stage process="Test" withFile="sample-document.txt" prefix="1. DocBook"/>
+
+    <stage process="Test" withFile="sample-document-docbook-lists.txt" prefix="1. DocBook"/>
     <stage process="DocBookToXHTML"/>
-    <stage process="Test" withFile="sample-document-html-lists.txt" prefix="HTML"/>
-    <stage process="Test" withFile="sample-document.txt" prefix="HTML"/>
+    <stage process="Test" withFile="sample-document-html-lists.txt" prefix="1. HTML"/>
+    <stage process="Test" withFile="sample-document.txt" prefix="1. HTML"/>
 
     <stage process="Generate" withFile="docvert-test-five.odt"/>
-    <stage process="Test" withFile="docvert-test-five.txt" prefix="Pre-normalized OpenDocument"/>
+    <stage process="Test" withFile="docvert-test-five.txt" prefix="2. Pre-normalized OpenDocument"/>
     <stage process="TransformOpenDocumentToDocBook"/>
-    <stage process="Test" withFile="docvert-test-five.txt" prefix="DocBook"/>
+    <stage process="Test" withFile="docvert-test-five.txt" prefix="2. DocBook"/>
     <stage process="DocBookToXHTML"/>
-    <stage process="Test" withFile="docvert-test-five.txt" prefix="HTML"/>
+    <stage process="Test" withFile="docvert-test-five.txt" prefix="2. HTML"/>
 
     <stage process="Generate" withFile="table-list.odt"/>
-    <stage process="Test" withFile="table-list.txt" prefix="Pre-normalized OpenDocument"/>
+    <stage process="Test" withFile="table-list.txt" prefix="3. Pre-normalized OpenDocument"/>
     <stage process="TransformOpenDocumentToDocBook"/>
-    <stage process="Test" withFile="table-list.txt" prefix="DocBook"/>
+    <stage process="Test" withFile="table-list.txt" prefix="3. DocBook"/>
     <stage process="DocBookToXHTML"/>
-    <stage process="Test" withFile="table-list.txt" prefix="HTML"/>
+    <stage process="Test" withFile="table-list.txt" prefix="3. HTML"/>
 
     <stage process="Generate" withFile="continuation.odt"/>
     <stage process="TransformOpenDocumentToDocBook"/>
