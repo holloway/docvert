@@ -5,7 +5,7 @@
     <!-- <xsl:key name='heading-children' match="*[not(self::text:h or self::text:section)]" use="generate-id((..|preceding-sibling::text:h[@text:outline-level='1']|preceding-sibling::text:h[@text:outline-level='2']|preceding-sibling::text:h[@text:outline-level='3']|preceding-sibling::text:h[@text:outline-level='4']|preceding-sibling::text:h[@text:outline-level='5']|preceding-sibling::text:h[@text:outline-level='6'])[last()])"/> -->
     <xsl:key name='heading-children' match="text:p | table:table | text:ordered-list | text:list | draw:frame | draw:image | svg:desc | office:annotation | text:unordered-list | text:footnote | text:a | text:list-item | draw:plugin | draw:text-box | text:footnote-body | text:section" use="generate-id((..|preceding-sibling::text:h[@text:outline-level='1']|preceding-sibling::text:h[@text:outline-level='2']|preceding-sibling::text:h[@text:outline-level='3']|preceding-sibling::text:h[@text:outline-level='4']|preceding-sibling::text:h[@text:outline-level='5']|preceding-sibling::text:h[@text:outline-level='6'])[last()])"/>
     <xsl:key name="list-group" match="text:ordered-list[not(ancestor::text:list-item)] | text:unordered-list[not(ancestor::text:list-item)]" use="concat(generate-id(preceding-sibling::*[not(self::text:unordered-list | self::text:ordered-list)][1]), generate-id(ancestor::table:table-cell))"/>
-    <xsl:key name="list-item-group" match="text:list-item" use="concat(generate-id(ancestor::table:table-cell),'|',generate-id(ancestor::*[self::text:unordered-list | self::text:ordered-list][last()]/preceding-sibling::*[not(self::text:unordered-list | self::text:ordered-list)][1]),'|',local-name(parent::*),'|',count(ancestor-or-self::text:list-item))"/>
+    <xsl:key name="list-item-group" match="text:list-item" use="concat(generate-id(ancestor::table:table-cell),'|',generate-id(ancestor::*[self::text:unordered-list | self::text:ordered-list][last()]/preceding-sibling::*[not(self::text:unordered-list | self::text:ordered-list)][1]),'|',local-name(parent::*),'|',count(ancestor-or-self::text:list-item), '|', count(*[not(self::text:unordered-list or self::text:ordered-list)]) &gt; 0 )"/>
     <xsl:key name="styles-by-name" match="style:style" use="@style:name"/>
     <xsl:key name="elements-by-style-name" match="*[@text:style-name]" use="@text:style-name"/>
     <xsl:variable name="lowercase">abcdefghijklmnopqrstuvwxyz</xsl:variable>
@@ -96,9 +96,10 @@
     <xsl:template match="text:unordered-list">
         <xsl:variable name="separate-list"><xsl:call-template name="is-separate-list"/></xsl:variable>
         <xsl:if test="normalize-space($separate-list)">
+            [unorder
             <xsl:element name="db:itemizedlist">
                 <xsl:apply-templates/>
-            </xsl:element>
+            </xsl:element>]
         </xsl:if>
     </xsl:template>
 
@@ -151,7 +152,7 @@
                 <xsl:variable name="list-pointer" select="$following-lists-within-group[1]/descendant::*[self::text:unordered-list or self::text:ordered-list][count(ancestor::text:list-item) &gt;= $list-depth]"/>
                 <xsl:choose>
                     <xsl:when test="$list-pointer">
-   				    	<xsl:apply-templates select="$list-pointer" mode="joined-list"/>
+   				    	((last:<xsl:apply-templates select="$list-pointer" mode="joined-list"/>))
                     </xsl:when>
                     <xsl:otherwise>
                     
@@ -162,7 +163,8 @@
         <xsl:if test="$list-item-generate-id = generate-id($last-list-item-within-ancestor-list)">
             <!-- See if there's a continuation of list-items in a list directly down at the same level. Obviously, to continue list numbering the list must be the same $list-type (ordered or unordered). -->
             <xsl:variable name="list-type" select="local-name(parent::*)"/>
-            <xsl:variable name="list-item-group" select="key('list-item-group', concat(generate-id(ancestor::table:table-cell),'|',generate-id($preceding-non-list),'|',$list-type,'|',$list-depth) ) " />
+            <xsl:variable name="has-immediate-children-that-are-not-lists" select="count(*[not(self::text:unordered-list or self::text:ordered-list)]) &gt; 0"/>
+            <xsl:variable name="list-item-group" select="key('list-item-group', concat(generate-id(ancestor::table:table-cell),'|',generate-id($preceding-non-list),'|',$list-type,'|',$list-depth,'|',$has-immediate-children-that-are-not-lists) ) " />
             <xsl:if test="count($list-item-group) = 0">
                 <xsl:message terminate="yes">ERROR: Unable to identify this list-item-group in the key('list-item-group').
                     #<xsl:value-of select="count(preceding::text:list-item)"/>

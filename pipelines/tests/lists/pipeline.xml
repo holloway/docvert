@@ -8,6 +8,7 @@
 
     <stage process="Test" withFile="sample-document.txt" prefix="1. DocBook"/>
 
+
     <stage process="Test" withFile="sample-document-docbook-lists.txt" prefix="1. DocBook"/>
 
     <stage process="DocBookToXHTML"/>
