@@ -67,18 +67,22 @@ def webservice():
     files = dict()
     first_document_id = None
     for key, item in bottle.request.files.iteritems():
-        filename = item.filename
-        unique = 1
-        while files.has_key(filename):
-            filename = item.filename + unique
-            unique += 1
-        try:
-            filename = filename.decode("utf-8")
-        except UnicodeDecodeException, exception:
-            pass
-        if first_document_id is None:
-            first_document_id = filename
-        files[filename] = StringIO.StringIO(item.value)
+        items = bottle.request.files.getall(key)
+        for field_storage in items:
+            filename = field_storage.filename
+            unique = 1
+            if files.has_key(filename) and files[filename].getvalue() == field_storage.value:
+                continue
+            while files.has_key(filename):
+                filename = field_storage.filename + str(unique)
+                unique += 1
+            try:
+                filename = filename.decode("utf-8")
+            except UnicodeDecodeException, exception:
+                pass
+            if first_document_id is None:
+                first_document_id = filename
+            files[filename] = StringIO.StringIO(field_storage.value)
     pipeline_id = bottle.request.POST.get('pipeline')
     auto_pipeline_id = bottle.request.POST.get('autopipeline')
     docvert_4_default = '.default'
@@ -119,7 +123,6 @@ def conversion_static_file(conversion_id, path):
     session = session_manager.get_session()
     if not session.has_key(conversion_id): # They don't have authorisation
         raise bottle.HTTPError(code=404)
-    print path
     try:
         path = path.decode("utf-8")
     except UnicodeDecodeException, exception:
