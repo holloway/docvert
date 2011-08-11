@@ -246,6 +246,17 @@
 </xsl:template>
 -->
 
+    <xsl:template match="text:note">
+        <xsl:element name="db:footnote">
+            <xsl:attribute name="label">
+                <xsl:apply-templates select="text:note-citation"/>
+                <xsl:if test="not(text:note-citation) or normalize-space(text:note-citation) = '' ">
+                    <xsl:value-of select="count(preceding::text:note) + 1"/>
+                </xsl:if>
+            </xsl:attribute>
+            <xsl:apply-templates select="text:note-body"/>
+        </xsl:element>
+    </xsl:template>
 
     <xsl:template match="text:line-break">
         <xsl:element name="db:sbr"/>

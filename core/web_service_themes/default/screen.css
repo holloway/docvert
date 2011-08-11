@@ -520,6 +520,8 @@ body.tests-page
         {
         list-style:none;
         padding:0px 0px 0px 2px;
+        width:700px;
+        margin-left:40px;
         }
 
         body.tests-page ul.tests li

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline>
+    <stage process="Generate" withFile="footnotes.doc"/>
+    <stage process="Test" withFile="footnotes.txt" prefix="Pre-normalized OpenDocument"/>
+    <stage process="TransformOpenDocumentToDocBook"/>
+    <stage process="Test" withFile="footnotes.txt" prefix="DocBook"/>
+    <stage process="Test" withFile="footnotes.xsl" prefix="DocBook"/>
+    <stage process="Debug"/>
+    <stage process="DocBookToXHTML"/>
+    <stage process="Test" withFile="footnotes.txt" prefix="HTML"/>
+
+ 
+</pipeline>

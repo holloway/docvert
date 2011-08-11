@@ -56,7 +56,9 @@ class storage(object):
                 raise invalid_test_child_node("Error parsing test results. Unexpected child element of '%s' %s" % (child.tag, child))
 
     def get_tests(self):
-        return self.tests
+        if hasattr(self, 'tests'):
+            return self.tests
+        return list()
 
 class storage_file_based(storage):
     def __init__(self):
