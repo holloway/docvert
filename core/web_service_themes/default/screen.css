@@ -660,7 +660,7 @@ body.tests-page
   font-family: 'Reenie Beanie';
   font-style: normal;
   font-weight: normal;
-  src: local('Reenie Beanie'), local('ReenieBeanie'), url('/lib/fonts/reenie-beanie.woff') format('woff');
+  src: local('Reenie Beanie'), local('ReenieBeanie'), url('../../lib/fonts/reenie-beanie.woff') format('woff');
 }
 
 #usageNote {

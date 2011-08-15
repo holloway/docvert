@@ -40,7 +40,7 @@
                     </select>
                 </fieldset>
                 <fieldset id="autopipelines">
-                    <legend><label for="break_up_pages">Split over multiple pages? </label><input type="checkbox" name="break_up_pages" id="break_up_pages"/></legend>
+                    <legend><label for="break_up_pages">Break over multiple pages? </label><input type="checkbox" name="break_up_pages" id="break_up_pages"/></legend>
                     <select name="autopipeline" id="autopipeline">
 % for auto_pipeline in auto_pipelines:
                         <option value="{{auto_pipeline['id']}}">{{auto_pipeline['name']}}</option>
