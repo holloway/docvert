@@ -86,7 +86,6 @@ def webservice():
     pipeline_id = bottle.request.POST.get('pipeline')
     auto_pipeline_id = None
     if bottle.request.POST.get('break_up_pages'):
-        print "break up over pages"
         auto_pipeline_id = bottle.request.POST.get('autopipeline')
     if auto_pipeline_id is None:
         pipelines = core.docvert.get_all_pipelines().items()
