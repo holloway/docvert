@@ -38,7 +38,7 @@ def generate_open_document(data, converter=converter_type.python_streaming_to_li
         return docvert_libreoffice.get_client().convert_by_stream(data, docvert_libreoffice.LIBREOFFICE_OPEN_DOCUMENT)
     raise docvert_exception.unrecognised_converter("Unknown converter '%s'" % converter)
 
-def get_all_pipelines():
+def get_all_pipelines(include_default_autopipeline = True):
     def _title(name):
         if name.endswith('.default'):
             name = name[0:-len('.default')]
@@ -49,7 +49,10 @@ def get_all_pipelines():
     for pipeline_type in os.listdir(pipeline_types_path):
         pipeline_types[pipeline_type] = list()
         for pipeline_directory in os.listdir(os.path.join(pipeline_types_path, pipeline_type)):
-            pipeline_types[pipeline_type].append(dict(id=pipeline_directory, name=_title(pipeline_directory)))
+            if include_default_autopipeline is False and pipeline_type == "auto_pipelines" and "nothing" in pipeline_directory.lower():
+                print "Skipping?"
+            else:
+                pipeline_types[pipeline_type].append(dict(id=pipeline_directory, name=_title(pipeline_directory)))
     return pipeline_types
     
 

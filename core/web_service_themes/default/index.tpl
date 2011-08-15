@@ -32,7 +32,7 @@
                     </ul>
                 </fieldset>
                 <fieldset id="pipelines">
-                    <legend><abbr title="Extensible Markup Language">XML</abbr> Pipeline</legend>
+                    <legend>Theme (<abbr title="Extensible Markup Language">XML</abbr> Pipeline)</legend>
                     <select name="pipeline" id="pipeline">
 % for pipeline in pipelines:
                         <option value="{{pipeline['id']}}">{{pipeline['name']}}</option>
@@ -40,7 +40,7 @@
                     </select>
                 </fieldset>
                 <fieldset id="autopipelines">
-                    <legend>Break Up Pages Over</legend>
+                    <legend><label for="break_up_pages">Split over multiple pages? </label><input type="checkbox" name="break_up_pages" id="break_up_pages"/></legend>
                     <select name="autopipeline" id="autopipeline">
 % for auto_pipeline in auto_pipelines:
                         <option value="{{auto_pipeline['id']}}">{{auto_pipeline['name']}}</option>
@@ -68,5 +68,9 @@
             </div>
             <div id="libreOfficeStatus" class="libreOfficeStatus_{{libreOfficeStatus}}">LibreOffice <span></span></div>
         </form>
+        <div id="usageNote">
+            <h2>Dear programmers,</h2>
+            <p>this form sends files via HTTP POST so do the same in your software to build upon this web service.</p>
+        </div>
     </body>
 </html>

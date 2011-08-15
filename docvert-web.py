@@ -50,7 +50,7 @@ bottle.TEMPLATE_PATH.append('%s/%s' % (theme_directory, theme))
 @bottle.route('/', method='GET')
 @bottle.view('index')
 def index():
-    return dict(core.docvert.get_all_pipelines().items() + {"libreOfficeStatus": core.docvert_libreoffice.checkLibreOfficeStatus()}.items() )
+    return dict(core.docvert.get_all_pipelines(False).items() + {"libreOfficeStatus": core.docvert_libreoffice.checkLibreOfficeStatus()}.items() )
 
 @bottle.route('/static/:path#.*#', method='GET')
 def static(path=''):
@@ -84,7 +84,17 @@ def webservice():
                 first_document_id = filename
             files[filename] = StringIO.StringIO(field_storage.value)
     pipeline_id = bottle.request.POST.get('pipeline')
-    auto_pipeline_id = bottle.request.POST.get('autopipeline')
+    auto_pipeline_id = None
+    if bottle.request.POST.get('break_up_pages'):
+        print "break up over pages"
+        auto_pipeline_id = bottle.request.POST.get('autopipeline')
+    if auto_pipeline_id is None:
+        pipelines = core.docvert.get_all_pipelines().items()
+        for pipelinetype_key, pipelinetype_value in pipelines:
+            if pipelinetype_key == "auto_pipelines":
+                for pipeline in pipelinetype_value:
+                    if "nothing" in pipeline["id"].lower():
+                        auto_pipeline_id = pipeline["id"]
     docvert_4_default = '.default'
     if auto_pipeline_id and auto_pipeline_id.endswith(docvert_4_default):
         auto_pipeline_id = auto_pipeline_id[0:-len(docvert_4_default)]

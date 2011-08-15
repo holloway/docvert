@@ -656,3 +656,37 @@ body.tests-page
                 }
 
 
+@font-face {
+  font-family: 'Reenie Beanie';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Reenie Beanie'), local('ReenieBeanie'), url('/lib/fonts/reenie-beanie.woff') format('woff');
+}
+
+#usageNote {
+    position:absolute;
+    left:780px;
+    top:170px;
+    width:250px;
+    color:#666666;
+    text-shadow: #eeeeee 1px 1px 1px;
+    font-weight:bold;
+    -webkit-transform:rotate(2deg);
+	-moz-transform:rotate(2deg);
+	-o-transform:rotate(2deg);
+	-ms-transform:rotate(2deg);
+    font-family: "Reenie Beanie", Arial, sans-serif;
+}
+
+    #usageNote:hover {
+        color:#333333;
+    }
+
+    #usageNote h2,
+    #usageNote p {
+        margin:0px;
+        padding:0px;
+    }
+
+
+

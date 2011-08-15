@@ -49,7 +49,6 @@ var docvert = {
         $("#upload_from_file").removeClass("upload_button_hover")
     },
 
-
     reveal_upload_web_dialog: function(event){
         var sender = $(event.target)
         sender_offset = sender.offset()
@@ -165,5 +164,13 @@ $(document).ready(function(){
     docvert.number_of_libreoffice_checks_remaining = 60
     docvert.libreoffice_status_timer = setTimeout(docvert.check_libreoffice_status, 1000)
     $(document).focus(docvert.reset_check_libreoffice_status)
+    $("#autopipeline").parent().hide()
+    $("#break_up_pages").change(function(){
+        if($(this).is(":checked")){
+            $("#autopipeline").parent().slideDown()
+        } else {
+            $("#autopipeline").parent().slideUp()
+        }
+    }).change()
 }).keydown(docvert.keydown)
 
