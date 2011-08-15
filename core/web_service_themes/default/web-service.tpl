@@ -13,7 +13,7 @@
             <li><a href="tests">Tests</a></li>
             <li><a href="#index">Web Service</a></li>
         </ul>
-        <h1>Doc<span class="syllable">vert</span> <span class="version">5</span> <span class="slogan"><abbr title="Microsoft">MS</abbr>Word to Open Standards</span></h1>
+        <h1>Doc<span class="syllable">vert</span> <span class="version">5.1</span> <span class="slogan"><abbr title="Microsoft">MS</abbr>Word to Open Standards</span></h1>
         <ul id="conversion-navigation-tabs">
             <li class="back-link"><a href="/index#slide-in">&#x25C2; back</a></li>
             <li class="zip-download"><a href="conversions-zip/{{conversion_id}}">Download ZIP</a></li>

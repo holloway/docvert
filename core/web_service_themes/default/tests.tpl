@@ -13,7 +13,7 @@
             <li class="current"><a href="#tests">Tests</a></li>
             <li><a href="index">Web Service</a></li>
         </ul>
-        <h1><a href="index">Doc<span class="syllable">vert</span> <span class="version">5</span> <span class="slogan"><abbr title="Microsoft">MS</abbr>Word to Open Standards</span></a></h1>
+        <h1><a href="index">Doc<span class="syllable">vert</span> <span class="version">5.1</span> <span class="slogan"><abbr title="Microsoft">MS</abbr>Word to Open Standards</span></a></h1>
         <h2>Tests <span id="run-all">(<a href="#run-all">run all</a>)</span></h2>
         <ul class="tests">
 % for pipeline in tests:

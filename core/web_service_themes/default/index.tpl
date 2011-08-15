@@ -13,7 +13,7 @@
             <li><a href="tests">Tests</a></li>
             <li class="current"><a href="#index">Web Service</a></li>
         </ul>
-        <h1>Doc<span class="syllable">vert</span> <span class="version">5</span> <span class="slogan"><abbr title="Microsoft">MS</abbr>Word to Open Standards</span></h1>
+        <h1>Doc<span class="syllable">vert</span> <span class="version">5.1</span> <span class="slogan"><abbr title="Microsoft">MS</abbr>Word to Open Standards</span></h1>
         <form method="post" action="web-service" enctype="multipart/form-data">
             <div id="page">
                 <fieldset id="upload_fieldset">
@@ -40,7 +40,10 @@
                     </select>
                 </fieldset>
                 <fieldset id="autopipelines">
-                    <legend><label for="break_up_pages">Break over multiple pages? </label><input type="checkbox" name="break_up_pages" id="break_up_pages"/></legend>
+                    <legend>
+                        <input type="hidden" name="break_up_pages_ui_version" id="break_up_pages_ui_version" value="2">
+                        <label for="break_up_pages">Break over multiple pages? </label><input type="checkbox" name="break_up_pages" id="break_up_pages"/>
+                    </legend>
                     <select name="autopipeline" id="autopipeline">
 % for auto_pipeline in auto_pipelines:
                         <option value="{{auto_pipeline['id']}}">{{auto_pipeline['name']}}</option>

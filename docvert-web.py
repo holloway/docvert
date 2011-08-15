@@ -85,15 +85,18 @@ def webservice():
             files[filename] = StringIO.StringIO(field_storage.value)
     pipeline_id = bottle.request.POST.get('pipeline')
     auto_pipeline_id = None
-    if bottle.request.POST.get('break_up_pages'):
+    if bottle.request.POST.get('break_up_pages_ui_version'):
+        if bottle.request.POST.get('break_up_pages'):
+            auto_pipeline_id = bottle.request.POST.get('autopipeline')
+        if auto_pipeline_id is None:
+            pipelines = core.docvert.get_all_pipelines().items()
+            for pipelinetype_key, pipelinetype_value in pipelines:
+                if pipelinetype_key == "auto_pipelines":
+                    for pipeline in pipelinetype_value:
+                        if "nothing" in pipeline["id"].lower():
+                            auto_pipeline_id = pipeline["id"]
+    else:
         auto_pipeline_id = bottle.request.POST.get('autopipeline')
-    if auto_pipeline_id is None:
-        pipelines = core.docvert.get_all_pipelines().items()
-        for pipelinetype_key, pipelinetype_value in pipelines:
-            if pipelinetype_key == "auto_pipelines":
-                for pipeline in pipelinetype_value:
-                    if "nothing" in pipeline["id"].lower():
-                        auto_pipeline_id = pipeline["id"]
     docvert_4_default = '.default'
     if auto_pipeline_id and auto_pipeline_id.endswith(docvert_4_default):
         auto_pipeline_id = auto_pipeline_id[0:-len(docvert_4_default)]
