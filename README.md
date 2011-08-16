@@ -23,7 +23,7 @@ Command Line
 Community
 ---------
 
-    http://lists.catalyst.net.nz/mailman/listinfo/docvert
+http://lists.catalyst.net.nz/mailman/listinfo/docvert
 
 
 
