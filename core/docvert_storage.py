@@ -64,6 +64,7 @@ class storage_file_based(storage):
     def __init__(self):
         self.working_directory = tempfile.mkdtemp()
         self.created_at = time.time()
+        self.default_document = None
 
     def add(self, path, data):
         handler = open(os.path.join(self.working_directory, path), 'w')
@@ -88,6 +89,7 @@ class storage_memory_based(storage):
     def __init__(self):
         self.storage = dict()
         self.created_at = time.time()
+        self.default_document = None
 
     def add(self, path, data):
         self.storage[path] = data

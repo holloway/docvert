@@ -74,6 +74,7 @@ var docvert = {
     },
 
     check_submit: function(event){
+        docvert.hide_upload_web_dialog()
         var should_submit = ($("#upload_list li").length > 0)
         if(!should_submit) {
             $("#submit_error").slideDown().find("span").animate({"marginLeft": "50px"}, function(){
@@ -146,8 +147,8 @@ $(document).ready(function(){
     $(".delete").live("click", docvert.upload_file_delete)
     var upload_file = $("#upload_file")
     upload_file.change(docvert.upload_file_change)
-    upload_file.mouseover(docvert.upload_file_mouseover)
-    upload_file.mouseout(docvert.upload_file_mouseout)
+               .mouseover(docvert.upload_file_mouseover)
+               .mouseout(docvert.upload_file_mouseout)
     $("#upload_documents label").css({
         "width":upload_file.width() + "px",
         "height": upload_file.height() + "px",
@@ -155,7 +156,7 @@ $(document).ready(function(){
     $("#upload_from_web label").click(docvert.reveal_upload_web_dialog)
     $("#upload_from_web_dialog").hide()
     $("#upload_from_web_dialog input").blur(docvert.hide_upload_web_dialog)
-    $("fieldset, #button_tray").width((upload_file.width() * 2) + 30)
+    $("fieldset,#button_tray").width((upload_file.width() * 2) + 30)
     $("#page,form").width((upload_file.width() * 2) + 53)
     $("#upload_submit").click(docvert.check_submit)
     $("select").dropp()

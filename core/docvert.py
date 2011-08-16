@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import tempfile
+import StringIO
 import os.path
 import document_type
 import docvert_exception
@@ -7,9 +8,10 @@ import docvert_pipeline
 import docvert_storage
 import docvert_libreoffice
 import opendocument
+import urllib
 
 docvert_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-version = '5.0'
+version = '5.1'
 
 class converter_type(object):
     python_streaming_to_libreoffice = "python streaming to libreoffice"
@@ -20,7 +22,14 @@ def process_conversion(files=None, urls=None, pipeline_id=None, pipeline_type="p
     if pipeline_id is None:
         raise docvert_exception.unrecognised_pipeline("Unknown pipeline '%s'" % pipeline_id)
     storage = docvert_storage.get_storage(storage_type_name)
+    def _title(name):
+        return name.replace('\\','-').replace('/','-').replace(':','-')
+    for url in urls:
+        data = StringIO.StringIO(urllib.urlopen(url).read())
+        files[_title(url)] = data
     for filename, data in files.iteritems():
+        if storage.default_document is None:
+            storage.default_document = filename
         doc_type = document_type.detect_document_type(data)
         if doc_type != document_type.types.oasis_open_document:
             data = generate_open_document(data, converter)

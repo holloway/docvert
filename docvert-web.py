@@ -80,8 +80,6 @@ def webservice():
                 filename = filename.decode("utf-8")
             except UnicodeDecodeException, exception:
                 pass
-            if first_document_id is None:
-                first_document_id = filename
             files[filename] = StringIO.StringIO(field_storage.value)
     pipeline_id = bottle.request.POST.get('pipeline')
     auto_pipeline_id = None
@@ -101,7 +99,7 @@ def webservice():
     if auto_pipeline_id and auto_pipeline_id.endswith(docvert_4_default):
         auto_pipeline_id = auto_pipeline_id[0:-len(docvert_4_default)]
     after_conversion = bottle.request.POST.get('afterconversion')
-    urls = bottle.request.POST.get('upload_web[]')
+    urls = bottle.request.POST.getall('upload_web[]')
     response = None
     try:
         response = core.docvert.process_conversion(files, urls, pipeline_id, 'pipelines', auto_pipeline_id)
@@ -123,7 +121,7 @@ def webservice():
         if response.has_key(thumbnail_path):
             thumbnail_path = None
         conversions_tabs[filename] = dict(pipeline=pipeline_id, auto_pipeline=auto_pipeline_id, thumbnail_path=thumbnail_path)
-    return dict(conversions=conversions_tabs, conversion_id=conversion_id, first_document_id=first_document_id)
+    return dict(conversions=conversions_tabs, conversion_id=conversion_id, first_document_id=response.default_document)
 
 @bottle.route('/favicon.ico', method='GET')
 def favicon():
