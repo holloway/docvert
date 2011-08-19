@@ -8,10 +8,11 @@ import docvert_pipeline
 import docvert_storage
 import docvert_libreoffice
 import opendocument
-import urllib
+import urllib2
 
 docvert_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 version = '5.1'
+http_timeout = 10
 
 class converter_type(object):
     python_streaming_to_libreoffice = "python streaming to libreoffice"
@@ -22,19 +23,42 @@ def process_conversion(files=None, urls=None, pipeline_id=None, pipeline_type="p
     if pipeline_id is None:
         raise docvert_exception.unrecognised_pipeline("Unknown pipeline '%s'" % pipeline_id)
     storage = docvert_storage.get_storage(storage_type_name)
-    def _title(name):
-        return name.replace('\\','-').replace('/','-').replace(':','-')
+
+    def _title(name, files, data):
+        filename = os.path.basename(name).replace('\\','-').replace('/','-').replace(':','-')
+        if len(filename) == 0:
+            filename = "document.doc"
+        if files.has_key(filename):
+            if hasattr(files[filename], 'read') and files[filename].getvalue() == data:
+                return filename
+            unique = 1
+            potential_filename = filename
+            while files.has_key(potential_filename):
+                unique += 1
+                if filename.count("."):
+                    potential_filename = filename.replace(".", "%i." % unique, 1)
+                else:
+                    potential_filename = filename + str(unique)
+            filename = potential_filename
+        return filename
     for url in urls:
-        data = StringIO.StringIO(urllib.urlopen(url).read())
-        files[_title(url)] = data
+        try:
+            data = urllib2.urlopen(url, None, http_timeout).read()
+            files[_title(url, files, data)] = StringIO.StringIO(data)
+        except IOError, e:
+            files[_title(url, files, None)] = "Download error from %s: %s" % (url, e)
     for filename, data in files.iteritems():
         if storage.default_document is None:
             storage.default_document = filename
         doc_type = document_type.detect_document_type(data)
-        if doc_type != document_type.types.oasis_open_document:
+        if doc_type == document_type.types.string:
+            storage.add(filename + "/index.txt", data)
+        elif doc_type != document_type.types.oasis_open_document:
             data = generate_open_document(data, converter)
-        document_xml = opendocument.extract_useful_open_document_files(data, storage, filename)
-        process_pipeline(document_xml, pipeline_id, pipeline_type, auto_pipeline_id, storage, filename)
+            doc_type = document_type.types.oasis_open_document
+        if doc_type == document_type.types.oasis_open_document:
+            document_xml = opendocument.extract_useful_open_document_files(data, storage, filename)
+            process_pipeline(document_xml, pipeline_id, pipeline_type, auto_pipeline_id, storage, filename)
     return storage
 
 def process_pipeline(initial_pipeline_value, pipeline_id, pipeline_type, auto_pipeline_id, storage, storage_prefix=None):

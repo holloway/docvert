@@ -1,3 +1,4 @@
+% from urllib import quote
 <!DOCTYPE html>
 <html>
     <head>
@@ -20,10 +21,10 @@
         </ul>
         <ul id="conversion-tabs">
 % for filename, conversion in conversions.iteritems():
-            <li><a href="conversions/{{conversion_id}}/{{filename}}" title="{{filename}} via {{conversion['pipeline']}}/{{conversion['auto_pipeline']}}" target="preview">{{filename}}</a></li>
+            <li><a href="conversions/{{conversion_id}}/{{filename}}/" title="{{filename}} via {{conversion['pipeline']}}/{{conversion['auto_pipeline']}}" target="preview">{{filename}}</a></li>
 % end
         </ul>
-        <iframe id="preview" name="preview" src="conversions/{{conversion_id}}/{{first_document_id}}/">
+        <iframe id="preview" name="preview" src="conversions/{{conversion_id}}/{{ quote(first_document_id) }}/">
         </iframe>
     </body>
 </html>

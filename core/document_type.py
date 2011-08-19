@@ -5,9 +5,12 @@ class types(object):
     oasis_open_document = "oasis_open_document (any version)"
     pdf = "portable document format (any version)"
     xml = "xml"
+    string = "string"
     unknown_type = "unknown file type"
 
 def detect_document_type(data):
+    if isinstance(data, str):
+        return types.string
     try:
         # 1. Try OpenDocument
         magic_bytes_open_document = 'PK'

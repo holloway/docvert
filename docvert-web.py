@@ -100,6 +100,10 @@ def webservice():
         auto_pipeline_id = auto_pipeline_id[0:-len(docvert_4_default)]
     after_conversion = bottle.request.POST.get('afterconversion')
     urls = bottle.request.POST.getall('upload_web[]')
+    if len(urls) == 1 and urls[0] == '':
+        urls = list()
+    else:
+        urls = set(urls)
     response = None
     try:
         response = core.docvert.process_conversion(files, urls, pipeline_id, 'pipelines', auto_pipeline_id)
@@ -138,7 +142,7 @@ def conversion_static_file(conversion_id, path):
     except UnicodeDecodeException, exception:
         pass
     if not session[conversion_id].has_key(path): # They have authorisation but that exact path doesn't exist, try fallbacks
-        fallbacks = ["index.html", "index.htm", "index.xml", "index.php", "default.htm", "default.html", "index.asp", "default.aspx", "index.aspx", "default.aspx"]
+        fallbacks = ["index.html", "index.htm", "index.xml", "index.php", "default.htm", "default.html", "index.asp", "default.aspx", "index.aspx", "default.aspx", "index.txt"]
         valid_fallback_path = None
         separator = "/"
         if path.endswith("/"):
@@ -151,7 +155,7 @@ def conversion_static_file(conversion_id, path):
         if valid_fallback_path is None:
             raise bottle.HTTPError(code=404)
         path = valid_fallback_path
-    filetypes = {".xml":"text/xml", ".html":"text/html", ".xhtml":"text/html", ".htm":"text/html", ".svg":"image/svg+xml", ".png":"image/png", ".gif":"image/gif", ".bmp":"image/x-ms-bmp", ".jpg":"image/jpeg", ".jpe":"image/jpeg", ".jpeg":"image/jpeg", ".css":"text/css", ".js":"text/javascript"}
+    filetypes = {".xml":"text/xml", ".html":"text/html", ".xhtml":"text/html", ".htm":"text/html", ".svg":"image/svg+xml", ".txt":"text/plain", ".png":"image/png", ".gif":"image/gif", ".bmp":"image/x-ms-bmp", ".jpg":"image/jpeg", ".jpe":"image/jpeg", ".jpeg":"image/jpeg", ".css":"text/css", ".js":"text/javascript"}
     extension = os.path.splitext(path)[1]
     if filetypes.has_key(extension):
         bottle.response.content_type = filetypes[extension]
