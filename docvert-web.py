@@ -106,7 +106,7 @@ def webservice():
         urls = set(urls)
     response = None
     try:
-        response = core.docvert.process_conversion(files, urls, pipeline_id, 'pipelines', auto_pipeline_id)
+        response = core.docvert.process_conversion(files, urls, pipeline_id, 'pipelines', auto_pipeline_id, suppress_errors=True)
     except core.docvert_exception.debug_exception, exception:
         bottle.response.content_type = exception.content_type
         return exception.data
@@ -118,18 +118,31 @@ def webservice():
     session = session_manager.get_session()
     conversion_id = "%s" % uuid.uuid4()
     session[conversion_id] = response
-    session_manager.save(session)
     conversions_tabs = dict()
+    first_document_url = "conversions/%s/%s/" % (conversion_id, response.default_document)
     for filename in files.keys():
         thumbnail_path = "%s/thumbnail.png" % filename
         if response.has_key(thumbnail_path):
             thumbnail_path = None
-        conversions_tabs[filename] = dict(pipeline=pipeline_id, auto_pipeline=auto_pipeline_id, thumbnail_path=thumbnail_path)
-    return dict(conversions=conversions_tabs, conversion_id=conversion_id, first_document_id=response.default_document)
+        conversions_tabs[filename] = dict(friendly_name=response.get_friendly_name_if_available(filename), pipeline=pipeline_id, auto_pipeline=auto_pipeline_id, thumbnail_path=thumbnail_path)
+    try:
+        session_manager.save(session)
+    except OSError, e:
+        import traceback
+        traceback.print_exc(file=sys.stdout)
+        conversions_tabs = {'Session file problem': dict(friendly_name='Session file problem', pipeline=None, auto_pipeline=None, thumbnail_path=None) }
+        first_document_url = "/bottle_session_file_problem"
+    return dict(conversions=conversions_tabs, conversion_id=conversion_id, first_document_url=first_document_url)
 
 @bottle.route('/favicon.ico', method='GET')
 def favicon():
     return bottle.static_file('favicon.ico', root='%s/%s' % (theme_directory, theme))
+
+@bottle.route('/bottle_session_file_problem', method='GET')
+def bottle_session_file_problem():
+    print '%s/lib/bottle' % docvert_root
+    return bottle.static_file('bottle_session_file_problem.html', root='%s/lib/bottle' % docvert_root)
+
 
 @bottle.route('/conversions/:conversion_id/:path#.*#')
 def conversion_static_file(conversion_id, path):

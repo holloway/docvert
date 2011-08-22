@@ -17,7 +17,7 @@ http_timeout = 10
 class converter_type(object):
     python_streaming_to_libreoffice = "python streaming to libreoffice"
 
-def process_conversion(files=None, urls=None, pipeline_id=None, pipeline_type="pipelines", auto_pipeline_id=None, storage_type_name=docvert_storage.storage_type.memory_based, converter=converter_type.python_streaming_to_libreoffice):
+def process_conversion(files=None, urls=None, pipeline_id=None, pipeline_type="pipelines", auto_pipeline_id=None, storage_type_name=docvert_storage.storage_type.memory_based, converter=converter_type.python_streaming_to_libreoffice, suppress_errors=False):
     if files is None and urls is None:
         raise docvert_exception.needs_files_or_urls()
     if pipeline_id is None:
@@ -27,9 +27,9 @@ def process_conversion(files=None, urls=None, pipeline_id=None, pipeline_type="p
     def _title(name, files, data):
         filename = os.path.basename(name).replace('\\','-').replace('/','-').replace(':','-')
         if len(filename) == 0:
-            filename = "document.doc"
+            filename = "document.odt"
         if files.has_key(filename):
-            if hasattr(files[filename], 'read') and files[filename].getvalue() == data:
+            if data and hasattr(files[filename], 'read') and files[filename].getvalue() == data:
                 return filename
             unique = 1
             potential_filename = filename
@@ -44,18 +44,27 @@ def process_conversion(files=None, urls=None, pipeline_id=None, pipeline_type="p
     for url in urls:
         try:
             data = urllib2.urlopen(url, None, http_timeout).read()
-            files[_title(url, files, data)] = StringIO.StringIO(data)
+            filename = _title(url, files, data)
+            storage.set_friendly_name(filename, "%s (%s)" % (filename, url))
+            files[filename] = StringIO.StringIO(data)
         except IOError, e:
-            files[_title(url, files, None)] = "Download error from %s: %s" % (url, e)
+            filename = _title(url, files, None)
+            storage.set_friendly_name(filename, "%s (%s)" % (filename, url))
+            files[filename] = Exception("Download error from %s: %s" % (url, e))
     for filename, data in files.iteritems():
         if storage.default_document is None:
             storage.default_document = filename
         doc_type = document_type.detect_document_type(data)
-        if doc_type == document_type.types.string:
-            storage.add(filename + "/index.txt", data)
+        if doc_type == document_type.types.exception:
+            storage.add("%s/index.txt" % filename, str(data))
         elif doc_type != document_type.types.oasis_open_document:
-            data = generate_open_document(data, converter)
-            doc_type = document_type.types.oasis_open_document
+            try:
+                data = generate_open_document(data, converter)
+                doc_type = document_type.types.oasis_open_document
+            except Exception, e:
+                if not suppress_errors:
+                    raise e
+                storage.add("%s/index.txt" % filename, str(e))
         if doc_type == document_type.types.oasis_open_document:
             document_xml = opendocument.extract_useful_open_document_files(data, storage, filename)
             process_pipeline(document_xml, pipeline_id, pipeline_type, auto_pipeline_id, storage, filename)
@@ -83,7 +92,7 @@ def get_all_pipelines(include_default_autopipeline = True):
         pipeline_types[pipeline_type] = list()
         for pipeline_directory in os.listdir(os.path.join(pipeline_types_path, pipeline_type)):
             if include_default_autopipeline is False and pipeline_type == "auto_pipelines" and "nothing" in pipeline_directory.lower():
-                print "Skipping?"
+                pass #print "Skipping?"
             else:
                 pipeline_types[pipeline_type].append(dict(id=pipeline_directory, name=_title(pipeline_directory)))
     return pipeline_types

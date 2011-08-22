@@ -36,6 +36,9 @@ class storage(object):
     def __getitem__(self, key):
         return self.get(key)
 
+    def set_friendly_name(self, filename, friendly_name):
+        raise NotImplemented()
+
     def add_tests(self, tests):
         if not hasattr(self, 'tests'):
             self.tests = []
@@ -60,6 +63,7 @@ class storage(object):
             return self.tests
         return list()
 
+
 class storage_file_based(storage):
     def __init__(self):
         self.working_directory = tempfile.mkdtemp()
@@ -70,6 +74,9 @@ class storage_file_based(storage):
         handler = open(os.path.join(self.working_directory, path), 'w')
         handler.write(data)
         handler.close()
+
+    def set_friendly_name(self, filename, friendly_name):
+        raise NotImplemented()
 
     def get(self, path):
         handler = open(os.path.join(self.working_directory, path), 'r')
@@ -90,9 +97,18 @@ class storage_memory_based(storage):
         self.storage = dict()
         self.created_at = time.time()
         self.default_document = None
+        self.friendly_names = dict()
 
     def add(self, path, data):
         self.storage[path] = data
+
+    def set_friendly_name(self, filename, friendly_name):
+        self.friendly_names[filename] = friendly_name
+
+    def get_friendly_name_if_available(self, filename):
+        if self.friendly_names.has_key(filename):
+            return self.friendly_names[filename]
+        return filename
 
     def get(self, path):
         return self.storage[path]

@@ -83,7 +83,7 @@ class libreoffice_client(object):
             doc_type = document_type.detect_document_type(output_stream.data)
             output_stream.data.seek(0)
             if format == LIBREOFFICE_OPEN_DOCUMENT and doc_type != document_type.types.oasis_open_document:
-                raise docvert_exception.converter_unable_to_generate_open_document("Unable to generate OpenDocument, was detected as %s. First 2 bytes = %s" % (doc_type, output_stream.data.read(2)))
+                raise docvert_exception.converter_unable_to_generate_open_document("Unable to generate OpenDocument, was detected as %s.\n\nAre you sure you tried to convert an office document? If so then it\nmight be a bug, so please contact http://docvert.org and we'll see\nif we can fix it. Thanks!" % doc_type)
             elif format == LIBREOFFICE_PDF and doc_type != document_type.types.pdf:
                 raise docvert_exception.converter_unable_to_generate_pdf("Unable to generate PDF, was detected as %s. First 4 bytes = %s" % (doc_type, output_stream.data.read(4)))
         return output_stream.data
