@@ -21,7 +21,7 @@ var docvert = {
             full_text = text
             text = text.substring(0,15) + "\u2026" + text.substring(text.length-10)
         }
-        var list_item = $("<li>").attr("title",full_text).append($(event.target).attr("id","").css("display","none")).append(text).append(' <a href="#delete-item" class="delete" title="Remove upload item">&times</a>').hide()
+        var list_item = $("<li>").attr("title",full_text).append($(event.target).attr("id","").css("display","none")).text(text).append(' <a href="#delete-item" class="delete" title="Remove upload item">&times</a>').hide()
         $("#upload_list").append(list_item)
         list_item.slideDown()
         $("#upload_submit").removeClass("disabled").addClass("enabled")
