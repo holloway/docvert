@@ -19,12 +19,19 @@ try:
 except ImportError:
     sys.path.append('/opt/libreoffice/program/')
     sys.path.append('/usr/lib/libreoffice/program/')
+    sys.path.append('/usr/share/libreoffice/program/')
     sys.path.append('/usr/lib/openoffice.org/program/')
     sys.path.append('/usr/lib/openoffice.org2.0/program/')
     try:
         import uno
     except ImportError:
-        sys.stderr.write("Error: Unable to find Python UNO libraries in %s. Exiting..." % sys.path)
+        python_version_info = sys.version_info
+        python_version = "%s.%s.%s" % (python_version_info[0], python_version_info[1], python_version_info[2])
+        alternate_python_version = "2.6"
+        the_command_they_ran = " ".join(sys.argv)
+        if python_version.startswith("2.6"):
+              alternate_python_version = "2.7"
+        sys.stderr.write("Error: Unable to find Python UNO libraries in %s.\nAre Python UNO libraries somewhere else?\nAlternatively, Docvert is currently running Python %s so perhaps Python %s has Python UNO libraries? If so, then try calling %s with that version of python (either as 'python%s %s' or change the first line of %s)\nExiting...\n" % (sys.path, python_version, alternate_python_version, the_command_they_ran, alternate_python_version, the_command_they_ran, the_command_they_ran))
         sys.exit(0)
         
 import unohelper
