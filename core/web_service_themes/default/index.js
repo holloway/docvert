@@ -118,7 +118,7 @@ var docvert = {
     },
 
     reset_check_libreoffice_status: function(){
-        docvert.number_of_libreoffice_checks_remaining = 60
+        docvert.number_of_libreoffice_checks_remaining = 10
     },
 
     check_libreoffice_status: function(event) {
@@ -135,6 +135,7 @@ var docvert = {
                 if(docvert.number_of_libreoffice_checks_remaining > 0){
                     docvert.libreoffice_status_timer = setTimeout(docvert.check_libreoffice_status, 1000)
                 }
+                //$("#advanced").text(docvert.number_of_libreoffice_checks_remaining)
             }
         })
     }
@@ -162,9 +163,9 @@ $(document).ready(function(){
     $("select").dropp()
     $("#advanced .inner").addClass("closed").hide()
     $("#advanced legend a").click(docvert.click_advanced)
-    docvert.number_of_libreoffice_checks_remaining = 60
+    docvert.reset_check_libreoffice_status()
     docvert.libreoffice_status_timer = setTimeout(docvert.check_libreoffice_status, 1000)
-    $(document).focus(docvert.reset_check_libreoffice_status)
+    $("*").live("focus click", docvert.reset_check_libreoffice_status)
     $("#autopipeline").parent().hide()
     $("#break_up_pages").change(function(){
         if($(this).is(":checked")){
