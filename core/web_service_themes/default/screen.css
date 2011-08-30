@@ -689,10 +689,11 @@ body.tests-page
     position:absolute;
     left:780px;
     top:170px;
-    width:250px;
+    width:300px;
     color:#666666;
     text-shadow: #eeeeee 1px 1px 1px;
     font-weight:bold;
+    font-size:x-large;
     -webkit-transform:rotate(2deg);
 	-moz-transform:rotate(2deg);
 	-o-transform:rotate(2deg);
