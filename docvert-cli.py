@@ -51,8 +51,11 @@ def process_commands(filesdata, pipeline_id, pipeline_type, auto_pipeline_id, af
     for filedata in filesdata:
         files['document-%i.doc' % file_index] = filedata
         file_index += 1
+    urls = list()
+    if url != None:
+        urls.append(url)
     try:
-        response = core.docvert.process_conversion(files, [url], pipeline_id, pipeline_type, auto_pipeline_id)
+        response = core.docvert.process_conversion(files, urls, pipeline_id, pipeline_type, auto_pipeline_id)
     except core.docvert_exception.debug_exception, exception:
         print >> sys.stderr, "%s: %s" % (exception, exception.data)
     #TODO: when after_conversion="auto"
