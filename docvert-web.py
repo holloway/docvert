@@ -6,7 +6,7 @@ import uuid
 import os.path
 import socket
 import optparse
-
+import cgi
 docvert_root = os.path.dirname(os.path.abspath(__file__))
 inbuilt_bottle_path = os.path.join(docvert_root, 'lib/bottle')
 try:
@@ -25,13 +25,12 @@ except ImportError, exception:
     except ImportError:
         sys.stderr.write("Error: Unable to find Bottle libraries in %s. Exiting...\n" % sys.path)
         sys.exit(0)
-
 import lib.bottlesession.bottlesession
 bottle.debug(True)
-
 import core.docvert
 import core.docvert_storage
 import core.docvert_exception
+import core.document_type
 
 # START DEFAULT CONFIG
 theme='default'
@@ -42,9 +41,10 @@ parser.add_option("-p", "--port", dest="port", help="Port to run on", type="int"
 (options, args) = parser.parse_args()
 if options.port:
     port = options.port
-
 theme_directory='%s/core/web_service_themes' % docvert_root
 bottle.TEMPLATE_PATH.append('%s/%s' % (theme_directory, theme))
+
+# URL mappings
 
 @bottle.route('/index', method='GET')
 @bottle.route('/', method='GET')
@@ -60,7 +60,7 @@ def static(path=''):
 def libstatic(path=None):
     return bottle.static_file(path, root='%s/lib' % docvert_root)
 
-@bottle.route('/web-service.php', method='POST') #for legacy support
+@bottle.route('/web-service.php', method='POST') #for legacy Docvert support
 @bottle.route('/web-service', method='POST')
 @bottle.view('web-service')
 def webservice():
@@ -143,7 +143,6 @@ def bottle_session_file_problem():
     print '%s/lib/bottle' % docvert_root
     return bottle.static_file('bottle_session_file_problem.html', root='%s/lib/bottle' % docvert_root)
 
-
 @bottle.route('/conversions/:conversion_id/:path#.*#')
 def conversion_static_file(conversion_id, path):
     session_manager = lib.bottlesession.bottlesession.PickleSession()
@@ -154,8 +153,9 @@ def conversion_static_file(conversion_id, path):
         path = path.decode("utf-8")
     except UnicodeDecodeException, exception:
         pass
+    filetypes = {".xml":"text/xml", ".html":"text/html", ".xhtml":"text/html", ".htm":"text/html", ".svg":"image/svg+xml", ".txt":"text/plain", ".png":"image/png", ".gif":"image/gif", ".bmp":"image/x-ms-bmp", ".jpg":"image/jpeg", ".jpe":"image/jpeg", ".jpeg":"image/jpeg", ".css":"text/css", ".js":"text/javascript", ".odt":"application/vnd.oasis.opendocument.text", ".odp":"application/vnd.oasis.opendocument.presentation", ".ods":"application/vnd.oasis.opendocument.spreadsheet", ".dbk":"application/docbook+xml"}
     if not session[conversion_id].has_key(path): # They have authorisation but that exact path doesn't exist, try fallbacks
-        fallbacks = ["index.html", "index.htm", "index.xml", "index.php", "default.htm", "default.html", "index.asp", "default.aspx", "index.aspx", "default.aspx", "index.txt"]
+        fallbacks = ["index.html", "index.htm", "index.xml", "index.php", "default.htm", "default.html", "index.asp", "default.aspx", "index.aspx", "default.aspx", "index.txt", "index.odt", "default.odt", "index.dbk", "default.dbk"]
         valid_fallback_path = None
         separator = "/"
         if path.endswith("/"):
@@ -168,12 +168,24 @@ def conversion_static_file(conversion_id, path):
         if valid_fallback_path is None:
             raise bottle.HTTPError(code=404)
         path = valid_fallback_path
-    filetypes = {".xml":"text/xml", ".html":"text/html", ".xhtml":"text/html", ".htm":"text/html", ".svg":"image/svg+xml", ".txt":"text/plain", ".png":"image/png", ".gif":"image/gif", ".bmp":"image/x-ms-bmp", ".jpg":"image/jpeg", ".jpe":"image/jpeg", ".jpeg":"image/jpeg", ".css":"text/css", ".js":"text/javascript"}
+        extension = os.path.splitext(path)[1]
+        #if core.document_type.detect_document_type(session[conversion_id][path]) == core.document_type.types.oasis_open_document:
+        if extension == ".odt":
+            bottle.response.content_type = filetypes[".html"]
+            link_html = 'click here to download %s' % cgi.escape(os.path.basename(path))
+            thumbnail_path = "%s/thumbnail.png" % path[0:path.rfind("/")]
+            if session[conversion_id].has_key(thumbnail_path):
+                link_html = '<img src="thumbnail.png"><br>' + link_html
+            return '<!DOCTYPE html><html><head><title>%s</title><style type="text/css">body{font-family:sans-serif;font-size:small} a{text-decoration:none} p{text-align:center} img{clear:both;border: solid 1px #cccccc}</style></head><body><p><a href="%s">%s</a></p></body></html>' % (
+                cgi.escape(path),
+                cgi.escape(os.path.basename(path)),
+                link_html
+            )
     extension = os.path.splitext(path)[1]
     if filetypes.has_key(extension):
         bottle.response.content_type = filetypes[extension]
     else:
-        bottle.response.content_type = "plain/text"
+        bottle.response.content_type = "text/plain"
     return session[conversion_id][path]
 
 @bottle.route('/conversions-zip/:conversion_id')
@@ -188,7 +200,6 @@ def conversion_zip(conversion_id):
 @bottle.route('/libreoffice-status', method='GET')
 def libreoffice_status():
     return bottle.json_dumps( {"libreoffice-status":core.docvert_libreoffice.checkLibreOfficeStatus()} )
-
 
 @bottle.route('/tests', method='GET')
 @bottle.view('tests')
@@ -226,5 +237,4 @@ except socket.error, e:
         print 'ERROR: localhost:%i already in use.\nTry another port? Use command line parameter -p PORT' % port
     else:
         raise
-
 

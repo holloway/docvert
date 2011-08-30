@@ -13,6 +13,7 @@ var docvert = {
             form_element.animate({top:0}, "slow")
         }
     },
+
     upload_file_change: function(event){
         $(event.target).parent().append($(event.target).clone())
         var text = $(event.target).val()
@@ -166,13 +167,13 @@ $(document).ready(function(){
     docvert.reset_check_libreoffice_status()
     docvert.libreoffice_status_timer = setTimeout(docvert.check_libreoffice_status, 1000)
     $("*").live("focus click", docvert.reset_check_libreoffice_status)
-    $("#autopipeline").parent().hide()
     $("#break_up_pages").change(function(){
         if($(this).is(":checked")){
-            $("#autopipeline").parent().slideDown()
+            $("#autopipelines_options").slideDown().parent()
         } else {
-            $("#autopipeline").parent().slideUp()
+            $("#autopipelines_options").slideUp()
         }
+        $("#autopipeline").nextAll(".dropp_dropdown_list").width(upload_file.width() * 2 + 30).css("clear","both")
     }).change()
 }).keydown(docvert.keydown)
 

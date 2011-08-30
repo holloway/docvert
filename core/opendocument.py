@@ -12,6 +12,15 @@ def extract_useful_open_document_files(data, storage=None, prefix=None):
         return xml_string
     return extract_useful_binaries(archive, archive_files, storage, prefix, xml_string)
 
+def extract_thumbnail(data):
+    archive = zipfile.ZipFile(data)
+    thumbnail_path = u'Thumbnails/thumbnail.png'
+    archive_files = archive.namelist()
+    if thumbnail_path in archive_files:
+        return archive.open(thumbnail_path).read()
+    return None
+
+
 def extract_useful_binaries(archive, archive_files, storage, prefix, xml_string):
     xlink_namespace = "http://www.w3.org/1999/xlink"
     xpath_template = '//*[@{%s}href="%s"]' % (xlink_namespace, '%s')

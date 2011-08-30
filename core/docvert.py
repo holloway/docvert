@@ -41,6 +41,7 @@ def process_conversion(files=None, urls=None, pipeline_id=None, pipeline_type="p
                     potential_filename = filename + str(unique)
             filename = potential_filename
         return filename
+
     for url in urls:
         try:
             data = urllib2.urlopen(url, None, http_timeout).read()
@@ -66,8 +67,14 @@ def process_conversion(files=None, urls=None, pipeline_id=None, pipeline_type="p
                     raise e
                 storage.add("%s/index.txt" % filename, str(e))
         if doc_type == document_type.types.oasis_open_document:
-            document_xml = opendocument.extract_useful_open_document_files(data, storage, filename)
-            process_pipeline(document_xml, pipeline_id, pipeline_type, auto_pipeline_id, storage, filename)
+            if pipeline_id == "open document": #reserved term, for when people want the Open Document file back directly. Don't bother loading pipeline.
+                storage.add("%s/index.odt" % filename, data)
+                thumbnail = opendocument.extract_thumbnail(data)
+                if thumbnail:
+                    storage.add("%s/thumbnail.png" % filename, thumbnail)
+            else:
+                document_xml = opendocument.extract_useful_open_document_files(data, storage, filename)
+                process_pipeline(document_xml, pipeline_id, pipeline_type, auto_pipeline_id, storage, filename)
     return storage
 
 def process_pipeline(initial_pipeline_value, pipeline_id, pipeline_type, auto_pipeline_id, storage, storage_prefix=None):

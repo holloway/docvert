@@ -110,6 +110,9 @@ class storage_memory_based(storage):
             return self.friendly_names[filename]
         return filename
 
+    def keys(self):
+        return self.storage.keys()
+
     def get(self, path):
         return self.storage[path]
 

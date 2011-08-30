@@ -44,11 +44,14 @@
                         <input type="hidden" name="break_up_pages_ui_version" id="break_up_pages_ui_version" value="2">
                         <label for="break_up_pages">Break over multiple pages? </label><input type="checkbox" name="break_up_pages" id="break_up_pages"/>
                     </legend>
-                    <select name="autopipeline" id="autopipeline">
+                    <div id="autopipelines_options">
+                        <p class="break_pages_note"><span>Please note that some pipelines don't support multiple pages.</span></p>
+                        <select name="autopipeline" id="autopipeline">
 % for auto_pipeline in auto_pipelines:
-                        <option value="{{auto_pipeline['id']}}">{{auto_pipeline['name']}}</option>
+                            <option value="{{auto_pipeline['id']}}">{{auto_pipeline['name']}}</option>
 % end
-                    </select>
+                        </select>
+                    </div>
                 </fieldset>
                 <div id="upload_from_web_dialog">
                     <input type="text" name="upload_web[]" id="upload_web">

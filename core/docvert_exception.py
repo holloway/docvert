@@ -24,6 +24,9 @@ class converter_unable_to_generate_pdf(docvert_exception):
 class unknown_docvert_process(docvert_exception):
     pass
 
+class unable_to_serialize_opendocument(docvert_exception):
+    pass
+
 class unrecognised_pipeline_item(docvert_exception):
     pass
 

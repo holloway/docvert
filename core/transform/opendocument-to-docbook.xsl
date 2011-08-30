@@ -425,10 +425,18 @@
         <xsl:element name="db:mediaobject">
             <xsl:element name="db:imageobject">
                 <xsl:element name="db:imagedata">
-                    <xsl:attribute name="fileref"><xsl:value-of select="@xlink:href"/></xsl:attribute>
+                    <xsl:attribute name="fileref">
+                        <xsl:choose>
+                            <xsl:when test="contains(@xlink:href,'/')">
+                                <xsl:value-of select="substring-after(@xlink:href,'/')"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="@xlink:href"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:attribute>
                     <xsl:attribute name="depth"><xsl:value-of select="parent::*/@svg:width"/></xsl:attribute>
                     <xsl:attribute name="height"><xsl:value-of select="parent::*/@svg:height"/></xsl:attribute>
-                    <xsl:attribute name="fileref"><xsl:value-of select="@xlink:href"/></xsl:attribute>
                 </xsl:element>
             </xsl:element>
         </xsl:element>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline>
+        <stage process="Debug"/>
+        <stage process="NormalizeOpenDocument"/>
+        <stage process="SerializeOpenDocument" toFile="index.odt"/>
+</pipeline>

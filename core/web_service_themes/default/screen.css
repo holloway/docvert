@@ -286,7 +286,7 @@ h2.upload_list
     ul.dropdown_list,
     ul.dropdown_list li
         {
-        margin: 0; 
+        margin: 0;
         padding: 0;
         list-style: none;
         }
@@ -391,6 +391,28 @@ h2.upload_list
         font-size:small;
         }
 
+#autopipelines_options
+    {
+    display:none;
+    }
+
+.break_pages_note
+    {
+    text-align:center;
+    margin:0px 0px 10px 0px;
+    padding:0px;
+    }
+
+    .break_pages_note span
+        {
+        background: #ffffee;
+        border: solid 1px #ddddbb;
+        padding: 0.3em 1em;
+        color: #666633;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        font-size:small;
+        }
 
 #advanced
     {

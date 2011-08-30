@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import zipfile
+import StringIO
 
 class types(object):
     oasis_open_document = "oasis_open_document (any version)"
@@ -12,6 +13,8 @@ class types(object):
 def detect_document_type(data):
     if isinstance(data, Exception):
         return types.exception
+    if isinstance(data, str):
+        data = StringIO.StringIO(data)
     try:
         # 1. Sniff for OpenDocument
         magic_bytes_open_document = 'PK'

@@ -341,7 +341,7 @@
 <xsl:template match="db:mediaobject">
     <xsl:element name="img">
         <xsl:attribute name="src">
-            <xsl:value-of select="substring-after(descendant::db:imagedata/@fileref, '/')"/>
+            <xsl:value-of select="descendant::db:imagedata/@fileref"/>
         </xsl:attribute>
         <xsl:attribute name="alt">
             <xsl:value-of select="descendant::db:caption"/>
