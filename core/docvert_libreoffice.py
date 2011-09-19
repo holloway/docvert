@@ -65,7 +65,7 @@ class libreoffice_client(object):
         try:
             context = resolver.resolve("uno:socket,host=localhost,port=%s;urp;StarOffice.ComponentContext" % port)
         except NoConnectException, exception:
-            raise Exception, "Failed to connect to LibreOffice.org on port %s. %s" % (port, exception)
+            raise Exception, "Failed to connect to LibreOffice on port %s. %s\nIf you don't have a server then read README for 'OPTIONAL LIBRARIES' to see how to set one up." % (port, exception)
         self._desktop = context.ServiceManager.createInstanceWithContext("com.sun.star.frame.Desktop", context)
 
     def convert_by_stream(self, data, format=LIBREOFFICE_OPEN_DOCUMENT):
