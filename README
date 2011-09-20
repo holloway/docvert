@@ -4,6 +4,7 @@ Released under the GPL3 see LICENCE
 REQUIREMENTS
     Python 2.6 with lxml.
     pdf2svg and rsvg.
+    (we'll support Python 3 when distributions of PyUNO support Python 3)
 
 OPTIONAL LIBRARIES
     If you want to convert Microsoft Office files you'll need:
