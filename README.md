@@ -8,24 +8,31 @@ Web Service
 
     python ./docvert-web.py [-p PORT]
 
+Requirements
+------------
+
+Python 2.6 with lxml.
+pdf2svg and rsvg.
+
 Optional Libraries
 ------------------
 
-    If you want to convert Microsoft Office files you'll need:
+If you want to convert Microsoft Office files you'll need:
+
     LibreOffice or OpenOffice.org server (which can run 'headless')
     PyUNO (python-uno)
 
-    To set this up on DEBIAN/UBUNTU/MINT just run
+To set this up on DEBIAN/UBUNTU/MINT just run
     apt-get install docvert-libreoffice
-    or
+or
     apt-get install docvert-openoffice.org
 
-    Alternatively, if you want to do it manually then run (change the path to
-    your install of LibreOffice/OpenOffice.org)
+Alternatively, if you want to do it manually then run (change the path to
+your install of LibreOffice/OpenOffice.org)
     /usr/bin/soffice -headless -norestore -nologo -norestore -nofirststartwizard -accept="socket,port=2002;urp;"
 
-    This runs a single instance. If you want to run a pool of instances then  
-    try something like http://oodaemon.sourceforge.net/
+This runs a single instance. If you want to run a pool of instances then  
+try something like http://oodaemon.sourceforge.net/
 
 Command Line
 ------------
