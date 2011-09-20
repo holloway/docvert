@@ -32,13 +32,11 @@ or
 
     apt-get install docvert-openoffice.org
 
-Alternatively, if you want to do it manually then run (change the path to
-your install of LibreOffice/OpenOffice.org)
+Alternatively, if you want to do it manually then run (change the path to your install of LibreOffice/OpenOffice.org)
 
     /usr/bin/soffice -headless -norestore -nologo -norestore -nofirststartwizard -accept="socket,port=2002;urp;"
 
-This runs a single instance. If you want to run a pool of instances then  
-try something like http://oodaemon.sourceforge.net/
+This runs a single instance. If you want to run a pool of instances then try something like http://oodaemon.sourceforge.net/
 
 Command Line
 ------------
