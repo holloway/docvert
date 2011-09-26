@@ -34,7 +34,7 @@
                 <fieldset id="pipelines">
                     <legend>Theme (<abbr title="Extensible Markup Language">XML</abbr> Pipeline)</legend>
                     <select name="pipeline" id="pipeline">
-% for pipeline in pipelines:
+% for pipeline in sorted(pipelines):
                         <option value="{{pipeline['id']}}">{{pipeline['name']}}</option>
 % end
                     </select>
