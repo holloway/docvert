@@ -32,7 +32,8 @@ def detect_document_type(data):
             return types.pdf
         # 3. Sniff for HTML and XML
         data.seek(0)
-        first_bytes = data.read(100).decode("utf-8")
+        first_bytes = data.read(200).decode("utf-8") #200 bytes in, because sometimes there's a really long doctype
+        #print first_bytes
         if first_bytes.count("<html") > 0:
             return types.html
         if first_bytes.count("<?xml") > 0:

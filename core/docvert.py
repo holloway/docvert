@@ -101,10 +101,15 @@ def html_to_opendocument(html, url):
         entity_string = text[1:-1]
         entity = htmlentitydefs.entitydefs.get(entity_string)
         if entity:
+            if len(entity) > 1:
+                return entity
             try:
                 return "&#%s;" % ord(entity)
             except ValueError:
                 pass
+            except TypeError, e:
+                print "TypeError on '%s'?" % entity
+                raise
         return text
 
     soup = BeautifulSoup(html, convertEntities=BeautifulSoup.XML_ENTITIES)
