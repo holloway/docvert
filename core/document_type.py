@@ -30,6 +30,13 @@ def detect_document_type(data):
         first_bytes = data.read(len(magic_bytes_pdf))
         if first_bytes.decode("utf-8") == magic_bytes_pdf:
             return types.pdf
+        # 3. Sniff for HTML and XML
+        data.seek(0)
+        first_bytes = data.read(100).decode("utf-8")
+        if first_bytes.count("<html") > 0:
+            return types.html
+        if first_bytes.count("<?xml") > 0:
+            return types.xml
     except UnicodeDecodeError, exception:
         pass
     finally:

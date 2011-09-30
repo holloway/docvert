@@ -7,6 +7,7 @@ import docvert_exception
 import docvert_pipeline
 import docvert_storage
 import docvert_libreoffice
+import docvert_xml
 import opendocument
 import urllib2
 
@@ -45,6 +46,9 @@ def process_conversion(files=None, urls=None, pipeline_id=None, pipeline_type="p
     for url in urls:
         try:
             data = urllib2.urlopen(url, None, http_timeout).read()
+            doc_type = document_type.detect_document_type(data)
+            if doc_type == document_type.types.html:
+                data = html_to_opendocument(data, url)
             filename = _title(url, files, data)
             storage.set_friendly_name(filename, "%s (%s)" % (filename, url))
             files[filename] = StringIO.StringIO(data)
@@ -86,6 +90,46 @@ def generate_open_document(data, converter=converter_type.python_streaming_to_li
     if converter == converter_type.python_streaming_to_libreoffice:
         return docvert_libreoffice.get_client().convert_by_stream(data, docvert_libreoffice.LIBREOFFICE_OPEN_DOCUMENT)
     raise docvert_exception.unrecognised_converter("Unknown converter '%s'" % converter)
+
+def html_to_opendocument(html, url):
+    from BeautifulSoup import BeautifulSoup
+    import htmlentitydefs
+    import re
+
+    def to_ncr(match):
+        text = match.group(0)
+        entity_string = text[1:-1]
+        entity = htmlentitydefs.entitydefs.get(entity_string)
+        if entity:
+            try:
+                return "&#%s;" % ord(entity)
+            except ValueError:
+                pass
+        return text
+
+    soup = BeautifulSoup(html, convertEntities=BeautifulSoup.XML_ENTITIES)
+    to_extract = soup.findAll('script')
+    for item in to_extract:
+        item.extract()
+    pretty_xml = soup.html.prettify()
+    pretty_xml = re.sub("&?\w+;", to_ncr, pretty_xml)
+    pretty_xml = re.sub('&(\w+);', '&amp;\\1', pretty_xml)
+    pretty_xml = pretty_xml.replace("& ", "&amp; ")
+    #display_lines(pretty_xml, 5, 15)
+    xml = docvert_xml.get_document(pretty_xml)
+    storage = docvert_storage.get_storage(docvert_storage.storage_type.memory_based)
+    result = process_pipeline(xml, 'default', 'html_to_opendocument', None, storage)
+    #print result
+    #print storage
+    return result
+
+def display_lines(data, start_line, end_line):
+    data = data.split("\n")
+    segment = data[start_line:end_line]
+    for line in segment:
+        print "%s%s" % (start_line, line)
+        start_line += 1
+    
 
 def get_all_pipelines(include_default_autopipeline = True):
     def _title(name):
