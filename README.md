@@ -8,6 +8,23 @@ Web Service
 
     python ./docvert-web.py [-p PORT]
 
+Command Line
+------------
+
+    python ./docvert-cli.py
+
+    usage: docvert-cli.py [-h] [--version] --pipeline PIPELINE
+        [--response {auto,path,stdout}]
+        [--autopipeline {Break up over Heading 1.default,Nothing one long page}]
+        [--url URL] [--list-pipelines]
+        [--pipelinetype {tests,auto_pipelines,pipelines}]
+        infile [infile ...]
+
+Community
+---------
+
+http://lists.catalyst.net.nz/mailman/listinfo/docvert
+
 Requirements
 ------------
 
@@ -37,23 +54,5 @@ Alternatively, if you want to do it manually then run (change the path to your i
     /usr/bin/soffice -headless -norestore -nologo -norestore -nofirststartwizard -accept="socket,port=2002;urp;"
 
 This runs a single instance. If you want to run a pool of instances then try something like http://oodaemon.sourceforge.net/
-
-Command Line
-------------
-
-    python ./docvert-cli.py
-
-    usage: docvert-cli.py [-h] [--version] --pipeline PIPELINE
-        [--response {auto,path,stdout}]
-        [--autopipeline {Break up over Heading 1.default,Nothing one long page}]
-        [--url URL] [--list-pipelines]
-        [--pipelinetype {tests,auto_pipelines,pipelines}]
-        infile [infile ...]
-
-Community
----------
-
-http://lists.catalyst.net.nz/mailman/listinfo/docvert
-
 
 
