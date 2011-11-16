@@ -86,7 +86,7 @@
                 <xsl:element name="text:h">
                     <xsl:attribute name="text:outline-level"><xsl:value-of select="$heading-outline-level"/></xsl:attribute>
                     <xsl:attribute name="text:style-name"><xsl:value-of select="@text:style-name"/></xsl:attribute>
-                    [<xsl:apply-templates/>
+                    <xsl:apply-templates/>
                     <!--[{<xsl:value-of select="@text:style-name"/>}<xsl:value-of select="$style/@style:name"/>:<xsl:value-of select="$normalized-style-name"/> | <xsl:value-of select="$normalized-parent-style-name"/>]-->
                 </xsl:element>
             </xsl:when>
