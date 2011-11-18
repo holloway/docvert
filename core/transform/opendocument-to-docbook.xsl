@@ -486,7 +486,7 @@
                             <xsl:when test="$parent-style-alignment='start'">left</xsl:when>
                             <xsl:when test="$parent-style-alignment='center'">center</xsl:when>
                             <xsl:when test="$parent-style-alignment='end'">right</xsl:when>
-                            <!--<xsl:otherwise><xsl:value-of select="$style-alignment"/>,<xsl:value-of select="$parent-style-alignment"/></xsl:otherwise>-->
+                            <xsl:otherwise>left</xsl:otherwise><!-- awfully western of me to default to 'left', sorry -->
                         </xsl:choose>
                     </xsl:attribute>
                 </xsl:if>

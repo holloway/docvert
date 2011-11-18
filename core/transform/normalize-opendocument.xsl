@@ -16,6 +16,7 @@
 <xsl:variable name="document-title-styles">title|titre|</xsl:variable>
 <xsl:variable name="heading-styles">heading|header|</xsl:variable>
 <xsl:variable name="bulleted-list-styles">bullet|</xsl:variable>
+<xsl:variable name="bulleted-list-style-suffix">bullet</xsl:variable>
 
 
 <xsl:template match="text:p">
@@ -37,10 +38,10 @@
             <xsl:variable name="heading-style">
                 <xsl:choose>
                     <xsl:when test="contains($heading-styles, concat($normalized-style-name,'|'))">
-                        <xsl:value-of select="$style"/>
+                        <xsl:value-of select="$style/@style:name"/>
                     </xsl:when>
                     <xsl:when test="contains($heading-styles, concat($normalized-parent-style-name,'|'))">
-                        <xsl:value-of select="$parent-style"/>
+                        <xsl:value-of select="$parent-style/@style:name"/>
                     </xsl:when>
                 </xsl:choose>
             </xsl:variable>
@@ -62,10 +63,29 @@
             </xsl:choose>
         </xsl:if>
     </xsl:variable>
+    <xsl:variable name="looks-like-a-bullet">
+        <xsl:if test="not(normalize-space($heading-outline-level))">
+            <xsl:choose>
+                <xsl:when test="contains($normalized-style-name, $bulleted-list-style-suffix)">
+                    it's probably a bullet
+                </xsl:when>
+                <xsl:when test="contains($normalized-parent-style-name, $bulleted-list-style-suffix)">
+                    if that's not a bullet... TOXX CLAUSE
+                </xsl:when>
+                <xsl:when test="contains($bulleted-list-styles, concat($normalized-style-name,'|'))">
+                    that's a bullet, i swear
+                </xsl:when>
+                <xsl:when test="contains($bulleted-list-styles, concat($normalized-parent-style-name,'|'))">
+                    dang and blast it this better be a bullet
+                </xsl:when>
+            </xsl:choose>
+        </xsl:if>
+    </xsl:variable>
+    <xsl:variable name="is-a-bullet" select="normalize-space($looks-like-a-bullet)"/>
     <xsl:variable name="inner-text" select="normalize-space(.)"/>
     <xsl:if test="$inner-text or descendant::draw:frame/draw:image">
         <xsl:choose>
-            <xsl:when test="not($table-heading) and not($document-title) and not($heading)">
+            <xsl:when test="not($is-a-bullet) and not($table-heading) and not($document-title) and not($heading)">
                 <xsl:copy>
                     <xsl:apply-templates select="@*|node()"/>
                 </xsl:copy>
@@ -88,6 +108,16 @@
                     <xsl:attribute name="text:style-name"><xsl:value-of select="@text:style-name"/></xsl:attribute>
                     <xsl:apply-templates/>
                     <!--[{<xsl:value-of select="@text:style-name"/>}<xsl:value-of select="$style/@style:name"/>:<xsl:value-of select="$normalized-style-name"/> | <xsl:value-of select="$normalized-parent-style-name"/>]-->
+                </xsl:element>
+            </xsl:when>
+            <xsl:when test="$is-a-bullet">
+                <xsl:element name="text:unordered-list">
+                    <xsl:attribute name="text:style-name"><xsl:value-of select="@text:style-name"/></xsl:attribute>
+                    <xsl:element name="text:list-item">
+                        <xsl:copy>
+                            <xsl:apply-templates select="@*|node()"/>
+                        </xsl:copy>
+                    </xsl:element>
                 </xsl:element>
             </xsl:when>
         </xsl:choose>
