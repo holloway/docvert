@@ -2,10 +2,6 @@
 <xsl:stylesheet	version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0">
 <xsl:output method="xml" omit-xml-declaration="no"/>
 
-<xsl:key name="styles-by-name" match="style:style" use="@style:name"/>
-<xsl:key name="list-styles-by-name" match="text:list-style" use="@style:name"/>
-<xsl:key name="elements-by-style-name" match="*[@text:style-name]" use="@text:style-name"/>
-
 <xsl:variable name="lowercase">abcdefghijklmnopqrstuvwxyz</xsl:variable>
 <xsl:variable name="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
 <xsl:variable name="remove-when-normalizing">_- 01234567890</xsl:variable><!-- space character is intentional -->
@@ -15,8 +11,13 @@
 <xsl:variable name="table-heading-styles">tableheading|tableheader|titredetableau|titretableau|</xsl:variable>
 <xsl:variable name="document-title-styles">title|titre|</xsl:variable>
 <xsl:variable name="heading-styles">heading|header|</xsl:variable>
-<xsl:variable name="bulleted-list-styles">bullet|</xsl:variable>
-<xsl:variable name="bulleted-list-style-suffix">bullet</xsl:variable>
+<xsl:variable name="bulleted-list-style">bullet</xsl:variable>
+
+<xsl:key name="styles-by-name" match="style:style" use="@style:name"/>
+<xsl:key name="list-styles-by-name" match="text:list-style" use="@style:name"/>
+<xsl:key name="elements-by-style-name" match="*[@text:style-name]" use="@text:style-name"/>
+<xsl:key name='bullet-groups' match="text:p[contains(translate(@text:style-name,$uppercase,$lowercase), $bulleted-list-style)]" use="generate-id(preceding-sibling::*[not(contains(translate(@text:style-name,$uppercase,$lowercase), $bulleted-list-style))][1])"/>
+
 
 
 <xsl:template match="text:p">
@@ -66,17 +67,9 @@
     <xsl:variable name="looks-like-a-bullet">
         <xsl:if test="not(normalize-space($heading-outline-level))">
             <xsl:choose>
-                <xsl:when test="contains($normalized-style-name, $bulleted-list-style-suffix)">
+                <xsl:when test="parent::text:list-item"></xsl:when>
+                <xsl:when test="contains($normalized-style-name, $bulleted-list-style)">
                     it's probably a bullet
-                </xsl:when>
-                <xsl:when test="contains($normalized-parent-style-name, $bulleted-list-style-suffix)">
-                    if that's not a bullet... TOXX CLAUSE
-                </xsl:when>
-                <xsl:when test="contains($bulleted-list-styles, concat($normalized-style-name,'|'))">
-                    that's a bullet, i swear
-                </xsl:when>
-                <xsl:when test="contains($bulleted-list-styles, concat($normalized-parent-style-name,'|'))">
-                    dang and blast it this better be a bullet
                 </xsl:when>
             </xsl:choose>
         </xsl:if>
@@ -107,18 +100,24 @@
                     <xsl:attribute name="text:outline-level"><xsl:value-of select="$heading-outline-level"/></xsl:attribute>
                     <xsl:attribute name="text:style-name"><xsl:value-of select="@text:style-name"/></xsl:attribute>
                     <xsl:apply-templates/>
-                    <!--[{<xsl:value-of select="@text:style-name"/>}<xsl:value-of select="$style/@style:name"/>:<xsl:value-of select="$normalized-style-name"/> | <xsl:value-of select="$normalized-parent-style-name"/>]-->
                 </xsl:element>
             </xsl:when>
             <xsl:when test="$is-a-bullet">
-                <xsl:element name="text:unordered-list">
-                    <xsl:attribute name="text:style-name"><xsl:value-of select="@text:style-name"/></xsl:attribute>
-                    <xsl:element name="text:list-item">
-                        <xsl:copy>
-                            <xsl:apply-templates select="@*|node()"/>
-                        </xsl:copy>
+                <xsl:variable name="node-id" select="generate-id()"/>
+                <xsl:variable name="bullet-groups-id" select="generate-id(preceding-sibling::*[not(contains(translate(@text:style-name,$uppercase,$lowercase), $bulleted-list-style))][1])"/>
+                <xsl:variable name="bullet-groups" select="key('bullet-groups', $bullet-groups-id)"/>
+                 <xsl:if test="$node-id = generate-id($bullet-groups[1]) ">
+                    <xsl:element name="text:unordered-list">
+                        <xsl:attribute name="text:style-name"><xsl:value-of select="concat(@text:style-name, '_list-from-normalize-opendocument-xsl')"/></xsl:attribute>
+                        <xsl:for-each select="$bullet-groups">
+                            <xsl:element name="text:list-item">
+                                <xsl:copy>
+                                    <xsl:apply-templates select="@*|node()"/>
+                                </xsl:copy>
+                            </xsl:element>
+                        </xsl:for-each>
                     </xsl:element>
-                </xsl:element>
+                </xsl:if>
             </xsl:when>
         </xsl:choose>
     </xsl:if>
