@@ -19,7 +19,18 @@
     <xsl:template match="office:text">
         <xsl:element name="db:book">
             <xsl:attribute name="version">5.0</xsl:attribute>
+            <xsl:variable name="document-title" select="//text:p[translate(@text:style-name, $uppercase, $lowercase) = 'title'][1]"/>
+            <xsl:if test="$document-title">
+                <xsl:element name="db:title">
+                    <xsl:apply-templates select="$document-title/node()"/>
+                </xsl:element>
+            </xsl:if>
             <xsl:element name="db:preface">
+                <xsl:if test="$document-title">
+                    <xsl:element name="db:title">
+                        <xsl:apply-templates select="$document-title/node()"/>
+                    </xsl:element>
+                </xsl:if>
                 <xsl:apply-templates select="key('heading-children', generate-id())"/>
                 <xsl:if test="not(//text:h[@text:outline-level='1'])"><xsl:apply-templates select="//text:h"/></xsl:if>
             </xsl:element>
@@ -68,6 +79,12 @@
             <xsl:element name="db:para">
                 <xsl:variable name="text-style" select="key('styles-by-name', @text:style-name)"/>
                 <xsl:choose>
+                    <xsl:when test="translate(@text:style-name, $uppercase, $lowercase) = 'title'">
+                        <xsl:element name="db:emphasis">
+                            <xsl:attribute name="role">title</xsl:attribute>
+                            <xsl:apply-templates/>
+                        </xsl:element>
+                    </xsl:when>
                     <xsl:when test="contains($text-style/style:text-properties/@fo:font-style, 'italic')">
                         <xsl:element name="db:emphasis">
                             <xsl:apply-templates/>

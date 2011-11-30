@@ -53,8 +53,13 @@
         <xsl:if test="/db:book/db:preface/db:title or /db:book/db:chapter/db:title">
             <p class="pageTitle">
                 <xsl:value-of select="/db:book/db:preface/db:title"/>
+                <xsl:if test="/db:book/db:preface/db:title and /db:book/db:chapter/db:title">
+                    <xsl:text> - </xsl:text>
+                </xsl:if>
                 <xsl:value-of select="/db:book/db:chapter/db:title"/>
-                &#160;
+                <xsl:if test="not(normalize-space(concat(/db:book/db:chapter/db:title, /db:book/db:preface/db:title)))">
+                    <xsl:text>&#160;</xsl:text>
+                </xsl:if>
             </p>
         </xsl:if>
         <xsl:if test="/db:book/db:title and normalize-space(/db:book/db:title) != '[no title]' ">
