@@ -55,7 +55,7 @@ docvert_start()
                 then
                         $startStopDaemon -b -m --pidfile $pidfile --start --exec "$docvertcommand"
                 elif [ -e "$rpmDaemon" ]
-                then
+                then 
                         $rpmDaemon --pidfile=$pidfile $docvertcommand
                 else
                         echo "Warning: Unable to find $startStopDaemon or $rpmDaemon so instead I'll daemonize by forking as the current user, $whoami."
