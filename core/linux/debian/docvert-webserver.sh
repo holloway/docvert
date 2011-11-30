@@ -15,8 +15,6 @@ scriptDirectory=$( cd $scriptDirectory; pwd )
 docvertcommand="/opt/docvert/docvert-web.py"
 kill="/bin/kill"
 pidfile="/tmp/docvert-webserver.pid"
-username="$2"
-groupname="$3"
 startStopDaemon="/sbin/start-stop-daemon"
 rpmDaemon="/usr/bin/daemon"
 whoami=$( whoami )
@@ -45,13 +43,6 @@ then
         fi
 fi
 
-if [ -s "$docvertcommand" ]
-then
-        sleep 0
-else
-        echo "Comand not found at $docvertcommand"
-        exit 1
-fi
 docvert_start()
 {
         if [ -s "$pidfile" ]
@@ -62,23 +53,13 @@ docvert_start()
                 rm -f "$pidfile"
                 if [ -e "$startStopDaemon" ]
                 then
-                        $startStopDaemon "$groupname" "$username" --pidfile $pidfile --start --exec "$docvertcommand"
+                        $startStopDaemon -b -m --pidfile $pidfile --start --exec "$docvertcommand"
                 elif [ -e "$rpmDaemon" ]
                 then
                         $rpmDaemon --pidfile=$pidfile $docvertcommand
                 else
                         echo "Warning: Unable to find $startStopDaemon or $rpmDaemon so instead I'll daemonize by forking as the current user, $whoami."
                         $docvertcommand &
-                fi
-                sleep 2
-                pgrep "./docvert-web.py" > "$pidfile"
-                if [ -s "$pidfile" ]
-                then
-                        pid=$( cat "$pidfile" )
-                        echo "Started Docvert with process #$pid"
-                        sleep 0
-                else
-                        echo "Unable to start Docvert (empty pid file at $pidfile)"
                 fi
                 return 0
         fi
@@ -89,14 +70,9 @@ docvert_stop()
         if [ -s "$pidfile" ]
         then
                 pid=$( cat "$pidfile" )
-                if [ -e "$startStopDaemon" ]
-                then
-                        $startStopDaemon "$groupname" "$username" --stop --quiet --pidfile "$pidfile"
-                else
-                        $kill $pid
-                        sleep 1
-                        $kill -s 9 "$pid" > /dev/null
-                fi
+                $kill $pid
+                sleep 1
+                $kill -s 9 "$pid" > /dev/null 2>&1 &
                 remainingProcess=$( ps "$pid" | grep $pid )
                 if [ -n $remainingProcess ]
                 then
