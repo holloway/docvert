@@ -61,8 +61,9 @@ class pipeline_processor(object):
         for item in self.pipeline_items:
             process = item['attributes']['process']
             namespace = 'core.pipeline_type'
+            full_pipeline_type = "%s.%s" % (namespace, process.lower())
             #try:
-            stage_module = __import__("%s.%s" % (namespace, process.lower()), fromlist=[namespace])
+            stage_module = __import__(full_pipeline_type, {}, {}, [full_pipeline_type.rsplit(".", 1)[-1]])
             stage_class = getattr(stage_module, process)
             stage_instance = stage_class(self.storage, self.pipeline_directory, item['attributes'], self.pipeline_storage_prefix, item['children'], self.depth)
             pipeline_value = stage_instance.stage(pipeline_value)
