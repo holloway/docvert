@@ -21,17 +21,21 @@ var docvert = {
                 sublist.slideUp(function(){
                     sublist.empty()
                     var test_count = {"pass":0,"fail":0}
+                    var list_items_pass = "";
+                    var list_items_fail = "";
                     $(data).each(function(key,value){
-                        var text = "&#x2714;"
+                        var text;
                         if(value.status == "fail") {
                             test_count.fail++
-                            text = "&#x2718;"
+                            text = "&#x2718;";
+                            list_items_fail += $('<li><span class="' + value.status + '">' + text + '</span>' + $('<div/>').text(value.message).html() + '</li>').wrap("<div/>").parent().html()
                         } else {
                             test_count.pass++
+                            text = "&#x2714;";
+                            list_items_pass += $('<li><span class="' + value.status + '">' + text + '</span>' + $('<div/>').text(value.message).html() + '</li>').wrap("<div/>").parent().html()
                         }
-                        var list_item = $('<li><span class="' + value.status + '">' + text + '</span>' + $('<div/>').text(value.message).html() + '</li>')
-                        sublist.append(list_item)
                     })
+                    sublist.append(list_items_fail + list_items_pass)
                     var maximum_rows = 6
                     if(test_count.fail + test_count.pass > maximum_rows) {
                         sublist.css("height","0px").show().animate({"display":"block","height":(maximum_rows * 20)+"px"})
