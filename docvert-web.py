@@ -86,6 +86,8 @@ def webservice():
                 pass
             files[filename] = StringIO.StringIO(field_storage.value)
     pipeline_id = bottle.request.POST.get('pipeline')
+    if pipeline_id.startswith('autopipeline:'): #Docvert 4.x
+        pipeline_id = pipeline_id[len('autopipeline:'):]
     auto_pipeline_id = None
     if bottle.request.POST.get('break_up_pages_ui_version'):
         if bottle.request.POST.get('break_up_pages'):
@@ -233,6 +235,10 @@ def web_service_tests(test_id):
 @bottle.route('/tests/', method='GET')
 def tests_wrongdir():
     bottle.redirect('/tests')
+
+@bottle.route('/3rdparty/sscdocapi')
+def third_party_sscdocapi():
+    return bottle.static_file('sscdocapi.html', root='%s/core/3rd-party/' % docvert_root)    
 
 try:
     bottle.run(host=host, port=port, quiet=False)

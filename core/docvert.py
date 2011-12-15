@@ -147,7 +147,9 @@ def get_all_pipelines(include_default_autopipeline = True):
     for pipeline_type in os.listdir(pipeline_types_path):
         pipeline_types[pipeline_type] = list()
         for pipeline_directory in os.listdir(os.path.join(pipeline_types_path, pipeline_type)):
-            if include_default_autopipeline is False and pipeline_type == "auto_pipelines" and "nothing" in pipeline_directory.lower():
+            if pipeline_directory == 'ssc': #don't show this pipeline publicly. it's not important.
+                pass
+            elif include_default_autopipeline is False and pipeline_type == "auto_pipelines" and "nothing" in pipeline_directory.lower():
                 pass #print "Skipping?"
             else:
                 pipeline_types[pipeline_type].append(dict(id=pipeline_directory, name=_title(pipeline_directory)))

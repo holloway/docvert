@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<form method="post" action="/web-service.php" enctype="multipart/form-data">
+
+    <input type="file" name="random file"><br>
+
+    <select name="pipeline">
+        <option>autopipeline:ssc</option>
+    </select><br>
+
+    <select name="autopipeline">
+        <option>Nothing (one long page)</option>
+    </select><br>
+
+    <select name="afterconversion">
+        <option>downloadZip</option>
+    </select><br>
+
+    <select name="converter">
+        <option>pyodconverter</option>
+    </select>
+
+    <hr>
+
+    <input type="submit" value="Submit"/>
+
+</form>
+
+</body>
+</html>
