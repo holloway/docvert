@@ -34,13 +34,17 @@ import core.document_type
 
 # START DEFAULT CONFIG
 theme='default'
+host='localhost'
 port=8080
 # END CONFIG
 parser = optparse.OptionParser()
 parser.add_option("-p", "--port", dest="port", help="Port to run on", type="int")
+parser.add_option("-H", "--host", dest="host", help="Hostname or IP run on", type="str")
 (options, args) = parser.parse_args()
 if options.port:
     port = options.port
+if options.host:
+    host = options.host
 theme_directory='%s/core/web_service_themes' % docvert_root
 bottle.TEMPLATE_PATH.append('%s/%s' % (theme_directory, theme))
 
@@ -231,7 +235,7 @@ def tests_wrongdir():
     bottle.redirect('/tests')
 
 try:
-    bottle.run(host='localhost', port=port, quiet=False)
+    bottle.run(host=host, port=port, quiet=False)
 except socket.error, e:
     if 'address already in use' in str(e).lower():
         print 'ERROR: localhost:%i already in use.\nTry another port? Use command line parameter -p PORT' % port
