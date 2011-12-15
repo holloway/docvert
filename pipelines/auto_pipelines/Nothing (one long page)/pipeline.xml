@@ -2,9 +2,14 @@
 <pipeline>
         <stage process="ConvertImages" formats="wmf2png, wmf2svg, bmp2png" deleteOriginals="true" autoCrop="false" autoCropThreshold="20"/>
 
-        <stage process="TransformOpenDocumentToDocBook"/>
+        <stage process="TransformOpenDocumentToDocBook"/><!-- debugAfterNormalization="true"  -->
+
+
 
         <stage process="DocBookToXHTML"/>
+
         {{custom-stages}}
+
         <stage process="Serialize" toFile="index.html"/>
+
 </pipeline>

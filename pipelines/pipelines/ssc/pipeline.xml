@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <autopipeline>
-    <stage process="Transform" withFile="pretty-lists.xsl"/>
+    <stage process="WriteMetaData"/>
+    <stage process="Transform" withFile="pretty-lists.xsl"/> 
 </autopipeline>

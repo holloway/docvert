@@ -78,7 +78,9 @@ def process_conversion(files=None, urls=None, pipeline_id=None, pipeline_type="p
                     storage.add("%s/thumbnail.png" % filename, thumbnail)
             else:
                 document_xml = opendocument.extract_useful_open_document_files(data, storage, filename)
+                storage.add("%s/opendocument.xml" % filename, document_xml)
                 process_pipeline(document_xml, pipeline_id, pipeline_type, auto_pipeline_id, storage, filename)
+                storage.remove("%s/opendocument.xml" % filename)
     return storage
 
 def process_pipeline(initial_pipeline_value, pipeline_id, pipeline_type, auto_pipeline_id, storage, storage_prefix=None):

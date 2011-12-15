@@ -68,6 +68,7 @@
         </xsl:variable>
         <xsl:variable name="width" select="$offset"/>
         <xsl:element name="li">
+            <xsl:attribute name="style">list-style:none</xsl:attribute>
             <xsl:element name="span">
 	            <xsl:attribute name="class">NestedOrderedListNumbering</xsl:attribute>
                 <xsl:attribute name="style">float:left;width:<xsl:value-of select="$width"/>em;margin-left:-<xsl:value-of select="$offset"/>em;</xsl:attribute>
