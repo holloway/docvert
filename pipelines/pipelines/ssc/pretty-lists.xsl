@@ -69,12 +69,22 @@
         <xsl:variable name="width" select="$offset"/>
         <xsl:element name="li">
             <xsl:attribute name="style">list-style:none</xsl:attribute>
-            <xsl:element name="span">
-	            <xsl:attribute name="class">NestedOrderedListNumbering</xsl:attribute>
-                <xsl:attribute name="style">float:left;width:<xsl:value-of select="$width"/>em;margin-left:-<xsl:value-of select="$offset"/>em;</xsl:attribute>
-                <xsl:number level="multiple"/>
-            </xsl:element>
-            <xsl:text> </xsl:text>
+            <xsl:if test="*[not(self::html:ol)]">
+                <xsl:element name="span">
+	                <xsl:attribute name="class">NestedOrderedListNumbering</xsl:attribute>
+                    <xsl:attribute name="style">float:left;width:<xsl:value-of select="$width"/>em;margin-left:-<xsl:value-of select="$offset"/>em;</xsl:attribute>
+                    <xsl:for-each select="ancestor::html:ol">
+                        <xsl:choose>
+                            <xsl:when test="@start"><xsl:value-of select="@start"/></xsl:when>
+                            <xsl:otherwise><xsl:value-of select="count(preceding-sibling::html:ol)+1"/></xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:if test="position() &lt; last()">
+                            <xsl:text>.</xsl:text>
+                        </xsl:if>
+                    </xsl:for-each>
+                </xsl:element>
+                <xsl:text> </xsl:text>
+            </xsl:if>
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>

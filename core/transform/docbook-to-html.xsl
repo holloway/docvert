@@ -166,16 +166,45 @@
 <xsl:template match="db:orderedlist">
     <xsl:element name="ol">
         <xsl:if test="@continuation">
-            <xsl:variable name="previousList" select="preceding::db:orderedlist[not(ancestor::db:orderedlist)]"/>
-            <xsl:if test="not($previousList)">
-                <xsl:message terminate="yes">Despite a db:orderedlist claiming to be a continuation I can't find a former list to continue from. Please send this document to the Docvert mailing list</xsl:message>
-            </xsl:if>                
+            <xsl:variable name="depth" select="count(ancestor::db:orderedlist)"/>
             <xsl:attribute name="start">
-                <xsl:value-of select="count($previousList/db:listitem) + 1"/>
+                <xsl:variable name="preceding-list-items-in-this-continuation">
+                    <xsl:call-template name="count-list-items">
+                        <xsl:with-param name="current-list" select="."/>
+                        <xsl:with-param name="depth" select="$depth"/>
+                    </xsl:call-template>
+                </xsl:variable>
+                <xsl:choose>
+                    <xsl:when test="db:listitem/*[not(self::db:orderedlist[@continuation])]">
+                        <xsl:value-of select="number($preceding-list-items-in-this-continuation) + 1"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:text>1</xsl:text>
+                    </xsl:otherwise>
+                </xsl:choose>
             </xsl:attribute>
         </xsl:if>
         <xsl:apply-templates/>
     </xsl:element>
+</xsl:template>
+
+<xsl:template name="count-list-items">
+    <xsl:param name="current-list"/>
+    <xsl:param name="depth"/>
+    <xsl:param name="amount-of-list-items" select="0"/>
+    <xsl:choose>
+        <xsl:when test="$current-list[@continuation]">
+            <xsl:variable name="previous-list" select="$current-list/preceding::db:orderedlist[count(ancestor::db:orderedlist)=$depth][1]"/>
+            <xsl:call-template name="count-list-items">
+                <xsl:with-param name="depth" select="$depth"/>
+                <xsl:with-param name="current-list" select="$previous-list"/>
+                <xsl:with-param name="amount-of-list-items" select="$amount-of-list-items + count($previous-list/db:listitem)"/>
+            </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:value-of select="$amount-of-list-items"/>
+        </xsl:otherwise>
+    </xsl:choose>
 </xsl:template>
 
 <xsl:template match="db:listitem">
