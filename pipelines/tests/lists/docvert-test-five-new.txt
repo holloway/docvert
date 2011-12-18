@@ -1,0 +1,6 @@
+Return and check the text. Numbering continues, further text shows indent check also tests OK
+Return and indent used for next level of list. Numbering continues and indent checked OK
+Return gives correct number return
+Return and indent for the next line gives correct result
+line continued for indent check that shows incorrectly...
+The next line is another multi level list. Numbering continues OK

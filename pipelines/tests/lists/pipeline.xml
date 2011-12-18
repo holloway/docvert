@@ -35,4 +35,14 @@
     <stage process="Test" withFile="continuation.xsl" prefix="HTML list continuations"/>
 
 
+    <stage process="Generate" withFile="docvert-test-five-new.odt"/>
+    <stage process="Test" withFile="docvert-test-five-new.txt" prefix="4. Pre-normalized OpenDocument"/>
+    <stage process="TransformOpenDocumentToDocBook" />
+    <stage process="Test" withFile="docvert-test-five-new.txt" prefix="4. DocBook"/>
+    <stage process="DocBookToXHTML"/>
+    <stage process="Test" withFile="docvert-test-five-new.txt" prefix="4. HTML"/>
+<!-- <stage process="Debug"/> -->
+<!-- <stage process="Debug" contentType="text/html"/> -->
+
+
 </pipeline>
