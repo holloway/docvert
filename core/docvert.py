@@ -43,6 +43,9 @@ def process_conversion(files=None, urls=None, pipeline_id=None, pipeline_type="p
             filename = potential_filename
         return filename
 
+    for filename, data in files.iteritems():
+        storage.set_friendly_name(filename, filename)
+
     for url in urls:
         try:
             data = urllib2.urlopen(url, None, http_timeout).read()

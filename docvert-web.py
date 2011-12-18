@@ -116,13 +116,14 @@ def webservice():
     except core.docvert_exception.debug_exception, exception:
         bottle.response.content_type = exception.content_type
         return exception.data
-    if after_conversion == "downloadZip":
+    conversion_id = "%s" % uuid.uuid4()
+    if after_conversion == "downloadZip" or after_conversion == "zip":
         bottle.response.content_type = 'application/zip'
+        bottle.response.headers['Content-Disposition'] = 'attachment; filename="%s.zip"' % response.get_zip_name()
         return response.to_zip().getvalue()
     pipeline_summary = "%s (%s)" % (pipeline_id, auto_pipeline_id)
     session_manager = lib.bottlesession.bottlesession.PickleSession()
     session = session_manager.get_session()
-    conversion_id = "%s" % uuid.uuid4()
     session[conversion_id] = response
     conversions_tabs = dict()
     first_document_url = "conversions/%s/%s/" % (conversion_id, response.default_document)
@@ -175,7 +176,6 @@ def conversion_static_file(conversion_id, path):
             raise bottle.HTTPError(code=404)
         path = valid_fallback_path
         extension = os.path.splitext(path)[1]
-        #if core.document_type.detect_document_type(session[conversion_id][path]) == core.document_type.types.oasis_open_document:
         if extension == ".odt":
             bottle.response.content_type = filetypes[".html"]
             link_html = 'click here to download %s' % cgi.escape(os.path.basename(path))
@@ -201,6 +201,7 @@ def conversion_zip(conversion_id):
     if not session.has_key(conversion_id): # They don't have authorisation
         raise bottle.HTTPError(code=404)
     bottle.response.content_type = 'application/zip'
+    bottle.response.headers['Content-Disposition'] = 'attachment; filename="%s.zip"' % session[conversion_id].get_zip_name()
     return session[conversion_id].to_zip().getvalue()
 
 @bottle.route('/libreoffice-status', method='GET')
@@ -244,7 +245,7 @@ try:
     bottle.run(host=host, port=port, quiet=False)
 except socket.error, e:
     if 'address already in use' in str(e).lower():
-        print 'ERROR: localhost:%i already in use.\nTry another port? Use command line parameter -p PORT' % port
+        print 'ERROR: %s:%i already in use.\nTry another port? Use command line parameter -H HOST or -p PORT to change it.' % (host, port)
     else:
         raise
 

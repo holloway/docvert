@@ -63,6 +63,8 @@ class storage(object):
             return self.tests
         return list()
 
+    def get_zip_name(self):
+        raise NotImplemented("No implemented, yet...")
 
 class storage_file_based(storage):
     def __init__(self):
@@ -84,6 +86,9 @@ class storage_file_based(storage):
 
     def _dispose(self):
         os.removedirs(self.working_directory)
+
+    def get_zip_name(self):
+        raise NotImplemented("No implemented, yet...")
 
     def to_zip(self):
         raise NotImplemented("Not implemented, yet...")
@@ -134,6 +139,13 @@ class storage_memory_based(storage):
                 archive.writestr(key.replace("\\", "/"), data)
         archive.close()
         return zipdata
+
+    def get_zip_name(self):
+        friendly_names = ", ".join(self.friendly_names.keys())
+        if friendly_names != "":
+            friendly_names = "-%s" % friendly_names
+        zip_name = "%s%s" % (time.strftime("docvert-%Y%m%d%H%M"), friendly_names)
+        return zip_name.replace("\"","").replace("\n","").replace("\r","").replace("\\","")
 
     def _dispose(self):
         pass
