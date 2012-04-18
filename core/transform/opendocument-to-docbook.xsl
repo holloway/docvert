@@ -85,6 +85,12 @@
                             <xsl:apply-templates/>
                         </xsl:element>
                     </xsl:when>
+                    <xsl:when test="contains($text-style/style:text-properties/@fo:font-weight, 'bold')">
+                        <xsl:element name="db:emphasis">
+                            <xsl:attribute name="role">bold</xsl:attribute>
+                            <xsl:apply-templates/>
+                        </xsl:element>
+                    </xsl:when>
                     <xsl:when test="contains($text-style/style:text-properties/@fo:font-style, 'italic')">
                         <xsl:element name="db:emphasis">
                             <xsl:apply-templates/>

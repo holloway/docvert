@@ -1,24 +1,25 @@
 <?xml version='1.0' encoding="UTF-8"?>
-<xsl:stylesheet	version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0">
+<xsl:stylesheet	version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0" xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0">
 <xsl:output method="xml" omit-xml-declaration="no"/>
 
 <xsl:variable name="lowercase">abcdefghijklmnopqrstuvwxyz</xsl:variable>
 <xsl:variable name="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
+<xsl:variable name="lowercaseAndUppercase" select="concat($lowercase,$uppercase)"/>
 <xsl:variable name="remove-when-normalizing">_- 01234567890</xsl:variable><!-- space character is intentional -->
 <xsl:variable name="remove-for-outline-level" select="concat($uppercase,$lowercase,'_- ')"/><!-- space character is intentional -->
+<xsl:variable name="indentation-to-be-considered-additional-list-item" select="number(0.25)"/><!-- TODO: add units of length and convert between them -->
 
 <!-- these variables are | separated lists of normalized (as per above) style names AND ending with a | character -->
 <xsl:variable name="table-heading-styles">tableheading|tableheader|titredetableau|titretableau|</xsl:variable>
 <xsl:variable name="document-title-styles">title|titre|</xsl:variable>
 <xsl:variable name="heading-styles">heading|header|</xsl:variable>
 <xsl:variable name="bulleted-list-style">bullet</xsl:variable>
+<xsl:variable name="numbered-list-style">numbered</xsl:variable>
 
 <xsl:key name="styles-by-name" match="style:style" use="@style:name"/>
 <xsl:key name="list-styles-by-name" match="text:list-style" use="@style:name"/>
 <xsl:key name="elements-by-style-name" match="*[@text:style-name]" use="@text:style-name"/>
 <xsl:key name='bullet-groups' match="text:p[contains(translate(@text:style-name,$uppercase,$lowercase), $bulleted-list-style)]" use="generate-id(preceding-sibling::*[not(contains(translate(@text:style-name,$uppercase,$lowercase), $bulleted-list-style))][1])"/>
-
-
 
 <xsl:template match="text:p">
     <xsl:variable name="style" select="key('styles-by-name', @text:style-name)"/>
@@ -74,6 +75,7 @@
             </xsl:choose>
         </xsl:if>
     </xsl:variable>
+    <!--<xsl:variable name="is-a-numbered-list" select="contains($normalized-style-name, $numbered-list-style)"/> -->
     <xsl:variable name="is-a-bullet" select="normalize-space($looks-like-a-bullet)"/>
     <xsl:variable name="inner-text" select="normalize-space(.)"/>
     <xsl:if test="$inner-text or descendant::draw:frame/draw:image">
@@ -119,6 +121,18 @@
                     </xsl:element>
                 </xsl:if>
             </xsl:when>
+            <!--
+            <xsl:when test="$is-a-numbered-list">
+                <xsl:element name="text:ordered-list">
+                    <xsl:attribute name="text:style-name"><xsl:value-of select="concat(@text:style-name, '_list-from-normalize-opendocument-xsl')"/></xsl:attribute>
+                    <xsl:element name="text:list-item">
+                        <xsl:copy>
+                            <xsl:apply-templates select="@*|node()"/>
+                        </xsl:copy>
+                    </xsl:element>
+                </xsl:element>
+            </xsl:when>
+            -->
         </xsl:choose>
     </xsl:if>
 </xsl:template>
@@ -151,19 +165,64 @@
     <xsl:variable name="parent-style" select="key('list-styles-by-name', $style/@style:parent-style-name)"/>
     <xsl:variable name="normalized-parent-style-name" select="translate(translate($parent-style/@style:name, $uppercase, $lowercase),$remove-when-normalizing,'')"/>
     <xsl:variable name="list-depth" select="count(ancestor::text:list-item) + 1"/>
+    <xsl:variable name="list-indentation-node" select="$style/descendant::style:list-level-label-alignment[1]"/>
+    <xsl:variable name="preceding-root-level-list" select="preceding-sibling::*[1][self::text:list or self::text:ordered-list or self::text:unordered-list][not(parent::list-item)]"/>
+    <xsl:variable name="preceding-root-level-list-style" select="key('list-styles-by-name', $preceding-root-level-list/@text:style-name)"/>
+
+    <xsl:variable name="preceding-root-level-list-indentation-node" select="$preceding-root-level-list-style/descendant::style:list-level-label-alignment[1]"/>
+    <xsl:variable name="current-list-indentation" select="(number(translate($list-indentation-node/@fo:text-indent,$lowercaseAndUppercase,'')) + number(translate($list-indentation-node/@fo:margin-left,$lowercaseAndUppercase,''))) div $indentation-to-be-considered-additional-list-item"/>
+    <xsl:variable name="preceding-list-indentation" select="(number(translate($preceding-root-level-list-indentation-node/@fo:text-indent,$lowercaseAndUppercase,'')) + number(translate($preceding-root-level-list-indentation-node/@fo:margin-left,$lowercaseAndUppercase,''))) div $indentation-to-be-considered-additional-list-item"/>
+
+
     <xsl:choose>
         <xsl:when test="$style/text:list-level-style-number[@text:level=$list-depth] or $parent-style/text:list-level-style-number[@text:level=$list-depth]">
             <xsl:element name="text:ordered-list">
                 <xsl:if test="normalize-space($list-style)"><xsl:attribute name="text:style-name"><xsl:value-of select="$list-style"/></xsl:attribute></xsl:if>
                 <xsl:if test="@text:continue-numbering"><xsl:attribute name="text:continue-numbering"><xsl:value-of select="@text:continue-numbering"/></xsl:attribute></xsl:if>
-                <xsl:apply-templates/>
+                <xsl:call-template name="draw-extra-item-items">
+                    <xsl:with-param name="number-of-list-items" select="$current-list-indentation - $preceding-list-indentation"/>
+                    <xsl:with-param name="list-type" select="'ordered-list'"/>
+                </xsl:call-template>
             </xsl:element>
         </xsl:when>
         <xsl:otherwise>
             <xsl:element name="text:unordered-list">
                 <xsl:if test="normalize-space($list-style)"><xsl:attribute name="text:style-name"><xsl:value-of select="$list-style"/></xsl:attribute></xsl:if>
-                <xsl:apply-templates/>
+                <xsl:call-template name="draw-extra-item-items">
+                    <xsl:with-param name="number-of-list-items" select="$current-list-indentation - $preceding-list-indentation"/>
+                    <xsl:with-param name="list-type" select="'unordered-list'"/>
+                </xsl:call-template>
             </xsl:element>
+        </xsl:otherwise>
+    </xsl:choose>
+</xsl:template>
+
+<xsl:template name="draw-extra-item-items">
+    <xsl:param name="number-of-list-items"/>
+    <xsl:param name="list-type"/>
+    <xsl:choose>
+        <xsl:when test="$number-of-list-items">
+            <xsl:element name="text:list-item">
+                <xsl:choose>
+                    <xsl:when test="$list-type='unordered-list'">
+                        <xsl:element name="text:unordered-list">
+                            <xsl:call-template name="draw-extra-item-items">
+                                <xsl:with-param name="number-of-list-items" select="$number-of-list-items - 1"/>
+                            </xsl:call-template>
+                        </xsl:element>
+                    </xsl:when>
+                    <xsl:when test="$list-type='ordered-list'">
+                        <xsl:element name="text:ordered-list">
+                            <xsl:call-template name="draw-extra-item-items">
+                                <xsl:with-param name="number-of-list-items" select="$number-of-list-items - 1"/>
+                            </xsl:call-template>
+                        </xsl:element>
+                    </xsl:when>
+                </xsl:choose>
+            </xsl:element>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:apply-templates/>
         </xsl:otherwise>
     </xsl:choose>
 </xsl:template>
