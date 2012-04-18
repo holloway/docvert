@@ -70,12 +70,18 @@ def libstatic(path=None):
 def webservice():
     files = dict()
     first_document_id = None
+    there_was_at_least_one_thing_uploaded = False
+    print bottle.request.files
+    print len(bottle.request.files)
+    print dir(bottle.request.files)
     for key, item in bottle.request.files.iteritems():
+        print "2"
+        there_was_at_least_one_thing_uploaded = True
         items = bottle.request.files.getall(key)
         for field_storage in items:
             filename = field_storage.filename
             unique = 1
-            if files.has_key(filename) and files[filename].getvalue() == field_storage.value:
+            if files.has_key(filename) and files[filename].getvalue() == field_storage.value: #remove same file uploaded multiple times
                 continue
             while files.has_key(filename):
                 filename = field_storage.filename + str(unique)
@@ -111,6 +117,9 @@ def webservice():
     else:
         urls = set(urls)
     response = None
+    if there_was_at_least_one_thing_uploaded is False: #while we could have counted len(files) or len(urls) the logic around those is more complex, and I don't want to show this error unless there was genuinely no files uploaded
+        bottle.response.content_type = "text/html"
+        return '<!DOCTYPE html><html><body><h1>Error: No files were uploaded</h1><p>Known issues that can cause this:</p><ul><li>Permissions problem on the server or browser: Try ensuring that your upload file has all read permissions set.</li><li>Chrome/Chromium can sometimes cause file upload problems (some combination of Chrome/Bottle, it\'s not a Docvert-specific bug). Sorry, but Firefox seems to work.</li></ul><hr><a href="/">Try again?</a></body></html>'
     try:
         response = core.docvert.process_conversion(files, urls, pipeline_id, 'pipelines', auto_pipeline_id, suppress_errors=True)
     except core.docvert_exception.debug_exception, exception:
