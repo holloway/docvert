@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline>
+    <stage process="Generate" withFile="invalid-page.odt"/>
+    <stage process="Transform" withFile="internal://normalize-opendocument.xsl"/>
+    <stage process="Test" withFile="invalid-page.xsl"/>
+  
+</pipeline>

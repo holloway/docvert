@@ -137,6 +137,8 @@
     </xsl:if>
 </xsl:template>
 
+<xsl:template match="draw:frame[@text:anchor-page-number='0']"/>
+
 <xsl:template match="text:h">
     <xsl:choose>
         <xsl:when test="ancestor::table:table">
