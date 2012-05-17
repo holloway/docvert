@@ -6,7 +6,7 @@ Released under the GPL3 see LICENCE
 Web Service
 -----------
 
-    python ./docvert-web.py [-p PORT]
+    python ./docvert-web.py [-p PORT] [-H host]
 
 Command Line
 ------------
@@ -28,20 +28,20 @@ http://lists.catalyst.net.nz/mailman/listinfo/docvert
 Requirements
 ------------
 
-Python 2.6 with lxml, pdf2svg and rsvg.
+    Python 2.6 or 2.7 (we'll support Python 3 when it supports PyUNO)
+    python-uno
+    python-lxml
+    pdf2svg
+    librsvg
 
-(we'll support Python 3 when distributions of PyUNO support Python 3)
-
-Optional Libraries
+LibreOffice Daemon
 ------------------
 
 If you want to convert Microsoft Office files you'll need:
 
     LibreOffice or OpenOffice.org server (which can run 'headless')
 
-    PyUNO (python-uno)
-
-To set this up on DEBIAN/UBUNTU/MINT just run
+To set this up on DEBIAN/UBUNTU/MINT try running
 
     apt-get install docvert-libreoffice
 

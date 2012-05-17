@@ -1,8 +1,8 @@
 Docvert 5.1
 Released under the GPL3 see LICENCE
 
-WEB SERVICE http://localhost:8080
-    python ./docvert-web.py [-p PORT]
+WEB SERVICE (by default http://localhost:8080)
+    python ./docvert-web.py [-p PORT] [-H host]
 
 COMMAND LINE
     python ./docvert-cli.py
