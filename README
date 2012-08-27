@@ -1,5 +1,6 @@
 Docvert 5.1
-Released under the GPL3 see LICENCE
+
+Converts Word Processor office files (e.g. .DOC files) to OpenDocument, DocBook, and structured HTML.
 
 WEB SERVICE (by default http://localhost:8080)
     python ./docvert-web.py [-p PORT] [-H host]
@@ -49,4 +50,5 @@ OPTIONAL LIBRARIES
 
 
 
-
+LICENCE
+    Released under the GPL3 see LICENCE

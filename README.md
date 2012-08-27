@@ -1,7 +1,8 @@
 Docvert 5.1
 =============
 
-Released under the GPL3 see LICENCE
+Converts Word Processor office files (e.g. .DOC files) to OpenDocument, DocBook, and structured HTML.
+
 
 Web Service
 -----------
@@ -54,5 +55,9 @@ Alternatively, if you want to do it manually then run (change the path to your i
     /usr/bin/soffice -headless -norestore -nologo -norestore -nofirststartwizard -accept="socket,port=2002;urp;"
 
 This runs a single instance. If you want to run a pool of instances then try something like http://oodaemon.sourceforge.net/
+
+LICENCE
+-------
+Released under the GPL3 see LICENCE
 
 
