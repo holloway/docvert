@@ -18,11 +18,14 @@ COMMUNITY
     http://lists.catalyst.net.nz/mailman/listinfo/docvert
 
 REQUIREMENTS
+
     Python 2.6 or 2.7 (we'll support Python 3 when it supports PyUNO)
+    libreoffice
     python-uno
     python-lxml
+    python-imaging
     pdf2svg
-    librsvg
+    librsvg2-2
     
 OPTIONAL LIBRARIES
     1)  If you want to convert Microsoft Office files you'll need:

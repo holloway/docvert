@@ -30,15 +30,17 @@ Requirements
 ------------
 
     Python 2.6 or 2.7 (we'll support Python 3 when it supports PyUNO)
+    libreoffice
     python-uno
     python-lxml
+    python-imaging
     pdf2svg
-    librsvg
-
+    librsvg2-2
+    
 LibreOffice Daemon
 ------------------
 
-If you want to convert Microsoft Office files you'll need:
+If you want to convert Microsoft Office files (.DOC) you'll need:
 
     LibreOffice or OpenOffice.org server (which can run 'headless')
 
