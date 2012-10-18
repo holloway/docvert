@@ -28,29 +28,30 @@ REQUIREMENTS
     librsvg2-2
     
 OPTIONAL LIBRARIES
-    1)  If you want to convert Microsoft Office files you'll need:
-
-        LibreOffice or OpenOffice.org server (which can run 'headless')
-        PyUNO (python-uno)
-
-        To set this up on DEBIAN/UBUNTU/MINT just run
-            apt-get install docvert-libreoffice
-        or
-            apt-get install docvert-openoffice.org
-
-        Alternatively, if you want to do it manually then run (change the path to
-        your install of LibreOffice/OpenOffice.org)
+    If you want to convert Microsoft Office files you'll need to start a daemon:
 
             /usr/bin/soffice -headless -norestore -nologo -norestore -nofirststartwizard -accept="socket,port=2002;urp;"
 
-        (this runs a single instance. If you want to run a pool of instances then
-        try something like http://oodaemon.sourceforge.net/
+    (this runs a single instance. If you want to run a pool of instances then
+    try something like http://oodaemon.sourceforge.net/
 
-    2)  If you want to scrape/convert HTML pages then you'll need BeautifulSoup
-        To set this up on DEBIAN/UBUNTU/MINT just run
+QUICKSTART GUIDE
 
-            apt-get install python-beautifulsoup
+sudo apt-get install libreoffice python-uno python-lxml python-imaging pdf2svg librsvg2-2
 
+/usr/bin/soffice -headless -norestore -nologo -norestore -nofirststartwizard -accept="socket,port=2002;urp;"
+
+ # then in another terminal
+
+cd ~
+
+git clone git://github.com/holloway/docvert.git
+
+cd docvert
+
+python ./docvert-web.py
+
+ # and browse to http://localhost:8080
 
 
 LICENCE
