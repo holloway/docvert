@@ -26,14 +26,6 @@ REQUIREMENTS
     python-imaging
     pdf2svg
     librsvg2-2
-    
-OPTIONAL LIBRARIES
-    If you want to convert Microsoft Office files you'll need to start a daemon:
-
-            /usr/bin/soffice -headless -norestore -nologo -norestore -nofirststartwizard -accept="socket,port=2002;urp;"
-
-    (this runs a single instance. If you want to run a pool of instances then
-    try something like http://oodaemon.sourceforge.net/
 
 QUICKSTART GUIDE
 
@@ -52,6 +44,16 @@ cd docvert
 python ./docvert-web.py
 
  # and browse to http://localhost:8080
+
+
+THE LIBREOFFICE DAEMON    
+
+    If you want to convert Microsoft Office files you'll need to start a daemon:
+
+            /usr/bin/soffice -headless -norestore -nologo -norestore -nofirststartwizard -accept="socket,port=2002;urp;"
+
+    (this runs a single instance. If you want to run a pool of instances then
+    try something like http://oodaemon.sourceforge.net/
 
 
 LICENCE
