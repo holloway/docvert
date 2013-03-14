@@ -43,7 +43,7 @@ Quickstart Guide
 
     sudo apt-get install libreoffice python-uno python-lxml python-imaging pdf2svg librsvg2-2
 
-    /usr/bin/soffice -headless -norestore -nologo -norestore -nofirststartwizard -accept="socket,port=2002;urp;"
+    /usr/bin/soffice --headless --norestore --nologo --norestore --nofirststartwizard --accept="socket,port=2002;urp;"
 
 then in another terminal
 
