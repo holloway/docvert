@@ -19,7 +19,7 @@
 <xsl:key name="styles-by-name" match="style:style" use="@style:name"/>
 <xsl:key name="list-styles-by-name" match="text:list-style" use="@style:name"/>
 <xsl:key name="elements-by-style-name" match="*[@text:style-name]" use="@text:style-name"/>
-<xsl:key name='bullet-groups' match="text:p[contains(translate(@text:style-name,$uppercase,$lowercase), $bulleted-list-style)]" use="generate-id(preceding-sibling::*[not(contains(translate(@text:style-name,$uppercase,$lowercase), $bulleted-list-style))][1])"/>
+<xsl:key name='bullet-groups' match="text:p[contains(translate(@text:style-name,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'), 'bullet')]" use="generate-id(preceding-sibling::*[not(contains(translate(@text:style-name,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'), 'bullet'))][1])"/>
 
 <xsl:template match="text:p">
     <xsl:variable name="style" select="key('styles-by-name', @text:style-name)"/>
