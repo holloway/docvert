@@ -3,16 +3,17 @@ Docvert 5.1
 
 Converts Word Processor office files (e.g. .DOC files) to OpenDocument, DocBook, and structured HTML.
 
+This is Docvert for Python 2. To find Docvert for Python 3 see http://github.com/holloway/docvert-python3/
 
 Web Service
 -----------
 
-    python ./docvert-web.py [-p PORT] [-H host]
+    python2 ./docvert-web.py [-p PORT] [-H host]
 
 Command Line
 ------------
 
-    python ./docvert-cli.py
+    python2 ./docvert-cli.py
 
     usage: docvert-cli.py [-h] [--version] --pipeline PIPELINE
         [--response {auto,path,stdout}]
@@ -30,7 +31,7 @@ http://lists.catalyst.net.nz/mailman/listinfo/docvert
 Requirements
 ------------
 
-    Python 2.6 or 2.7 (we'll support Python 3 when it supports PyUNO)
+    Python 2.6 or 2.7
     libreoffice
     python-uno
     python-lxml
@@ -53,19 +54,9 @@ then in another terminal
 
     cd docvert
 
-    python ./docvert-web.py
+    python2 ./docvert-web.py
 
 and browse to http://localhost:8080
-
-A note on the LibreOffice Daemon
---------------------------------
-
-If you want to convert Microsoft Office files you'll need to start a daemon:
-
-    /usr/bin/soffice -headless -norestore -nologo -norestore -nofirststartwizard -accept="socket,port=2002;urp;"
-
-This runs a single instance. If you want to run a pool of instances then try something like http://oodaemon.sourceforge.net/
-
 
 LICENCE
 -------
