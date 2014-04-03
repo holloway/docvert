@@ -1,5 +1,6 @@
-Docvert 5.1
-=============
+<p align="center">
+<img src="logo.gif" alt="Docvert">
+</p>
 
 Converts Word Processor office files (e.g. .DOC files) to OpenDocument, DocBook, and structured HTML.
 
